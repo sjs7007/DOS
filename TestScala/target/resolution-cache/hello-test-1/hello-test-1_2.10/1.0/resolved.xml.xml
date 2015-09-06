@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="default"
-		module="testscala_2.10"
-		revision="0.1-SNAPSHOT"
+	<info organisation="hello-test-1"
+		module="hello-test-1_2.10"
+		revision="1.0"
 		status="integration"
-		publication="20150903135118"
+		publication="20150906144032"
 	>
 		<description>
-		testscala
+		Hello Test #1
 		</description>
 	</info>
 	<configurations>
@@ -26,13 +26,14 @@
 		<conf name="scala-tool" visibility="private" description=""/>
 	</configurations>
 	<publications>
-		<artifact name="testscala_2.10" type="pom" ext="pom" conf="pom"/>
-		<artifact name="testscala_2.10" type="jar" ext="jar" conf="compile"/>
-		<artifact name="testscala_2.10" type="src" ext="jar" conf="sources" e:classifier="sources"/>
-		<artifact name="testscala_2.10" type="doc" ext="jar" conf="docs" e:classifier="javadoc"/>
+		<artifact name="hello-test-1_2.10" type="pom" ext="pom" conf="pom"/>
+		<artifact name="hello-test-1_2.10" type="jar" ext="jar" conf="compile"/>
+		<artifact name="hello-test-1_2.10" type="src" ext="jar" conf="sources" e:classifier="sources"/>
+		<artifact name="hello-test-1_2.10" type="doc" ext="jar" conf="docs" e:classifier="javadoc"/>
 	</publications>
 	<dependencies>
-		<dependency org="org.scala-lang" name="scala-compiler" rev="2.10.4" conf="scala-tool->default,optional(default)"/>
-		<dependency org="org.scala-lang" name="scala-library" rev="2.10.4" conf="scala-tool->default,optional(default);compile->default(compile)"/>
+		<dependency org="org.scala-lang" name="scala-compiler" rev="2.10.0" conf="scala-tool->default,optional(default)"/>
+		<dependency org="org.scala-lang" name="scala-library" rev="2.10.0" conf="scala-tool->default,optional(default);compile->default(compile)"/>
+		<dependency org="com.typesafe.akka" name="akka-actor_2.10" rev="2.2-M1" conf="compile->default(compile)"/>
 	</dependencies>
 </ivy-module>
