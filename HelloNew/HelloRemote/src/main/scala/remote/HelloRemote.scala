@@ -11,7 +11,7 @@ class RemoteActor extends Actor {
   def receive = {
     case msg: String => //on receiveing any string
       println(s"RemoteActor received message '$msg'")
-  //    sender ! "Hello from the RemoteActor" //send hello msg back 
+      sender ! "Hello from the RemoteActor" //send hello msg back 
   }
 }
 

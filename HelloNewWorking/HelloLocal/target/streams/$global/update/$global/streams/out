@@ -1,4 +1,4 @@
-[0m[[0minfo[0m] [0mUpdating {file:/C:/Users/Ankur/Desktop/DOS/HelloNew/HelloLocal/}hellolocal...[0m
+[0m[[0minfo[0m] [0mUpdating {file:/home/shinchan/DOS/HelloNewWorking/HelloLocal/}hellolocal...[0m
 [0m[[0mdebug[0m] [0m:: resolving dependencies :: default#hellolocal_2.10;1.0[0m
 [0m[[0mdebug[0m] [0m	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool][0m
 [0m[[0mdebug[0m] [0m	validate = true[0m
@@ -7,7 +7,7 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies for default#hellolocal_2.10;1.0 [compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->org.scala-lang#scala-library;2.10.1 [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving org.scala-lang#scala-library;2.10.1 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@4a08ba1c[0m
+[0m[[0mdebug[0m] [0msbt-chain: Checking cache for: sbt.ivyint.MergedDescriptors@41f56f8[0m
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: org.scala-lang#scala-library;2.10.1[0m
 [0m[[0mdebug[0m] [0m	found org.scala-lang#scala-library;2.10.1 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->org.scala-lang#scala-library;2.10.1 [compile->runtime][0m
@@ -16,21 +16,8 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-actor_2.10;2.3.6 [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving com.typesafe.akka#akka-actor_2.10;2.3.6 ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: com.typesafe.akka#akka-actor_2.10;2.3.6 {compile=[default(compile)]}[0m
-[0m[[0minfo[0m] [0mResolving com.typesafe.akka#akka-actor_2.10;2.3.6 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain-delegate: Checking cache for: dependency: com.typesafe.akka#akka-actor_2.10;2.3.6 {compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe.akka\akka-actor_2.10\2.3.6\ivys\ivy.xml[0m
-[0m[[0mdebug[0m] [0m	local: no ivy file found for com.typesafe.akka#akka-actor_2.10;2.3.6[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	public: found md file for com.typesafe.akka#akka-actor_2.10;2.3.6[0m
-[0m[[0mdebug[0m] [0m		=> https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom (2.3.6)[0m
-[0m[[0mdebug[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	[SUCCESSFUL ] com.typesafe.akka#akka-actor_2.10;2.3.6!akka-actor_2.10.pom(pom.original) (460ms)[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe.akka\akka-actor_2.10\2.3.6\jars\akka-actor_2.10.jar[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar[0m
-[0m[[0mdebug[0m] [0m	found com.typesafe.akka#akka-actor_2.10;2.3.6 in public[0m
+[0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: com.typesafe.akka#akka-actor_2.10;2.3.6[0m
+[0m[[0mdebug[0m] [0m	found com.typesafe.akka#akka-actor_2.10;2.3.6 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-actor_2.10;2.3.6 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-actor_2.10;2.3.6 [compile->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-actor_2.10;2.3.6->org.scala-lang#scala-library;2.10.4 [compile->compile(*)][0m
@@ -51,21 +38,8 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-actor_2.10;2.3.6->com.typesafe#config;1.2.1 [compile->compile(*)][0m
 [0m[[0minfo[0m] [0mResolving com.typesafe#config;1.2.1 ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: com.typesafe#config;1.2.1 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
-[0m[[0minfo[0m] [0mResolving com.typesafe#config;1.2.1 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain-delegate: Checking cache for: dependency: com.typesafe#config;1.2.1 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe\config\1.2.1\ivys\ivy.xml[0m
-[0m[[0mdebug[0m] [0m	local: no ivy file found for com.typesafe#config;1.2.1[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom[0m
-[0m[[0mdebug[0m] [0m	public: found md file for com.typesafe#config;1.2.1[0m
-[0m[[0mdebug[0m] [0m		=> https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom (1.2.1)[0m
-[0m[[0mdebug[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.pom[0m
-[0m[[0mdebug[0m] [0m	[SUCCESSFUL ] com.typesafe#config;1.2.1!config.pom(pom.original) (460ms)[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe\config\1.2.1\bundles\config.jar[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar[0m
-[0m[[0mdebug[0m] [0m	found com.typesafe#config;1.2.1 in public[0m
+[0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: com.typesafe#config;1.2.1[0m
+[0m[[0mdebug[0m] [0m	found com.typesafe#config;1.2.1 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-actor_2.10;2.3.6->com.typesafe#config;1.2.1 [compile->master(compile)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-actor_2.10;2.3.6->com.typesafe#config;1.2.1 [compile->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-actor_2.10;2.3.6->com.typesafe#config;1.2.1 [compile->compile][0m
@@ -77,21 +51,8 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-remote_2.10;2.3.6 [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving com.typesafe.akka#akka-remote_2.10;2.3.6 ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: com.typesafe.akka#akka-remote_2.10;2.3.6 {compile=[default(compile)]}[0m
-[0m[[0minfo[0m] [0mResolving com.typesafe.akka#akka-remote_2.10;2.3.6 ...[0m
-[0m[[0mdebug[0m] [0msbt-chain-delegate: Checking cache for: dependency: com.typesafe.akka#akka-remote_2.10;2.3.6 {compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe.akka\akka-remote_2.10\2.3.6\ivys\ivy.xml[0m
-[0m[[0mdebug[0m] [0m	local: no ivy file found for com.typesafe.akka#akka-remote_2.10;2.3.6[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	public: found md file for com.typesafe.akka#akka-remote_2.10;2.3.6[0m
-[0m[[0mdebug[0m] [0m		=> https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom (2.3.6)[0m
-[0m[[0mdebug[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.pom[0m
-[0m[[0mdebug[0m] [0m	[SUCCESSFUL ] com.typesafe.akka#akka-remote_2.10;2.3.6!akka-remote_2.10.pom(pom.original) (406ms)[0m
-[0m[[0mdebug[0m] [0m		tried C:\Users\Ankur\.ivy2\local\com.typesafe.akka\akka-remote_2.10\2.3.6\jars\akka-remote_2.10.jar[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar[0m
-[0m[[0mdebug[0m] [0m	found com.typesafe.akka#akka-remote_2.10;2.3.6 in public[0m
+[0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: com.typesafe.akka#akka-remote_2.10;2.3.6[0m
+[0m[[0mdebug[0m] [0m	found com.typesafe.akka#akka-remote_2.10;2.3.6 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-remote_2.10;2.3.6 [compile->runtime][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies default#hellolocal_2.10;1.0->com.typesafe.akka#akka-remote_2.10;2.3.6 [compile->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies com.typesafe.akka#akka-remote_2.10;2.3.6->org.scala-lang#scala-library;2.10.4 [compile->compile(*)][0m
@@ -451,25 +412,10 @@
 [0m[[0mdebug[0m] [0m	resolved ivy file produced in cache[0m
 [0m[[0mdebug[0m] [0m:: downloading artifacts ::[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#scala-library;2.10.1!scala-library.jar[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar[0m
-[0m[[0minfo[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.10/2.3.6/akka-actor_2.10-2.3.6.jar[0m
-[0m[[0minfo[0m] [0m	[SUCCESSFUL ] com.typesafe.akka#akka-actor_2.10;2.3.6!akka-actor_2.10.jar (3649ms)[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar[0m
-[0m[[0minfo[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/akka/akka-remote_2.10/2.3.6/akka-remote_2.10-2.3.6.jar[0m
-[0m[[0minfo[0m] [0m	[SUCCESSFUL ] com.typesafe.akka#akka-remote_2.10;2.3.6!akka-remote_2.10.jar (1189ms)[0m
+[0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.typesafe.akka#akka-actor_2.10;2.3.6!akka-actor_2.10.jar[0m
+[0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.typesafe.akka#akka-remote_2.10;2.3.6!akka-remote_2.10.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#scala-library;2.10.4!scala-library.jar[0m
-[0m[[0mdebug[0m] [0m		tried https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar[0m
-[0m[[0minfo[0m] [0mdownloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar ...[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar[0m
-[0m[[0mdebug[0m] [0m	public: downloading https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar.sha1[0m
-[0m[[0mdebug[0m] [0msha1 OK for https://repo1.maven.org/maven2/com/typesafe/config/1.2.1/config-1.2.1.jar[0m
-[0m[[0minfo[0m] [0m	[SUCCESSFUL ] com.typesafe#config;1.2.1!config.jar(bundle) (444ms)[0m
+[0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.typesafe#config;1.2.1!config.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] io.netty#netty;3.8.0.Final!netty.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] com.google.protobuf#protobuf-java;2.5.0!protobuf-java.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.uncommons.maths#uncommons-maths;1.2.2a!uncommons-maths.jar[0m
@@ -477,21 +423,21 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#scala-reflect;2.10.1!scala-reflect.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang#jline;2.10.1!jline.jar[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar[0m
-[0m[[0mdebug[0m] [0m:: resolution report :: resolve 5246ms :: artifacts dl 5380ms[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 compile produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-compile.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 runtime produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-runtime.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 test produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-test.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 provided produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-provided.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 optional produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-optional.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 compile-internal produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-compile-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 runtime-internal produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-runtime-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 test-internal produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-test-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 plugin produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-plugin.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 sources produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-sources.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 docs produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-docs.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 pom produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-pom.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 scala-tool produced in C:\Users\Ankur\Desktop\DOS\HelloNew\HelloLocal\target\resolution-cache\reports\default-hellolocal_2.10-scala-tool.xml[0m
-[0m[[0mdebug[0m] [0m	resolve done (5246ms resolve - 5380ms download)[0m
+[0m[[0mdebug[0m] [0m:: resolution report :: resolve 691ms :: artifacts dl 28ms[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 compile produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-compile.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 runtime produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-runtime.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 test produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-test.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 provided produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-provided.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 optional produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-optional.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 compile-internal produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-compile-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 runtime-internal produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-runtime-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 test-internal produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-test-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 plugin produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-plugin.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 sources produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-sources.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 docs produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-docs.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 pom produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-pom.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#hellolocal_2.10;1.0 scala-tool produced in /home/shinchan/DOS/HelloNewWorking/HelloLocal/target/resolution-cache/reports/default-hellolocal_2.10-scala-tool.xml[0m
+[0m[[0mdebug[0m] [0m	resolve done (691ms resolve - 28ms download)[0m
 [0m[[0minfo[0m] [0mDone updating.[0m
 [0m[[33mwarn[0m] [0mScala version was updated by one of library dependencies:[0m
 [0m[[33mwarn[0m] [0m	* org.scala-lang:scala-library:2.10.1 -> 2.10.4[0m
