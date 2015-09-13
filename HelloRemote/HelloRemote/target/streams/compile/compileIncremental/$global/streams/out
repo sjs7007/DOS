@@ -1,5 +1,39 @@
+[0m[[0mdebug[0m] [0mInvalidating \home\shinchan\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar: class akka.actor.Actor now provided by C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar[0m
+[0m[[0mdebug[0m] [0mInvalidating \home\shinchan\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar: class scala.runtime.AbstractPartialFunction now provided by C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar[0m
+[0m[[0mdebug[0m] [0mInvalidating \usr\lib\jvm\java-7-openjdk-amd64\jre\lib\rt.jar: class java.lang.Object now provided by C:\Program Files\Java\jre7\lib\rt.jar[0m
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mInitial source changes: [0m
+<<<<<<< HEAD
+[0m[[0mdebug[0m] [0m	removed:Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0m	added: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0m	modified: Set()[0m
+[0m[[0mdebug[0m] [0mRemoved products: Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\target\scala-2.10\classes\HelloRemote$delayedInit$body.class, \home\shinchan\DOS\HelloSJSWorking\HelloRemote\target\scala-2.10\classes\HelloRemote$.class, \home\shinchan\DOS\HelloSJSWorking\HelloRemote\target\scala-2.10\classes\RemoteActor$$anonfun$receive$1.class, \home\shinchan\DOS\HelloSJSWorking\HelloRemote\target\scala-2.10\classes\RemoteActor.class, \home\shinchan\DOS\HelloSJSWorking\HelloRemote\target\scala-2.10\classes\HelloRemote.class)[0m
+[0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
+[0m[[0mdebug[0m] [0mModified binary dependencies: Set(\home\shinchan\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar, \home\shinchan\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar, \usr\lib\jvm\java-7-openjdk-amd64\jre\lib\rt.jar)[0m
+[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0m[0m
+[0m[[0mdebug[0m] [0mSources indirectly invalidated by:[0m
+[0m[[0mdebug[0m] [0m	product: Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0m	binary dep: Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0m	external source: Set()[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
+[0m[[0mdebug[0m] [0mRecompiling all 1 sources: invalidated sources (2) exceeded 50.0% of all sources[0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source to C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\target\scala-2.10\classes...[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler 66ce9af7, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
+[0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
+[0m[[0mdebug[0m] [0m	-bootclasspath[0m
+[0m[[0mdebug[0m] [0m	C:\Progra~1\Java\jre7\lib\resources.jar;C:\Progra~1\Java\jre7\lib\rt.jar;C:\Progra~1\Java\jre7\lib\sunrsasign.jar;C:\Progra~1\Java\jre7\lib\jsse.jar;C:\Progra~1\Java\jre7\lib\jce.jar;C:\Progra~1\Java\jre7\lib\charsets.jar;C:\Progra~1\Java\jre7\lib\jfr.jar;C:\Progra~1\Java\jre7\classes;C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar[0m
+[0m[[0mdebug[0m] [0m	-classpath[0m
+[0m[[0mdebug[0m] [0m	C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\target\scala-2.10\classes;C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\lib\common_2.10-0.1-SNAPSHOT.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe\config\bundles\config-1.2.1.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-remote_2.10\jars\akka-remote_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\io.netty\netty\bundles\netty-3.8.0.Final.jar;C:\Users\Ankur\.ivy2\cache\com.google.protobuf\protobuf-java\bundles\protobuf-java-2.5.0.jar;C:\Users\Ankur\.ivy2\cache\org.uncommons.maths\uncommons-maths\jars\uncommons-maths-1.2.2a.jar[0m
+[0m[[31merror[0m] [0mC:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\src\main\scala\remote\HelloRemote.scala:68: not found: type RemoteActor[0m
+[0m[[31merror[0m] [0m  val remoteActor = system.actorOf(Props[RemoteActor], name = "RemoteActor")[0m
+[0m[[31merror[0m] [0m                                         ^[0m
+[0m[[31merror[0m] [0mone error found[0m
+[0m[[0mdebug[0m] [0mCompilation failed (CompilerInterface)[0m
+[0m[[31merror[0m] [0m(compile:[31mcompileIncremental[0m) Compilation failed[0m
+=======
 [0m[[0mdebug[0m] [0m	removed:Set()[0m
 [0m[[0mdebug[0m] [0m	added: Set()[0m
 [0m[[0mdebug[0m] [0m	modified: Set(/home/shinchan/DOS/HelloRemote/HelloRemote/src/main/scala/remote/HelloRemote.scala)[0m
@@ -12,6 +46,7 @@
 [0m[[0mdebug[0m] [0m	product: Set(/home/shinchan/DOS/HelloRemote/HelloRemote/src/main/scala/remote/HelloRemote.scala)[0m
 [0m[[0mdebug[0m] [0m	binary dep: Set()[0m
 [0m[[0mdebug[0m] [0m	external source: Set()[0m
+<<<<<<< HEAD
 [0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(/home/shinchan/DOS/HelloRemote/HelloRemote/src/main/scala/remote/HelloRemote.scala)[0m
 [0m[[0mdebug[0m] [0mRecompiling all 1 sources: invalidated sources (1) exceeded 50.0% of all sources[0m
 [0m[[0minfo[0m] [0mCompiling 1 Scala source to /home/shinchan/DOS/HelloRemote/HelloRemote/target/scala-2.10/classes...[0m
@@ -30,3 +65,7 @@
 [0m[[0mdebug[0m] [0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
 [0m[[0mdebug[0m] [0m	Set()[0m
 [0m[[0mdebug[0m] [0mAll newly invalidated sources after taking into account (previously) recompiled sources:Set()[0m
+=======
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set()[0m
+>>>>>>> 08671e812b5eb96ad1c79d47e60afd349efb14bb
+>>>>>>> 4702241bd8e31b4fa4fc33a792d57ded45b3be3b
