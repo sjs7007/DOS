@@ -6,22 +6,25 @@ import scala.util
 import akka.actor._
 import akka.routing.RoundRobinRouter
 
-object Local extends App {
+object Client extends App {
 
   implicit val system = ActorSystem("LocalSystem")
-  val client = system.actorOf(Props[Client], name = "Client")  // the local actor
+  val client = system.actorOf(Client.props(args(0)), name = "Client")  // the local actor
+
+  def props(remotePath: String): Props = Props(new Client(remotePath))
 }
 
 
-class Client extends Actor {
+class Client(remotePath: String) extends Actor {
 
   var start = System.nanoTime
   var nodeID = -1
   var lastWorkSize = 0
   var currentWorkSize = 0
 
+  println("remote path is "+remotePath+".")
 	
-  val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@192.168.0.10:5150/user/Master"))
+  val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@"+remotePath+":5150/user/Master"))
 	
   remote ! ClientState(-1, 1)
   
