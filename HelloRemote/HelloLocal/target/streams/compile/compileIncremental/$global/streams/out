@@ -1,15 +1,49 @@
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mInitial source changes: [0m
 [0m[[0mdebug[0m] [0m	removed:Set()[0m
-[0m[[0mdebug[0m] [0m	added: Set()[0m
+[0m[[0mdebug[0m] [0m	added: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
 [0m[[0mdebug[0m] [0m	modified: Set()[0m
-[0m[[0mdebug[0m] [0mRemoved products: Set()[0m
+[0m[[0mdebug[0m] [0mInvalidated products: Set()[0m
 [0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
 [0m[[0mdebug[0m] [0mModified binary dependencies: Set()[0m
-[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set()[0m
+[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mSources indirectly invalidated by:[0m
 [0m[[0mdebug[0m] [0m	product: Set()[0m
 [0m[[0mdebug[0m] [0m	binary dep: Set()[0m
 [0m[[0mdebug[0m] [0m	external source: Set()[0m
-[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set()[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0mRecompiling all 2 sources: invalidated sources (2) exceeded 50.0% of all sources[0m
+[0m[[0minfo[0m] [0mCompiling 2 Scala sources to /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes...[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler 860e674, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
+[0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
+[0m[[0mdebug[0m] [0m	-bootclasspath[0m
+[0m[[0mdebug[0m] [0m	/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/classes:/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar[0m
+[0m[[0mdebug[0m] [0m	-classpath[0m
+[0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes:/home/shinchan/DOS/HelloRemote/HelloLocal/lib/common_2.10-0.1-SNAPSHOT.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/com.typesafe/config/bundles/config-1.2.1.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-remote_2.10/jars/akka-remote_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/io.netty/netty/bundles/netty-3.8.0.Final.jar:/home/shinchan/.ivy2/cache/com.google.protobuf/protobuf-java/bundles/protobuf-java-2.5.0.jar:/home/shinchan/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2a.jar[0m
+[0m[[33mwarn[0m] [0mthere were 2 deprecation warning(s); re-run with -deprecation for details[0m
+[0m[[33mwarn[0m] [0mone warning found[0m
+[0m[[0mdebug[0m] [0mScala compilation took 7.011779139 s[0m
+[0m[[0mdebug[0m] [0mInvalidating /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
+[0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
+[0m[[0mdebug[0m] [0mInitial set of included nodes: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala)[0m
+[0m[[0mdebug[0m] [0mInvalidated by transitive inheritance dependency: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala)[0m
+[0m[[0mdebug[0m] [0mThe /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala source file has the following regular definitions changed:[0m
+[0m[[0mdebug[0m] [0m	notify, wait, copy$default$2, $asInstanceOf, difficulty, state, productArity, equals, BitcoinList, asInstanceOf, worksize, synchronized, $isInstanceOf, bitcoins, canEqual, productPrefix, notifyAll, isInstanceOf, hash, <init>, id, ==, clone, Bitcoin, copy, toString, !=, getClass, ClientState, copy$default$1, ne, AssignWork, input, eq, productIterator, ##, finalize, productElement, hashCode.[0m
+[0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
+[0m[[0mdebug[0m] [0mThe following modified names cause invalidation of /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala: Set(difficulty, asInstanceOf, worksize, bitcoins, isInstanceOf, hash, <init>, id, ==, Bitcoin, toString, !=)[0m
+[0m[[0mdebug[0m] [0mInvalidating /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala...[0m
+[0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala...[0m
+[0m[[0mdebug[0m] [0mInitial set of included nodes: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0mInvalidated by transitive inheritance dependency: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0mThe /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala source file has the following implicit definitions changed:[0m
+[0m[[0mdebug[0m] [0m	self, context, system.[0m
+[0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
+[0m[[0mdebug[0m] [0mNew invalidations:[0m
+[0m[[0mdebug[0m] [0m	Set()[0m
+[0m[[0mdebug[0m] [0mInitial set of included nodes: Set()[0m
+[0m[[0mdebug[0m] [0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0mdebug[0m] [0m	Set()[0m
+[0m[[0mdebug[0m] [0mAll newly invalidated sources after taking into account (previously) recompiled sources:Set()[0m

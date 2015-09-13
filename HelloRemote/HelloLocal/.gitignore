@@ -42,3 +42,4 @@ src_managed/
 project/boot/
 .history
 .cache
+.log
