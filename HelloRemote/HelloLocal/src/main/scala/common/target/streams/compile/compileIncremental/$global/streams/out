@@ -17,19 +17,19 @@
 [0m[[0minfo[0m] [0mCompiling 1 Scala source to C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes...[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.4[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.4[0m
-[0m[[0mdebug[0m] [0mRunning cached compiler 3ff2947d, interfacing (CompilerInterface) with Scala compiler version 2.10.4[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler 5691f74d, interfacing (CompilerInterface) with Scala compiler version 2.10.4[0m
 [0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
 [0m[[0mdebug[0m] [0m	-bootclasspath[0m
 [0m[[0mdebug[0m] [0m	C:\Progra~1\Java\jre7\lib\resources.jar;C:\Progra~1\Java\jre7\lib\rt.jar;C:\Progra~1\Java\jre7\lib\sunrsasign.jar;C:\Progra~1\Java\jre7\lib\jsse.jar;C:\Progra~1\Java\jre7\lib\jce.jar;C:\Progra~1\Java\jre7\lib\charsets.jar;C:\Progra~1\Java\jre7\lib\jfr.jar;C:\Progra~1\Java\jre7\classes;C:\Users\Ankur\.sbt\boot\scala-2.10.4\lib\scala-library.jar[0m
 [0m[[0mdebug[0m] [0m	-classpath[0m
 [0m[[0mdebug[0m] [0m	C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes[0m
-[0m[[0mdebug[0m] [0mScala compilation took 4.474194965 s[0m
+[0m[[0mdebug[0m] [0mScala compilation took 6.420242438 s[0m
 [0m[[0mdebug[0m] [0mInvalidating C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala...[0m
 [0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala...[0m
 [0m[[0mdebug[0m] [0mInitial set of included nodes: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala)[0m
 [0m[[0mdebug[0m] [0mInvalidated by transitive inheritance dependency: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala)[0m
 [0m[[0mdebug[0m] [0mThe C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala source file has the following regular definitions changed:[0m
-[0m[[0mdebug[0m] [0m	notify, wait, copy$default$2, $asInstanceOf, difficulty, productArity, equals, BitcoinList, asInstanceOf, worksize, synchronized, $isInstanceOf, bitcoins, canEqual, productPrefix, notifyAll, isInstanceOf, hash, <init>, ==, clone, Bitcoin, copy, toString, !=, getClass, copy$default$1, ne, AssignWork, input, eq, productIterator, ##, finalize, productElement, hashCode.[0m
+[0m[[0mdebug[0m] [0m	notify, wait, copy$default$2, $asInstanceOf, difficulty, state, productArity, equals, BitcoinList, asInstanceOf, worksize, synchronized, $isInstanceOf, bitcoins, canEqual, productPrefix, notifyAll, isInstanceOf, hash, <init>, id, ==, clone, Bitcoin, copy, toString, !=, getClass, ClientState, copy$default$1, ne, AssignWork, input, eq, productIterator, ##, finalize, productElement, hashCode.[0m
 [0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
 [0m[[0mdebug[0m] [0mNew invalidations:[0m
 [0m[[0mdebug[0m] [0m	Set()[0m

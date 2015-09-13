@@ -18,10 +18,11 @@ object Local extends App {
 class Client extends Actor {
 
 	var start = System.nanoTime
+	var nodeID = -1
 
 	val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@127.0.0.1:5150/user/Master"))
 	
-	remote ! "nodeUp"
+	remote ! ClientState(-1, 1)
 	
 	var minersComplete : Int = 0
 	var totalCoinsFound : Int = 0
@@ -59,13 +60,10 @@ class Client extends Actor {
 				Server ! BitcoinList (listOfCoins)
 				totalCoinsFound += listOfCoins.length
 				println("Total bitcoins found by this node : " + totalCoinsFound)
-				println("Total time : " + (System.nanoTime - start) / 1e6 + "ms")
+				println("Total time taken by this node     : " + (System.nanoTime - start) / 1e6 + "ms")
 				}
 				
-				
-		
-			
-		
+		case ClientState(id, a) => nodeID = id
   }
 	
 }
