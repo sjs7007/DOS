@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 import common._
 
 sealed trait ServerMessage
-case class assignWork(workSize: Int, nZeros: Int) extends ServerMessage
+//case class assignWork(workSize: Int, nZeros: Int) extends ServerMessage
 //case class receiveBitcoin(bitcoin: String) extends ServerMessage
 
 //var workerRef //store ref to worker of server
@@ -23,14 +23,12 @@ class Master extends Actor {
   val (workSize,difficulty,threshold)=(10,3,3)
   
   def receive = {
-    case msg: String => 
-      println(s"Remote Actor received '$msg'")
-
+    
     case "nodeUp" =>
        //add to list of clients
       nNodes += 1
       clientList += new clientData(nNodes)
-      sender ! assignWork(workSize,difficulty)
+      sender ! AssignWork(workSize,difficulty)
       
      case BitcoinList(bitcoins) => 
       //println(s"Server received new bitcoin : '$bitcoin'")
@@ -39,6 +37,10 @@ class Master extends Actor {
         println(bitcoins(i).input+" : "+bitcoins(i).hash)
         bitCoinList += new Bitcoin(bitcoins(i).input,bitcoins(i).hash)
       }
+
+      case msg: String => 
+      println(s"Remote Actor received '$msg'")
+
 
 
       /* if sender is master and threshold fails, dont start again, send stop message */
@@ -65,6 +67,8 @@ class Master extends Actor {
 
 object HelloRemote extends App {
   val system = ActorSystem("HelloRemoteSystem") //to use actor boiler plate
-  val remoteActor = system.actorOf(Props[RemoteActor], name="RemoteActor") //create actor of type RemoteActor
-  remoteActor ! "The RemoteActor is alive" //send string to remote actor
+  val remoteActor = system.actorOf(Props[Master], name="Master") //create actor of type Master
+  remoteActor ! "The RemoteActor is alive" //send string to remote actor ie self
 }
+
+
