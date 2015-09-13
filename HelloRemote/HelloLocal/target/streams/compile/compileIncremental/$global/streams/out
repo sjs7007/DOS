@@ -17,7 +17,7 @@
 [0m[[0minfo[0m] [0mCompiling 2 Scala sources to /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes...[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
-[0m[[0mdebug[0m] [0mRunning cached compiler 860e674, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler 47b7d9c9, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
 [0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
 [0m[[0mdebug[0m] [0m	-bootclasspath[0m
 [0m[[0mdebug[0m] [0m	/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/classes:/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar[0m
@@ -25,7 +25,7 @@
 [0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes:/home/shinchan/DOS/HelloRemote/HelloLocal/lib/common_2.10-0.1-SNAPSHOT.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/com.typesafe/config/bundles/config-1.2.1.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-remote_2.10/jars/akka-remote_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/io.netty/netty/bundles/netty-3.8.0.Final.jar:/home/shinchan/.ivy2/cache/com.google.protobuf/protobuf-java/bundles/protobuf-java-2.5.0.jar:/home/shinchan/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2a.jar[0m
 [0m[[33mwarn[0m] [0mthere were 2 deprecation warning(s); re-run with -deprecation for details[0m
 [0m[[33mwarn[0m] [0mone warning found[0m
-[0m[[0mdebug[0m] [0mScala compilation took 7.011779139 s[0m
+[0m[[0mdebug[0m] [0mScala compilation took 7.272456895 s[0m
 [0m[[0mdebug[0m] [0mInvalidating /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
 [0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
 [0m[[0mdebug[0m] [0mInitial set of included nodes: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala)[0m
