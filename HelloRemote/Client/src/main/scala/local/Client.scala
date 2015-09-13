@@ -10,9 +10,8 @@ object Local extends App {
 
   implicit val system = ActorSystem("LocalSystem")
   val client = system.actorOf(Props[Client], name = "Client")  // the local actor
-  
-
 }
+
 
 class Client extends Actor {
 
@@ -21,8 +20,9 @@ class Client extends Actor {
   var lastWorkSize = 0
   var currentWorkSize = 0
 
-  val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@192.168.0.11:5150/user/Master"))
-  
+	
+  val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@192.168.0.10:5150/user/Master"))
+	
   remote ! ClientState(-1, 1)
   
   var minersComplete : Int = 0
@@ -137,6 +137,6 @@ class Miner extends Actor {
         }
         sender ! BitcoinList(bitcoins)        
         }
-} 
+}
 
 

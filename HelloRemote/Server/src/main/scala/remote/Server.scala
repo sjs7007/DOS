@@ -34,7 +34,7 @@ class Master extends Actor {
       
     case Difficulty (n) => difficulty = n
       
-    case ClientState(node, n) =>
+    case ClientState(nodeID, n) =>
 
       n match {
         case 1 => // New client
@@ -55,13 +55,13 @@ class Master extends Actor {
         bitCoinList += new Bitcoin(bitcoins(i).input,bitcoins(i).hash)
       }
       
-      var node = -1
+      var nodeID = -1
       
       for(i<-0 until clientList.length)
         if (clientList(i).actor == sender)
-          node = i
+          nodeID = i
           
-      if (node > -1) {
+      if (nodeID > -1) {
       
       // Assign work to Client's Miners
             
@@ -73,22 +73,22 @@ class Master extends Actor {
          First we determine which node requires work, then based on the last cycle,
          we calculate the new work ratio. */
       
-      if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp))*0.97 > clientList(node).workRatio)  {
-        clientList(node).workRatio = (clientList(node).workSize/(System.nanoTime-clientList(node).lastTimeStamp))
-        clientList(node).workSize = (clientList(node).workSize*1.25).toInt
+      if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp))*0.97 > clientList(nodeID).workRatio)  {
+        clientList(nodeID).workRatio = (clientList(nodeID).workSize/(System.nanoTime-clientList(nodeID).lastTimeStamp))
+        clientList(nodeID).workSize = (clientList(nodeID).workSize*1.25).toInt
         }
-      else if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp)) < clientList(node).workRatio*0.97){
-        clientList(node).workRatio = (clientList(node).workSize.toDouble/(System.nanoTime-clientList(node).lastTimeStamp))
-        clientList(node).workSize = (clientList(node).workSize*0.8).toInt
+      else if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp)) < clientList(nodeID).workRatio*0.97){
+        clientList(nodeID).workRatio = (clientList(nodeID).workSize.toDouble/(System.nanoTime-clientList(nodeID).lastTimeStamp))
+        clientList(nodeID).workSize = (clientList(nodeID).workSize*0.8).toInt
         
-        if (clientList(node).workSize < 100)
-          clientList(node).workSize = 100
+        if (clientList(nodeID).workSize < 100)
+          clientList(nodeID).workSize = 100
   
       }
-      clientList(node).lastTimeStamp = System.nanoTime
+      clientList(nodeID).lastTimeStamp = System.nanoTime
       
       
-        sender ! AssignWork(difficulty,clientList(node).workSize)
+        sender ! AssignWork(difficulty,clientList(nodeID).workSize)
         
         }
       else {
