@@ -1,68 +1,31 @@
-[0m[[0mdebug[0m] [0mInvalidating C:\Progra~1\Java\jre7\lib\rt.jar: class java.lang.Object now provided by /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar[0m
-[0m[[0mdebug[0m] [0mInvalidating C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar: class akka.actor.Actor now provided by /home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar[0m
-[0m[[0mdebug[0m] [0mInvalidating C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar: class scala.App now provided by /home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar[0m
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mInitial source changes: [0m
-<<<<<<< HEAD
-[0m[[0mdebug[0m] [0m	removed:Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
-[0m[[0mdebug[0m] [0m	added: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
-[0m[[0mdebug[0m] [0m	modified: Set()[0m
-[0m[[0mdebug[0m] [0mInvalidated products: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork$.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList$.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$delayedInit$body.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList.class, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin$.class)[0m
-[0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
-[0m[[0mdebug[0m] [0mModified binary dependencies: Set(C:\Progra~1\Java\jre7\lib\rt.jar, C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar, C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar)[0m
-[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
-=======
 [0m[[0mdebug[0m] [0m	removed:Set()[0m
-[0m[[0mdebug[0m] [0m	added: Set()[0m
-[0m[[0mdebug[0m] [0m	modified: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0m	added: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0m	modified: Set()[0m
 [0m[[0mdebug[0m] [0mRemoved products: Set()[0m
 [0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
 [0m[[0mdebug[0m] [0mModified binary dependencies: Set()[0m
-[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
->>>>>>> 4702241bd8e31b4fa4fc33a792d57ded45b3be3b
+[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mSources indirectly invalidated by:[0m
-[0m[[0mdebug[0m] [0m	product: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala)[0m
-[0m[[0mdebug[0m] [0m	binary dep: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala)[0m
+[0m[[0mdebug[0m] [0m	product: Set()[0m
+[0m[[0mdebug[0m] [0m	binary dep: Set()[0m
 [0m[[0mdebug[0m] [0m	external source: Set()[0m
-<<<<<<< HEAD
-[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala, /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
-[0m[[0mdebug[0m] [0mRecompiling all 2 sources: invalidated sources (4) exceeded 50.0% of all sources[0m
-[0m[[0minfo[0m] [0mCompiling 2 Scala sources to /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes...[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala, C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
+[0m[[0mdebug[0m] [0mRecompiling all 2 sources: invalidated sources (2) exceeded 50.0% of all sources[0m
+[0m[[0minfo[0m] [0mCompiling 2 Scala sources to C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes...[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
 [0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
-[0m[[0mdebug[0m] [0mRunning cached compiler 3df56cfc, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
-=======
-[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
-[0m[[0minfo[0m] [0mCompiling 1 Scala source to C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes...[0m
-[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
-[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.1[0m
-[0m[[0mdebug[0m] [0mRunning cached compiler 4e345b11, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
->>>>>>> 4702241bd8e31b4fa4fc33a792d57ded45b3be3b
+[0m[[0mdebug[0m] [0mRunning cached compiler 2e35f726, interfacing (CompilerInterface) with Scala compiler version 2.10.1[0m
 [0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
 [0m[[0mdebug[0m] [0m	-bootclasspath[0m
-[0m[[0mdebug[0m] [0m	/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/classes:/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar[0m
+[0m[[0mdebug[0m] [0m	C:\Progra~1\Java\jre7\lib\resources.jar;C:\Progra~1\Java\jre7\lib\rt.jar;C:\Progra~1\Java\jre7\lib\sunrsasign.jar;C:\Progra~1\Java\jre7\lib\jsse.jar;C:\Progra~1\Java\jre7\lib\jce.jar;C:\Progra~1\Java\jre7\lib\charsets.jar;C:\Progra~1\Java\jre7\lib\jfr.jar;C:\Progra~1\Java\jre7\classes;C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar[0m
 [0m[[0mdebug[0m] [0m	-classpath[0m
-<<<<<<< HEAD
-[0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes:/home/shinchan/DOS/HelloRemote/HelloLocal/lib/common_2.10-0.1-SNAPSHOT.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/com.typesafe/config/bundles/config-1.2.1.jar:/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-remote_2.10/jars/akka-remote_2.10-2.3.6.jar:/home/shinchan/.ivy2/cache/io.netty/netty/bundles/netty-3.8.0.Final.jar:/home/shinchan/.ivy2/cache/com.google.protobuf/protobuf-java/bundles/protobuf-java-2.5.0.jar:/home/shinchan/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2a.jar[0m
+[0m[[0mdebug[0m] [0m	C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes;C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\lib\common_2.10-0.1-SNAPSHOT.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe\config\bundles\config-1.2.1.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-remote_2.10\jars\akka-remote_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\io.netty\netty\bundles\netty-3.8.0.Final.jar;C:\Users\Ankur\.ivy2\cache\com.google.protobuf\protobuf-java\bundles\protobuf-java-2.5.0.jar;C:\Users\Ankur\.ivy2\cache\org.uncommons.maths\uncommons-maths\jars\uncommons-maths-1.2.2a.jar[0m
 [0m[[33mwarn[0m] [0mthere were 1 deprecation warning(s); re-run with -deprecation for details[0m
 [0m[[33mwarn[0m] [0mone warning found[0m
-[0m[[0mdebug[0m] [0mScala compilation took 6.782827564 s[0m
-[0m[[0mdebug[0m] [0mInvalidating /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
-[0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala...[0m
-[0m[[0mdebug[0m] [0mInitial set of included nodes: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala)[0m
-[0m[[0mdebug[0m] [0mInvalidated by transitive inheritance dependency: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala)[0m
-[0m[[0mdebug[0m] [0mThe /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala source file has the following regular definitions changed:[0m
-[0m[[0mdebug[0m] [0m	notify, wait, copy$default$2, $asInstanceOf, difficulty, productArity, equals, BitcoinList, asInstanceOf, worksize, synchronized, $isInstanceOf, bitcoins, canEqual, productPrefix, notifyAll, isInstanceOf, hash, <init>, ==, clone, Bitcoin, copy, toString, !=, getClass, copy$default$1, ne, AssignWork, input, eq, productIterator, ##, finalize, productElement, hashCode.[0m
-[0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
-[0m[[0mdebug[0m] [0mThe following modified names cause invalidation of /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala: Set(difficulty, asInstanceOf, worksize, bitcoins, isInstanceOf, hash, <init>, ==, Bitcoin, toString, !=)[0m
-[0m[[0mdebug[0m] [0mInvalidating /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala...[0m
-[0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala...[0m
-[0m[[0mdebug[0m] [0mInitial set of included nodes: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
-[0m[[0mdebug[0m] [0mInvalidated by transitive inheritance dependency: Set(/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala)[0m
-[0m[[0mdebug[0m] [0mThe /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala source file has the following implicit definitions changed:[0m
-[0m[[0mdebug[0m] [0m	self, context, system.[0m
-[0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
+[0m[[0mdebug[0m] [0mScala compilation took 7.041413088 s[0m
 [0m[[0mdebug[0m] [0mInvalidating C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala...[0m
 [0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala...[0m
 [0m[[0mdebug[0m] [0mInitial set of included nodes: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala)[0m
@@ -70,6 +33,7 @@
 [0m[[0mdebug[0m] [0mThe C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala source file has the following regular definitions changed:[0m
 [0m[[0mdebug[0m] [0m	notify, wait, copy$default$2, $asInstanceOf, difficulty, productArity, equals, BitcoinList, asInstanceOf, worksize, synchronized, $isInstanceOf, bitcoins, canEqual, productPrefix, notifyAll, isInstanceOf, hash, <init>, ==, clone, Bitcoin, copy, toString, !=, getClass, copy$default$1, ne, AssignWork, input, eq, productIterator, ##, finalize, productElement, hashCode.[0m
 [0m[[0mdebug[0m] [0mAll member reference dependencies will be considered within this context.[0m
+[0m[[0mdebug[0m] [0mThe following modified names cause invalidation of C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala: Set(difficulty, asInstanceOf, worksize, bitcoins, isInstanceOf, hash, <init>, ==, Bitcoin, toString, !=)[0m
 [0m[[0mdebug[0m] [0mInvalidating C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala...[0m
 [0m[[0mdebug[0m] [0mInvalidating (transitively) by inheritance from C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala...[0m
 [0m[[0mdebug[0m] [0mInitial set of included nodes: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala)[0m
@@ -83,12 +47,3 @@
 [0m[[0mdebug[0m] [0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
 [0m[[0mdebug[0m] [0m	Set()[0m
 [0m[[0mdebug[0m] [0mAll newly invalidated sources after taking into account (previously) recompiled sources:Set()[0m
-=======
-[0m[[0mdebug[0m] [0m	C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes;C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\lib\common_2.10-0.1-SNAPSHOT.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe\config\bundles\config-1.2.1.jar;C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-remote_2.10\jars\akka-remote_2.10-2.3.6.jar;C:\Users\Ankur\.ivy2\cache\io.netty\netty\bundles\netty-3.8.0.Final.jar;C:\Users\Ankur\.ivy2\cache\com.google.protobuf\protobuf-java\bundles\protobuf-java-2.5.0.jar;C:\Users\Ankur\.ivy2\cache\org.uncommons.maths\uncommons-maths\jars\uncommons-maths-1.2.2a.jar[0m
-[0m[[31merror[0m] [0mC:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala:35: not found: type ListBuffer[0m
-[0m[[31merror[0m] [0m				var bitcoins = new ListBuffer[Bitcoin]()[0m
-[0m[[31merror[0m] [0m				                   ^[0m
-[0m[[31merror[0m] [0mone error found[0m
-[0m[[0mdebug[0m] [0mCompilation failed (CompilerInterface)[0m
-[0m[[31merror[0m] [0m(compile:[31mcompileIncremental[0m) Compilation failed[0m
->>>>>>> 4702241bd8e31b4fa4fc33a792d57ded45b3be3b
