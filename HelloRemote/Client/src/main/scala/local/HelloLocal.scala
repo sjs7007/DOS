@@ -70,9 +70,11 @@ class Client extends Actor {
 				totalCoinsFound += listOfCoins.length
 				totalWorkDone += currentWorkSize
 				
-				Server ! ClientState(nodeID, 0)
+				
 				
 				if (workCycles %5 == 0) {
+				
+				Server ! ClientState(nodeID, 0)
 				
 				println("Total work units done by this node : " + totalWorkDone.toInt)
 				println("Total time taken by this node      : " + (System.nanoTime - start) / 1e6 + "ms")

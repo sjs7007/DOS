@@ -39,17 +39,17 @@ class Master extends Actor {
 			
 			/* This next part dynamically modifies work size per node to maximize efficiency.
 				 Efficiency is calculated according to units of work done per unit time. 
-				 Work sent to a node is started at 1000 units of work and increased or 
+				 Work sent to a node is started at 100000 units of work and increased or 
 				 decreased according to the work ratio (work done per unit time). 
 				 
 				 First we determine which node requires work, then based on the last cycle,
 				 we calculate the new work ratio. */
 			
-			if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp))*0.95 > clientList(node).workRatio)  {
+			if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp))*0.97 > clientList(node).workRatio)  {
 				clientList(node).workRatio = (clientList(node).workSize/(System.nanoTime-clientList(node).lastTimeStamp))
 				clientList(node).workSize = (clientList(node).workSize*1.25).toInt
 				}
-			else if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp)) < clientList(node).workRatio*0.95)  {
+			else if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp)) < clientList(node).workRatio*0.97)  {
 				clientList(node).workRatio = (clientList(node).workSize.toDouble/(System.nanoTime-clientList(node).lastTimeStamp))
 				clientList(node).workSize = (clientList(node).workSize*0.8).toInt
 				
