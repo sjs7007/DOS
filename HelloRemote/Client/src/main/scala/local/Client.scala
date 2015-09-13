@@ -14,7 +14,6 @@ object Local extends App {
 
 }
 
-
 class Client extends Actor {
 
 	var start = System.nanoTime
@@ -22,7 +21,7 @@ class Client extends Actor {
 	var lastWorkSize = 0
 	var currentWorkSize = 0
 
-	val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@127.0.0.1:5150/user/Master"))
+	val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@192.168.0.11:5150/user/Master"))
 	
 	remote ! ClientState(-1, 1)
 	
@@ -73,9 +72,7 @@ class Client extends Actor {
 				
 				
 				if (workCycles %5 == 0) {
-				
-				Server ! ClientState(nodeID, 0)
-				
+								
 				println("Total work units done by this node : " + totalWorkDone.toInt)
 				println("Total time taken by this node      : " + (System.nanoTime - start) / 1e6 + "ms")
 				}
@@ -140,8 +137,6 @@ class Miner extends Actor {
         }
 				sender ! BitcoinList(bitcoins)				
 				}
-	
-
 } 
 
 
