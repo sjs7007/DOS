@@ -1,7 +1,8 @@
-[0m[[0minfo[0m] [0mRunning HelloRemote [0m
+[0m[[0minfo[0m] [0mRunning remote.HelloRemote [0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
-[0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloSJSWorking/HelloRemote/target/scala-2.10/classes[0m
+[0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloRemote/HelloRemote/target/scala-2.10/classes[0m
+[0m[[0mdebug[0m] [0m	/home/shinchan/DOS/HelloRemote/HelloRemote/lib/common_2.10-0.1-SNAPSHOT.jar[0m
 [0m[[0mdebug[0m] [0m	/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar[0m
 [0m[[0mdebug[0m] [0m	/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar[0m
 [0m[[0mdebug[0m] [0m	/home/shinchan/.ivy2/cache/com.typesafe/config/bundles/config-1.2.1.jar[0m
@@ -11,4 +12,4 @@
 [0m[[0mdebug[0m] [0m	/home/shinchan/.ivy2/cache/org.uncommons.maths/uncommons-maths/jars/uncommons-maths-1.2.2a.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main-0 to terminate.[0m
 [0m[[0mdebug[0m] [0m	Thread run-main-0 exited.[0m
-[0m[[0mdebug[0m] [0mWaiting for thread New I/O worker #5 to terminate.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread New I/O worker #4 to terminate.[0m

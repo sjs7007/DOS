@@ -3,6 +3,7 @@
 [0m[[0mdebug[0m] [0mInvalidating \usr\lib\jvm\java-7-openjdk-amd64\jre\lib\rt.jar: class java.lang.Object now provided by C:\Program Files\Java\jre7\lib\rt.jar[0m
 [0m[[0mdebug[0m] [0m[0m
 [0m[[0mdebug[0m] [0mInitial source changes: [0m
+<<<<<<< HEAD
 [0m[[0mdebug[0m] [0m	removed:Set(\home\shinchan\DOS\HelloSJSWorking\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
 [0m[[0mdebug[0m] [0m	added: Set(C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloRemote\src\main\scala\remote\HelloRemote.scala)[0m
 [0m[[0mdebug[0m] [0m	modified: Set()[0m
@@ -32,3 +33,18 @@
 [0m[[31merror[0m] [0mone error found[0m
 [0m[[0mdebug[0m] [0mCompilation failed (CompilerInterface)[0m
 [0m[[31merror[0m] [0m(compile:[31mcompileIncremental[0m) Compilation failed[0m
+=======
+[0m[[0mdebug[0m] [0m	removed:Set()[0m
+[0m[[0mdebug[0m] [0m	added: Set()[0m
+[0m[[0mdebug[0m] [0m	modified: Set()[0m
+[0m[[0mdebug[0m] [0mInvalidated products: Set()[0m
+[0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
+[0m[[0mdebug[0m] [0mModified binary dependencies: Set()[0m
+[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set()[0m
+[0m[[0mdebug[0m] [0m[0m
+[0m[[0mdebug[0m] [0mSources indirectly invalidated by:[0m
+[0m[[0mdebug[0m] [0m	product: Set()[0m
+[0m[[0mdebug[0m] [0m	binary dep: Set()[0m
+[0m[[0mdebug[0m] [0m	external source: Set()[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set()[0m
+>>>>>>> 08671e812b5eb96ad1c79d47e60afd349efb14bb
