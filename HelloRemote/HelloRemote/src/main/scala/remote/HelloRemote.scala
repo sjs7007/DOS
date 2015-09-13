@@ -26,7 +26,7 @@ class Master extends Actor {
 
 			n match {
 				case 1 => // New client
-				println(" Contacted by node #" + (nNodes+1))
+				println("Contacted by node #" + (nNodes+1))
 				clientList += new clientData(nNodes, sender, workSize)
 				sender ! ClientState (nNodes, 1)
 				nNodes += 1
