@@ -19,6 +19,8 @@ class Client extends Actor {
 
 	var start = System.nanoTime
 	var nodeID = -1
+	var lastWorkSize = 0
+	var currentWorkSize = 0
 
 	val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@127.0.0.1:5150/user/Master"))
 	
@@ -26,6 +28,8 @@ class Client extends Actor {
 	
 	var minersComplete : Int = 0
 	var totalCoinsFound : Int = 0
+	var workCycles = 0
+	var totalWorkDone : Double = 0
 	
 	var numberOfProcessors : Int = Runtime.getRuntime().availableProcessors()
 	
@@ -36,11 +40,16 @@ class Client extends Actor {
   def receive = {
 		
 		case AssignWork(diff, size) =>
-		
+				
+				workCycles += 1
 				minersComplete = 0
+				currentWorkSize = size
 				listOfCoins = new ListBuffer[Bitcoin]()
 		
-        println("Client received work unit of size : " + size)
+				if (size != lastWorkSize) {
+					println("Client work unit size updated : " + size)
+					lastWorkSize = size
+					}
 				
 				val worker = context.actorOf(Props[Miner].withRouter(RoundRobinRouter(nrOfInstances=numberOfProcessors)))
 				
@@ -59,8 +68,15 @@ class Client extends Actor {
 			if (minersComplete >= numberOfProcessors) {
 				Server ! BitcoinList (listOfCoins)
 				totalCoinsFound += listOfCoins.length
-				println("Total bitcoins found by this node : " + totalCoinsFound)
-				println("Total time taken by this node     : " + (System.nanoTime - start) / 1e6 + "ms")
+				totalWorkDone += currentWorkSize
+				
+				Server ! ClientState(nodeID, 0)
+				
+				if (workCycles %5 == 0) {
+				
+				println("Total work units done by this node : " + totalWorkDone.toInt)
+				println("Total time taken by this node      : " + (System.nanoTime - start) / 1e6 + "ms")
+				}
 				}
 				
 		case ClientState(id, a) => nodeID = id
