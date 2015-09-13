@@ -4,7 +4,7 @@ output mode:
 0 -> single
 output directories:
 1 items
-output dir -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes
+output dir -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes
 compile options:
 0 items
 javac options:
@@ -20,28 +20,28 @@ name hashing:
 0 -> true
 products:
 15 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork$.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin$.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList$.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$delayedInit$body.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1.class
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/AssignWork$.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/AssignWork.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/Bitcoin$.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/Bitcoin.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/BitcoinList$.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/BitcoinList.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local$.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local$delayedInit$body.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1.class
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor.class
 binary dependencies:
 5 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Progra~1\Java\jre7\lib\rt.jar
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Progra~1\Java\jre7\lib\rt.jar
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar
 direct source dependencies:
 0 items
 direct external dependencies:
@@ -52,7 +52,7 @@ public inherited external dependencies:
 0 items
 member reference internal dependencies:
 1 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> /home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala
 member reference external dependencies:
 0 items
 inheritance internal dependencies:
@@ -61,190 +61,188 @@ inheritance external dependencies:
 0 items
 class names:
 15 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.AssignWork
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.AssignWork$
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.Bitcoin
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.Bitcoin$
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.BitcoinList
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common.BitcoinList$
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.Local
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.Local$
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.Local$delayedInit$body
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor$$anonfun$receive$1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.AssignWork
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.AssignWork$
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.Bitcoin
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.Bitcoin$
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.BitcoinList
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common.BitcoinList$
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.Local
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.Local$
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.Local$delayedInit$body
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor$$anonfun$receive$1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local.LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3
 used names:
-122 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> &&
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> <init>
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> ==
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> AbstractFunction1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> AbstractFunction2
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> AssignWork
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Bitcoin
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> BitcoinList
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Int
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> ListBuffer
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> None
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Predef
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Product
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> ScalaRunTime
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Serializable
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> Statics
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> String
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> _hashCode
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> _toString
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> asInstanceOf
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> bitcoins
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> collection
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> common
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> difficulty
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> eq
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> finalizeHash
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> hash
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> input
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> isInstanceOf
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> mix
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> mutable
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> runtime
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> scala
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> toString
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> typedProductIterator
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> worksize
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> x$0
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> ||
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> !
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> !=
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> &
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> +
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> +=
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> -
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> <init>
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> ==
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> A1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Actor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> ActorSystem
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> App
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> B1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Bitcoin
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> ClassTag
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Function1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Integer
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> ListBuffer
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Local
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> LocalActor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> MessageDigest
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Predef
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Props
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> Random
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> StringBuffer
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> StringBuilder
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> actor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> actorFor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> actorOf
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> actorRef2Scala
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> akka
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> append
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> apply
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> asInstanceOf
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> base
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> bitcoins
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> charAt
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> collection
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> common
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> context
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> counter
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> diff
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> difficulty
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> difficulty_=
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> digest
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> foreach
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> getBytes
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> getInstance
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> hash
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> hex
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> hexString
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> i
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> intWrapper
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> isDif
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> isInstanceOf
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> java
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> lang
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> length
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> local
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> localActor
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> materializeClassTag
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> mutable
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> nextPrintableChar
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> package
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> println
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> qual$1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> r
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> remote
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> s
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> sb
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> scala
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> security
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> self
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> size
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> system
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> to
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> toFind
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> toHexString
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> toString
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> unchecked
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> util
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> worksize
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> x$1
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> x$2
+119 items
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> &&
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> <init>
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> ==
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> AbstractFunction1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> AbstractFunction2
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> AssignWork
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Bitcoin
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> BitcoinList
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Int
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> ListBuffer
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> None
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Predef
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Product
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> ScalaRunTime
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Serializable
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> Statics
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> String
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> _hashCode
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> _toString
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> asInstanceOf
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> bitcoins
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> collection
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> common
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> difficulty
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> eq
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> finalizeHash
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> hash
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> input
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> isInstanceOf
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> mix
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> mutable
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> runtime
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> scala
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> toString
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> typedProductIterator
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> worksize
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> x$0
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> ||
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> !
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> !=
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> &
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> +
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> +=
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> -
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> <init>
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> ==
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> A1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Actor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> ActorSystem
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> App
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> B1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Bitcoin
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> ClassTag
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Function1
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Integer
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> ListBuffer
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Local
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> LocalActor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> MessageDigest
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Predef
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Props
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> Random
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> StringBuffer
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> StringBuilder
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> actor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> actorFor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> actorOf
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> actorRef2Scala
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> akka
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> append
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> apply
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> asInstanceOf
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> base
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> bitcoins
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> charAt
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> collection
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> common
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> context
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> counter
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> diff
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> difficulty
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> difficulty_=
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> digest
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> foreach
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> getBytes
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> getInstance
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> hash
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> hex
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> hexString
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> i
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> intWrapper
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> isDif
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> isInstanceOf
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> java
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> lang
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> length
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> local
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> localActor
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> materializeClassTag
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> mutable
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> nextPrintableChar
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> package
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> println
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> r
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> remote
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> s
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> sb
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> scala
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> security
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> self
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> size
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> system
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> to
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> toFind
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> toHexString
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> toString
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> unchecked
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> util
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> worksize
 product stamps:
 15 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork$.class -> lastModified(1442125430225)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\AssignWork.class -> lastModified(1442125430272)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin$.class -> lastModified(1442125430319)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\Bitcoin.class -> lastModified(1442125430350)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList$.class -> lastModified(1442125430350)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\common\BitcoinList.class -> lastModified(1442125430382)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$.class -> lastModified(1442125430397)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local$delayedInit$body.class -> lastModified(1442125430413)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\Local.class -> lastModified(1442125430397)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1.class -> lastModified(1442125430475)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2.class -> lastModified(1442125430491)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3.class -> lastModified(1442125430491)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1.class -> lastModified(1442125430460)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor$$anonfun$receive$1.class -> lastModified(1442125430444)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\target\scala-2.10\classes\local\LocalActor.class -> lastModified(1442125430428)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/AssignWork$.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/AssignWork.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/Bitcoin$.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/Bitcoin.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/BitcoinList$.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/common/BitcoinList.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local$.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local$delayedInit$body.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/Local.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$1.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$2.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1$$anonfun$apply$mcVI$sp$3.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1$$anonfun$applyOrElse$1.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor$$anonfun$receive$1.class -> lastModified(1442130152000)
+/home/shinchan/DOS/HelloRemote/HelloLocal/target/scala-2.10/classes/local/LocalActor.class -> lastModified(1442130152000)
 source stamps:
 2 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> hash(e65efc4e6fe3a135f5e8e0bcba3262b941e2c072)
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> hash(befb8e331de7423db65de74436e41d996c460431)
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> hash(958a9258ef0450e0630089b2636966bc42e30472)
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> hash(a6a5a40df66934750219651784090f91c12d420b)
 binary stamps:
 3 items
-C:\Progra~1\Java\jre7\lib\rt.jar -> lastModified(1442084244074)
-C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar -> lastModified(1409898829000)
-C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar -> lastModified(1363129448000)
+/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar -> lastModified(1409939085000)
+/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar -> lastModified(1396783503000)
+/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar -> lastModified(1437726344000)
 class names:
 3 items
-C:\Progra~1\Java\jre7\lib\rt.jar -> java.lang.Object
-C:\Users\Ankur\.ivy2\cache\com.typesafe.akka\akka-actor_2.10\jars\akka-actor_2.10-2.3.6.jar -> akka.actor.Actor
-C:\Users\Ankur\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.1.jar -> scala.App
+/home/shinchan/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.3.6.jar -> akka.actor.Actor
+/home/shinchan/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.1.jar -> scala.runtime.AbstractPartialFunction
+/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar -> java.lang.Object
 internal apis:
 2 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> 
-rO0ABXNyABB4c2J0aS5hcGkuU291cmNlFlpwRASfbtoCAAZJAAdhcGlIYXNoWgAIaGFzTWFjcm9MABhfaW50ZXJuYWxPbmx5X25hbWVIYXNoZXN0ACRMeHNidGkvYXBpL19pbnRlcm5hbE9ubHlfTmFtZUhhc2hlcztMAANhcGl0ABVMeHNidGkvYXBpL1NvdXJjZUFQSTtMAAtjb21waWxhdGlvbnQAF0x4c2J0aS9hcGkvQ29tcGlsYXRpb247WwAEaGFzaHQAAltCeHA5mciNAHNyACJ4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaGVzVNq+mfrU7EwCAAJbAA9pbXBsaWNpdE1lbWJlcnN0ACNbTHhzYnRpL2FwaS9faW50ZXJuYWxPbmx5X05hbWVIYXNoO1sADnJlZ3VsYXJNZW1iZXJzcQB+AAd4cHVyACNbTHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoO0lagLbdlov0AgAAeHAAAAAAdXEAfgAJAAAAJHNyACB4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaFsO9SJ2OFfPAgACSQAEaGFzaEwABG5hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHAWlzp0AAZub3RpZnlzcQB+AAz4yy7qdAAEd2FpdHNxAH4ADPaWmPR0AA5jb3B5JGRlZmF1bHQkMnNxAH4ADK8kwex0AA0kYXNJbnN0YW5jZU9mc3EAfgAMgU0C8HQACmRpZmZpY3VsdHlzcQB+AAw01C0gdAAMcHJvZHVjdEFyaXR5c3EAfgAMxX7MBHQABmVxdWFsc3NxAH4ADBe2tK90AAtCaXRjb2luTGlzdHNxAH4ADF9Ewqd0AAxhc0luc3RhbmNlT2ZzcQB+AAysGO1bdAAId29ya3NpemVzcQB+AAwkOjTydAAMc3luY2hyb25pemVkc3EAfgAM2FTA63QADSRpc0luc3RhbmNlT2ZzcQB+AAx6AhGidAAIYml0Y29pbnNzcQB+AAzsseJ5dAAIY2FuRXF1YWxzcQB+AAyeTyU+dAANcHJvZHVjdFByZWZpeHNxAH4ADFEzXLV0AAlub3RpZnlBbGxzcQB+AAxxEqXTdAAMaXNJbnN0YW5jZU9mc3EAfgAMDXm/FHQABGhhc2hzcQB+AAy+9GF/dAAGPGluaXQ+c3EAfgAMyFZs4XQAAj09c3EAfgAMu4GjZXQABWNsb25lc3EAfgAM6ZXr3XQAB0JpdGNvaW5zcQB+AAz84UuIdAAEY29weXNxAH4ADD/JaGJ0AAh0b1N0cmluZ3NxAH4ADLuWTL10AAIhPXNxAH4ADDhdsbh0AAhnZXRDbGFzc3NxAH4ADEKFkGN0AA5jb3B5JGRlZmF1bHQkMXNxAH4ADHnE+YR0AAJuZXNxAH4ADMrYdTR0AApBc3NpZ25Xb3Jrc3EAfgAMO0GM23QABWlucHV0c3EAfgAMEjPfJHQAAmVxc3EAfgAMaDI8pHQAD3Byb2R1Y3RJdGVyYXRvcnNxAH4ADOcyawx0AAIjI3NxAH4ADLAoIfB0AAhmaW5hbGl6ZXNxAH4ADIgfSIt0AA5wcm9kdWN0RWxlbWVudHNxAH4ADNh9Z/N0AAhoYXNoQ29kZXNyABN4c2J0aS5hcGkuU291cmNlQVBJuV6n+SkjOKQCAAJbAAtkZWZpbml0aW9uc3QAF1tMeHNidGkvYXBpL0RlZmluaXRpb247WwAIcGFja2FnZXN0ABRbTHhzYnRpL2FwaS9QYWNrYWdlO3hwdXIAF1tMeHNidGkuYXBpLkRlZmluaXRpb247iMlc57TjXg4CAAB4cAAAAANzcgATeHNidGkuYXBpLkNsYXNzTGlrZYM0HKHfsJdsAgAETAAOZGVmaW5pdGlvblR5cGV0ABpMeHNidGkvYXBpL0RlZmluaXRpb25UeXBlO1sAEHNhdmVkQW5ub3RhdGlvbnN0ABNbTGphdmEvbGFuZy9TdHJpbmc7TAAIc2VsZlR5cGV0ABBMeHNidGkvYXBpL0xhenk7TAAJc3RydWN0dXJlcQB+AF94cgAheHNidGkuYXBpLlBhcmFtZXRlcml6ZWREZWZpbml0aW9u+RFusdVQPOICAAFbAA50eXBlUGFyYW1ldGVyc3QAGltMeHNidGkvYXBpL1R5cGVQYXJhbWV0ZXI7eHIAFHhzYnRpLmFwaS5EZWZpbml0aW9uhyob6HFC40YCAARMAAZhY2Nlc3N0ABJMeHNidGkvYXBpL0FjY2VzcztbAAthbm5vdGF0aW9uc3QAF1tMeHNidGkvYXBpL0Fubm90YXRpb247TAAJbW9kaWZpZXJzdAAVTHhzYnRpL2FwaS9Nb2RpZmllcnM7TAAEbmFtZXEAfgANeHBzcgAQeHNidGkuYXBpLlB1YmxpY7pYPa5sLWBCAgAAeHIAEHhzYnRpLmFwaS5BY2Nlc3PdYpr4HWMxSAIAAHhwdXIAF1tMeHNidGkuYXBpLkFubm90YXRpb24765frGRD2jUgCAAB4cAAAAABzcgATeHNidGkuYXBpLk1vZGlmaWVyc8cREyFpnNwkAgABQgAFZmxhZ3N4cAB0ABFjb21tb24uQXNzaWduV29ya3VyABpbTHhzYnRpLmFwaS5UeXBlUGFyYW1ldGVyO9ltJg8onfK2AgAAeHAAAAAAfnIAGHhzYnRpLmFwaS5EZWZpbml0aW9uVHlwZQAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVtAAAAAAAAAAASAAB4cHQACENsYXNzRGVmdXIAE1tMamF2YS5sYW5nLlN0cmluZzut0lbn6R17RwIAAHhwAAAAAHNyABN4c2J0aS5TYWZlTGF6eSRJbXBsUAIuk5eXQD8CAANaAAhiaXRtYXAkMEwAAl90dAASTGphdmEvbGFuZy9PYmplY3Q7TAAEZXZhbHQAEUxzY2FsYS9GdW5jdGlvbjA7eHIAFnhzYnRpLmFwaS5BYnN0cmFjdExhennTd7UBX7vnoAIAAHhwAHBzcgAgeHNidGkuU2FmZUxhenkkJGFub25mdW4kc3RyaWN0JDEAAAAAAAAAAAIAAUwAB3ZhbHVlJDFxAH4AeHhwc3IAE3hzYnRpLmFwaS5FbXB0eVR5cGW8/Z5GSTuJJAIAAHhyABR4c2J0aS5hcGkuU2ltcGxlVHlwZXJ4YoghI79AAgAAeHIADnhzYnRpLmFwaS5UeXBlP2rZIRZJqsoCAAB4cHNxAH4AdwBwc3EAfgB8c3IAE3hzYnRpLmFwaS5TdHJ1Y3R1cmWpqvmAk2/YAAIAA0wACGRlY2xhcmVkcQB+AF9MAAlpbmhlcml0ZWRxAH4AX0wAB3BhcmVudHNxAH4AX3hxAH4AgHNxAH4AdwBwc3EAfgB8dXEAfgBaAAAAAHNxAH4AdwBwc3EAfgB8dXEAfgBaAAAAAHNxAH4AdwBwc3EAfgB8dXIAEVtMeHNidGkuYXBpLlR5cGU7dP+lWnv56UECAAB4cAAAAAZzcgAUeHNidGkuYXBpLlByb2plY3Rpb27z0o1U6UWkLQIA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
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> 
-rO0ABXNyABB4c2J0aS5hcGkuU291cmNlFlpwRASfbtoCAAZJAAdhcGlIYXNoWgAIaGFzTWFjcm9MABhfaW50ZXJuYWxPbmx5X25hbWVIYXNoZXN0ACRMeHNidGkvYXBpL19pbnRlcm5hbE9ubHlfTmFtZUhhc2hlcztMAANhcGl0ABVMeHNidGkvYXBpL1NvdXJjZUFQSTtMAAtjb21waWxhdGlvbnQAF0x4c2J0aS9hcGkvQ29tcGlsYXRpb247WwAEaGFzaHQAAltCeHAR7YSCAHNyACJ4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaGVzVNq+mfrU7EwCAAJbAA9pbXBsaWNpdE1lbWJlcnN0ACNbTHhzYnRpL2FwaS9faW50ZXJuYWxPbmx5X05hbWVIYXNoO1sADnJlZ3VsYXJNZW1iZXJzcQB+AAd4cHVyACNbTHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoO0lagLbdlov0AgAAeHAAAAADc3IAIHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoWw71InY4V88CAAJJAARoYXNoTAAEbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwe1AhcnQABHNlbGZzcQB+AAvTp8NldAAHY29udGV4dHNxAH4AC5O9snV0AAZzeXN0ZW11cQB+AAkAAAAvc3EAfgALOp2dVXQABm5vdGlmeXNxAH4ACzxkodl0AAdSZWNlaXZlc3EAfgALzbFq3XQABHdhaXRzcQB+AAvTJRTcdAANJGFzSW5zdGFuY2VPZnNxAH4ACw9CW3V0AApkaWZmaWN1bHR5c3EAfgALNNej53QABmVxdWFsc3NxAH4AC63XDnF0AAxhc0luc3RhbmNlT2ZzcQB+AAtJhB1ldAAOZXhlY3V0aW9uU3RhcnRzcQB+AAueWxXLdAAMc3luY2hyb25pemVkc3EAfgAL7YaJtnQADSRpc0luc3RhbmNlT2ZzcQB+AAsOfncBdAAHcmVjZWl2ZXNxAH4AC/cTjhJ0AApwcmVSZXN0YXJ0c3EAfgALB7Xh4HQADWFyb3VuZFJlY2VpdmVzcQB+AAuiLnKkdAAFX2FyZ3NzcQB+AAsQelsYdAALcG9zdFJlc3RhcnRzcQB+AAtVW4TIdAAEbWFpbnNxAH4AC7GRbwF0AAhwb3N0U3RvcHNxAH4AC2z/K9t0AAhpbml0Q29kZXNxAH4AC3LL0Z10AAlub3RpZnlBbGxzcQB+AAuBEuu/dAARYXJvdW5kUG9zdFJlc3RhcnRzcQB+AAvRn84kdAAEYmFzZXNxAH4AC/G5FHV0AAxpc0luc3RhbmNlT2ZzcQB+AAuB+2BedAAQYXJvdW5kUHJlUmVzdGFydHNxAH4AC1L72pF0AA5hcm91bmRQb3N0U3RvcHNxAH4AC7WUBbN0AApMb2NhbEFjdG9yc3EAfgAL28uMVnQABjxpbml0PnNxAH4AC4XqPkl0AAZyZW1vdGVzcQB+AAs9y5tVdAAIcHJlU3RhcnRzcQB+AAu0g6WTdAAJdW5oYW5kbGVkc3EAfgALDPhYCnQAAj09c3EAfgALgAKIfHQABWNsb25lc3EAfgALuLj6qHQABnNlbmRlcnNxAH4AC7UwvUJ0AAdjb3VudGVyc3EAfgALdLj46HQACHRvU3RyaW5nc3EAfgALgC9KinQABGFyZ3NzcQB+AAtvU+NCdAACIT1zcQB+AAsTjNcpdAAIZ2V0Q2xhc3NzcQB+AAt8kNOxdAACbmVzcQB+AAsscYISdAAKbG9jYWxBY3RvcnNxAH4AC5F/3Xx0AAVMb2NhbHNxAH4AC+sm7Ph0ABJzdXBlcnZpc29yU3RyYXRlZ3lzcQB+AAvP9uowdAACZXFzcQB+AAtlKO6fdAALZGVsYXllZEluaXRzcQB+AAu/JUBcdAACIyNzcQB+AAvv9MHAdAAIZmluYWxpemVzcQB+AAsWRHhwdAAIaGFzaENvZGVzcQB+AAtAgh1QdAAOYXJvdW5kUHJlU3RhcnRzcgATeHNidGkuYXBpLlNvdXJjZUFQSblep/kpIzikAgACWwALZGVmaW5pdGlvbnN0ABdbTHhzYnRpL2FwaS9EZWZpbml0aW9uO1sACHBhY2thZ2VzdAAUW0x4c2J0aS9hcGkvUGFja2FnZTt4cHVyABdbTHhzYnRpLmFwaS5EZWZpbml0aW9uO4jJXOe0414OAgAAeHAAAAACc3IAE3hzYnRpLmFwaS5DbGFzc0xpa2WDNByh37CXbAIABEwADmRlZmluaXRpb25UeXBldAAaTHhzYnRpL2FwaS9EZWZpbml0aW9uVHlwZTtbABBzYXZlZEFubm90YXRpb25zdAATW0xqYXZhL2xhbmcvU3RyaW5nO0wACHNlbGZUeXBldAAQTHhzYnRpL2FwaS9MYXp5O0wACXN0cnVjdHVyZXEAfgB7eHIAIXhzYnRpLmFwaS5QYXJhbWV0ZXJpemVkRGVmaW5pdGlvbvkRbrHVUDziAgABWwAOdHlwZVBhcmFtZXRlcnN0ABpbTHhzYnRpL2FwaS9UeXBlUGFyYW1ldGVyO3hyABR4c2J0aS5hcGkuRGVmaW5pdGlvbocqG+hxQuNGAgAETAAGYWNjZXNzdAASTHhzYnRpL2FwaS9BY2Nlc3M7WwALYW5ub3RhdGlvbnN0ABdbTHhzYnRpL2FwaS9Bbm5vdGF0aW9uO0wACW1vZGlmaWVyc3QAFUx4c2J0aS9hcGkvTW9kaWZpZXJzO0wABG5hbWVxAH4ADHhwc3IAEHhzYnRpLmFwaS5QdWJsaWO6WD2ubC1gQgIAAHhyABB4c2J0aS5hcGkuQWNjZXNz3WKa+B1jMUgCAAB4cHVyABdbTHhzYnRpLmFwaS5Bbm5vdGF0aW9uO+uX6xkQ9o1IAgAAeHAAAAAAc3IAE3hzYnRpLmFwaS5Nb2RpZmllcnPHERMhaZzcJAIAAUIABWZsYWdzeHAAdAALbG9jYWwuTG9jYWx1cgAaW0x4c2J0aS5hcGkuVHlwZVBhcmFtZXRlcjvZbSYPKJ3ytgIAAHhwAAAAAH5yABh4c2J0aS5hcGkuRGVmaW5pdGlvblR5cGUAAAAAAAAAABIAAHhyAA5qYXZhLmxhbmcuRW51bQAAAAAAAAAAEgAAeHB0AAZNb2R1bGV1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAAAc3IAE3hzYnRpLlNhZmVMYXp5JEltcGxQAi6Tl5dAPwIAA1oACGJpdG1hcCQwTAACX3R0ABJMamF2YS9sYW5nL09iamVjdDtMAARldmFsdAARTHNjYWxhL0Z1bmN0aW9uMDt4cgAWeHNidGkuYXBpLkFic3RyYWN0TGF6edN3tQFfu+egAgAAeHAAcHNyACB4c2J0aS5TYWZlTGF6eSQkYW5vbmZ1biRzdHJpY3QkMQAAAAAAAAAAAgABTAAHdmFsdWUkMXEAfgCUeHBzcgATeHNidGkuYXBpLkVtcHR5VHlwZbz9nkZJO4kkAgAAeHIAFHhzYnRpLmFwaS5TaW1wbGVUeXBlcnhiiCEjv0ACAAB4cgAOeHNidGkuYXBpLlR5cGU/atkhFkmqygIAAHhwc3EAfgCTAHBzcQB+AJhzcgATeHNidGkuYXBpLlN0cnVjdHVyZamq+YCTb9gAAgADTAAIZGVjbGFyZWRxAH4Ae0wACWluaGVyaXRlZHEAfgB7TAAHcGFyZW50c3EAfgB7eHEAfgCcc3EAfgCTAHBzcQB+AJh1cQB+AHYAAAAAc3EAfgCTAHBzcQB+AJh1cQB+AHYAAAABc3IADXhzYnRpLmFwaS5EZWZSvp/ifLQ2aQIAAkwACnJldHVyblR5cGV0ABBMeHNidGkvYXBpL1R5cGU7WwAPdmFsdWVQYXJhbWV0ZXJzdAAaW0x4c2J0aS9hcGkvUGFyYW1ldGVyTGlzdDt4cQB+AHxxAH4AhXVxAH4AhgAAAABzcQB+AIgAcQB+ADN1cQB+AIsAAAAAc3IAFHhzYnRpLmFwaS5Qcm9qZWN0aW9u89KNVOlFpC0CAAJMAAJpZHEAfgAMTAAGcHJlZml4dAAWTHhzYnRpL2FwaS9TaW1wbGVUeXBlO3hxAH4Am3QABFVuaXRzcgATeHNidGkuYXBpLlNpbmdsZXRvbvynX/jPVuRGAgABTAAEcGF0aHQAEEx4c2J0aS9hcGkvUGF0aDt4cQB+AJtzcgAOeHNidGkuYXBpLlBhdGibPVwIzqUnhAIAAVsACmNvbXBvbmVudHN0ABpbTHhzYnRpL2FwaS9QYXRoQ29tcG9uZW50O3hwdXIAGltMeHNidGkuYXBpLlBhdGhDb21wb25lbnQ7Q9oJdC1nFnQCAAB4cAAAAAJzcgAMeHNidGkuYXBpLklkmDJsizdTxEACAAFMAAJpZHEAfgAMeHIAF3hzYnRpLmFwaS5QYXRoQ29tcG9uZW50X5oiWy6Gn7wCAAB4cHQABXNjYWxhc3IADnhzYnRpLmFwaS5UaGlz2wntpsxaQFwCAAB4cQB+ALx1cgAaW0x4c2J0aS5hcGkuUGFyYW1ldGVyTGlzdDv10zod8rNw7gIAAHhwAAAAAXNyABd4c2J0aS5hcGkuUGFyYW1ldGVyTGlzdNbFvBxkSXTjAgACWgAKaXNJbXBsaWNpdFsACnBhcmFtZXRlcnN0ABxbTHhzYnRpL2FwaS9NZXRob2RQYXJhbWV0ZXI7eHAAdXIAHFtMeHNidGkuYXBpLk1ldGhvZFBhcmFtZXRlcjvPuMVdpd21bQIAAHhwAAAAAXNyABl4c2J0aS5hcGkuTWV0aG9kUGFyYW1ldGVyH0WuF9NJsOoCAARaAApoYXNEZWZhdWx0TAAIbW9kaWZpZXJ0AB1MeHNidGkvYXBpL1BhcmFtZXRlck1vZGlmaWVyO0wABG5hbWVxAH4ADEwAA3RwZXEAfgCpeHAAfnIAG3hzYnRpLmFwaS5QYXJhbWV0ZXJNb2RpZmllcgAAAAAAAAAAEgAAeHEAfgCOdAAFUGxhaW5xAH4AWXNyABd4c2J0aS5hcGkuUGFyYW1ldGVyaXplZBZs7mkDybt/AgACTAAIYmFzZVR5cGVxAH4AsFsADXR5cGVBcmd1bWVudHN0ABFbTHhzYnRpL2FwaS9UeXBlO3hxAH4Am3NxAH4Ar3QABUFycmF5cQB+ALV1cgARW0x4c2J0aS5hcGkuVHlwZTt0/6Vae/npQQIAAHhwAAAAAXNxAH4Ar3QABlN0cmluZ3NxAH4As3NxAH4AtnVxAH4AuQAAAANzcQB+ALt0AARqYXZhc3EAfgC7dAAEbGFuZ3EAfgDAc3EAfgCTAHBzcQB+AJh1cQB+ANMAAAAEc3EAfgCvdAADQXBwcQB+ALVzcQB+AK90AAtEZWxheWVkSW5pdHEAfgC1c3EAfgCvdAAGT2JqZWN0cQB+ANdzcQB+AK90AANBbnlxAH4AtXNxAH4AeHEAfgCFdXEAfgCGAAAAAHNxAH4AiAB0ABBsb2NhbC5Mb2NhbEFjdG9ydXEAfgCLAAAAAH5xAH4AjXQACENsYXNzRGVmdXEAfgCRAAAAAHNxAH4AkwBwc3EAfgCYcQB+AJ1zcQB+AJMAcHNxAH4AmHNxAH4AoHNxAH4AkwBwc3EAfgCYdXEAfgB2AAAAAHNxAH4AkwBwc3EAfgCYdXEAfgB2AAAAAHNxAH4AkwBwc3EAfgCYdXEAfgDTAAAAA3NxAH4Ar3QABUFjdG9yc3EAfgCzc3EAfgC2dXEAfgC5AAAAA3NxAH4Au3QABGFra2FzcQB+ALt0AAVhY3RvcnEAfgDAc3EAfgCvcQB+AOZzcQB+ALNzcQB+ALZ1cQB+ALkAAAADc3EAfgC7cQB+ANtzcQB+ALtxAH4A3XEAfgDAc3EAfgCvcQB+AOhzcQB+ALNzcQB+ALZ1cQB+ALkAAAACc3EAfgC7cQB+AL5xAH4AwHVyABRbTHhzYnRpLmFwaS5QYWNrYWdlO1sTGTdwpyehAgAAeHAAAAABc3IAEXhzYnRpLmFwaS5QYWNrYWdlflmP9q7OOVgCAAFMAARuYW1lcQB+AAx4cHQABWxvY2Fsc3IAFXhzYnRpLmFwaS5Db21waWxhdGlvbu364MNq6KBCAgACSgAJc3RhcnRUaW1lWwAHb3V0cHV0c3QAGltMeHNidGkvYXBpL091dHB1dFNldHRpbmc7eHAAAAFPxV+jZHVyABpbTHhzYnRpLmFwaS5PdXRwdXRTZXR0aW5nO39qwvOnh6VCAgAAeHAAAAABc3IAF3hzYnRpLmFwaS5PdXRwdXRTZXR0aW5netmaR3T7HXsCAAJMAA9vdXRwdXREaXJlY3RvcnlxAH4ADEwAD3NvdXJjZURpcmVjdG9yeXEAfgAMeHB0AEtDOlxVc2Vyc1xBbmt1clxEZXNrdG9wXERPU1xIZWxsb1JlbW90ZVxIZWxsb0xvY2FsXHRhcmdldFxzY2FsYS0yLjEwXGNsYXNzZXN0AAEvdXIAAltCrPMX+AYIVOACAAB4cAAAABS++44zHedCPbZd50Q25B2ZbEYEMQ==
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> 
+rO0ABXNyABB4c2J0aS5hcGkuU291cmNlFlpwRASfbtoCAAZJAAdhcGlIYXNoWgAIaGFzTWFjcm9MABhfaW50ZXJuYWxPbmx5X25hbWVIYXNoZXN0ACRMeHNidGkvYXBpL19pbnRlcm5hbE9ubHlfTmFtZUhhc2hlcztMAANhcGl0ABVMeHNidGkvYXBpL1NvdXJjZUFQSTtMAAtjb21waWxhdGlvbnQAF0x4c2J0aS9hcGkvQ29tcGlsYXRpb247WwAEaGFzaHQAAltCeHA5mciNAHNyACJ4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaGVzVNq+mfrU7EwCAAJbAA9pbXBsaWNpdE1lbWJlcnN0ACNbTHhzYnRpL2FwaS9faW50ZXJuYWxPbmx5X05hbWVIYXNoO1sADnJlZ3VsYXJNZW1iZXJzcQB+AAd4cHVyACNbTHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoO0lagLbdlov0AgAAeHAAAAAAdXEAfgAJAAAAJHNyACB4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaFsO9SJ2OFfPAgACSQAEaGFzaEwABG5hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cHAWlzp0AAZub3RpZnlzcQB+AAz4yy7qdAAEd2FpdHNxAH4ADPaWmPR0AA5jb3B5JGRlZmF1bHQkMnNxAH4ADK8kwex0AA0kYXNJbnN0YW5jZU9mc3EAfgAMgU0C8HQACmRpZmZpY3VsdHlzcQB+AAw01C0gdAAMcHJvZHVjdEFyaXR5c3EAfgAMxX7MBHQABmVxdWFsc3NxAH4ADBe2tK90AAtCaXRjb2luTGlzdHNxAH4ADF9Ewqd0AAxhc0luc3RhbmNlT2ZzcQB+AAysGO1bdAAId29ya3NpemVzcQB+AAwkOjTydAAMc3luY2hyb25pemVkc3EAfgAM2FTA63QADSRpc0luc3RhbmNlT2ZzcQB+AAx6AhGidAAIYml0Y29pbnNzcQB+AAzsseJ5dAAIY2FuRXF1YWxzcQB+AAyeTyU+dAANcHJvZHVjdFByZWZpeHNxAH4ADFEzXLV0AAlub3RpZnlBbGxzcQB+AAxxEqXTdAAMaXNJbnN0YW5jZU9mc3EAfgAMDXm/FHQABGhhc2hzcQB+AAy+9GF/dAAGPGluaXQ+c3EAfgAMyFZs4XQAAj09c3EAfgAMu4GjZXQABWNsb25lc3EAfgAM6ZXr3XQAB0JpdGNvaW5zcQB+AAz84UuIdAAEY29weXNxAH4ADD/JaGJ0AAh0b1N0cmluZ3NxAH4ADLuWTL10AAIhPXNxAH4ADDhdsbh0AAhnZXRDbGFzc3NxAH4ADEKFkGN0AA5jb3B5JGRlZmF1bHQkMXNxAH4ADHnE+YR0AAJuZXNxAH4ADMrYdTR0AApBc3NpZ25Xb3Jrc3EAfgAMO0GM23QABWlucHV0c3EAfgAMEjPfJHQAAmVxc3EAfgAMaDI8pHQAD3Byb2R1Y3RJdGVyYXRvcnNxAH4ADOcyawx0AAIjI3NxAH4ADLAoIfB0AAhmaW5hbGl6ZXNxAH4ADIgfSIt0AA5wcm9kdWN0RWxlbWVudHNxAH4ADNh9Z/N0AAhoYXNoQ29kZXNyABN4c2J0aS5hcGkuU291cmNlQVBJuV6n+SkjOKQCAAJbAAtkZWZpbml0aW9uc3QAF1tMeHNidGkvYXBpL0RlZmluaXRpb247WwAIcGFja2FnZXN0ABRbTHhzYnRpL2FwaS9QYWNrYWdlO3hwdXIAF1tMeHNidGkuYXBpLkRlZmluaXRpb247iMlc57TjXg4CAAB4cAAAAANzcgATeHNidGkuYXBpLkNsYXNzTGlrZYM0HKHfsJdsAgAETAAOZGVmaW5pdGlvblR5cGV0ABpMeHNidGkvYXBpL0RlZmluaXRpb25UeXBlO1sAEHNhdmVkQW5ub3RhdGlvbnN0ABNbTGphdmEvbGFuZy9TdHJpbmc7TAAIc2VsZlR5cGV0ABBMeHNidGkvYXBpL0xhenk7TAAJc3RydWN0dXJlcQB+AF94cgAheHNidGkuYXBpLlBhcmFtZXRlcml6ZWREZWZpbml0aW9u+RFusdVQPOICAAFbAA50eXBlUGFyYW1ldGVyc3QAGltMeHNidGkvYXBpL1R5cGVQYXJhbWV0ZXI7eHIAFHhzYnRpLmFwaS5EZWZpbml0aW9uhyob6HFC40YCAARMAAZhY2Nlc3N0ABJMeHNidGkvYXBpL0FjY2VzcztbAAthbm5vdGF0aW9uc3QAF1tMeHNidGkvYXBpL0Fubm90YXRpb247TAAJbW9kaWZpZXJzdAAVTHhzYnRpL2FwaS9Nb2RpZmllcnM7TAAEbmFtZXEAfgANeHBzcgAQeHNidGkuYXBpLlB1YmxpY7pYPa5sLWBCAgAAeHIAEHhzYnRpLmFwaS5BY2Nlc3PdYpr4HWMxSAIAAHhwdXIAF1tMeHNidGkuYXBpLkFubm90YXRpb24765frGRD2jUgCAAB4cAAAAABzcgATeHNidGkuYXBpLk1vZGlmaWVyc8cREyFpnNwkAgABQgAFZmxhZ3N4cAB0ABFjb21tb24uQXNzaWduV29ya3VyABpbTHhzYnRpLmFwaS5UeXBlUGFyYW1ldGVyO9ltJg8onfK2AgAAeHAAAAAAfnIAGHhzYnRpLmFwaS5EZWZpbml0aW9uVHlwZQAAAAAAAAAAEgAAeHIADmphdmEubGFuZy5FbnVtAAAAAAAAAAASAAB4cHQACENsYXNzRGVmdXIAE1tMamF2YS5sYW5nLlN0cmluZzut0lbn6R17RwIAAHhwAAAAAHNyABN4c2J0aS5TYWZlTGF6eSRJbXBsUAIuk5eXQD8CAANaAAhiaXRtYXAkMEwAAl90dAASTGphdmEvbGFuZy9PYmplY3Q7TAAEZXZhbHQAEUxzY2FsYS9GdW5jdGlvbjA7eHIAFnhzYnRpLmFwaS5BYnN0cmFjdExhennTd7UBX7vnoAIAAHhwAHBzcgAgeHNidGkuU2FmZUxhenkkJGFub25mdW4kc3RyaWN0JDEAAAAAAAAAAAIAAUwAB3ZhbHVlJDFxAH4AeHhwc3IAE3hzYnRpLmFwaS5FbXB0eVR5cGW8/Z5GSTuJJAIAAHhyABR4c2J0aS5hcGkuU2ltcGxlVHlwZXJ4YoghI79AAgAAeHIADnhzYnRpLmFwaS5UeXBlP2rZIRZJqsoCAAB4cHNxAH4AdwBwc3EAfgB8c3IAE3hzYnRpLmFwaS5TdHJ1Y3R1cmWpqvmAk2/YAAIAA0wACGRlY2xhcmVkcQB+AF9MAAlpbmhlcml0ZWRxAH4AX0wAB3BhcmVudHNxAH4AX3hxAH4AgHNxAH4AdwBwc3EAfgB8dXEAfgBaAAAAAHNxAH4AdwBwc3EAfgB8dXEAfgBaAAAAAHNxAH4AdwBwc3EAfgB8dXIAEVtMeHNidGkuYXBpLlR5cGU7dP+lWnv56UECAAB4cAAAAAZzcgAUeHNidGkuYXBpLlByb2plY3Rpb27z0o1U6UWkLQI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
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> 
+rO0ABXNyABB4c2J0aS5hcGkuU291cmNlFlpwRASfbtoCAAZJAAdhcGlIYXNoWgAIaGFzTWFjcm9MABhfaW50ZXJuYWxPbmx5X25hbWVIYXNoZXN0ACRMeHNidGkvYXBpL19pbnRlcm5hbE9ubHlfTmFtZUhhc2hlcztMAANhcGl0ABVMeHNidGkvYXBpL1NvdXJjZUFQSTtMAAtjb21waWxhdGlvbnQAF0x4c2J0aS9hcGkvQ29tcGlsYXRpb247WwAEaGFzaHQAAltCeHAR7YSCAHNyACJ4c2J0aS5hcGkuX2ludGVybmFsT25seV9OYW1lSGFzaGVzVNq+mfrU7EwCAAJbAA9pbXBsaWNpdE1lbWJlcnN0ACNbTHhzYnRpL2FwaS9faW50ZXJuYWxPbmx5X05hbWVIYXNoO1sADnJlZ3VsYXJNZW1iZXJzcQB+AAd4cHVyACNbTHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoO0lagLbdlov0AgAAeHAAAAADc3IAIHhzYnRpLmFwaS5faW50ZXJuYWxPbmx5X05hbWVIYXNoWw71InY4V88CAAJJAARoYXNoTAAEbmFtZXQAEkxqYXZhL2xhbmcvU3RyaW5nO3hwe1AhcnQABHNlbGZzcQB+AAvTp8NldAAHY29udGV4dHNxAH4AC5O9snV0AAZzeXN0ZW11cQB+AAkAAAAvc3EAfgALOp2dVXQABm5vdGlmeXNxAH4ACzxkodl0AAdSZWNlaXZlc3EAfgALzbFq3XQABHdhaXRzcQB+AAvTJRTcdAANJGFzSW5zdGFuY2VPZnNxAH4ACw9CW3V0AApkaWZmaWN1bHR5c3EAfgALNNej53QABmVxdWFsc3NxAH4AC63XDnF0AAxhc0luc3RhbmNlT2ZzcQB+AAtJhB1ldAAOZXhlY3V0aW9uU3RhcnRzcQB+AAueWxXLdAAMc3luY2hyb25pemVkc3EAfgAL7YaJtnQADSRpc0luc3RhbmNlT2ZzcQB+AAsOfncBdAAHcmVjZWl2ZXNxAH4AC/cTjhJ0AApwcmVSZXN0YXJ0c3EAfgALB7Xh4HQADWFyb3VuZFJlY2VpdmVzcQB+AAuiLnKkdAAFX2FyZ3NzcQB+AAsQelsYdAALcG9zdFJlc3RhcnRzcQB+AAtVW4TIdAAEbWFpbnNxAH4AC7GRbwF0AAhwb3N0U3RvcHNxAH4AC2z/K9t0AAhpbml0Q29kZXNxAH4AC3LL0Z10AAlub3RpZnlBbGxzcQB+AAuBEuu/dAARYXJvdW5kUG9zdFJlc3RhcnRzcQB+AAvRn84kdAAEYmFzZXNxAH4AC/G5FHV0AAxpc0luc3RhbmNlT2ZzcQB+AAuB+2BedAAQYXJvdW5kUHJlUmVzdGFydHNxAH4AC1L72pF0AA5hcm91bmRQb3N0U3RvcHNxAH4AC7WUBbN0AApMb2NhbEFjdG9yc3EAfgAL28uMVnQABjxpbml0PnNxAH4AC4XqPkl0AAZyZW1vdGVzcQB+AAs9y5tVdAAIcHJlU3RhcnRzcQB+AAu0g6WTdAAJdW5oYW5kbGVkc3EAfgALDPhYCnQAAj09c3EAfgALgAKIfHQABWNsb25lc3EAfgALuLj6qHQABnNlbmRlcnNxAH4AC7UwvUJ0AAdjb3VudGVyc3EAfgALdLj46HQACHRvU3RyaW5nc3EAfgALgC9KinQABGFyZ3NzcQB+AAtvU+NCdAACIT1zcQB+AAsTjNcpdAAIZ2V0Q2xhc3NzcQB+AAt8kNOxdAACbmVzcQB+AAsscYISdAAKbG9jYWxBY3RvcnNxAH4AC5F/3Xx0AAVMb2NhbHNxAH4AC+sm7Ph0ABJzdXBlcnZpc29yU3RyYXRlZ3lzcQB+AAvP9uowdAACZXFzcQB+AAtlKO6fdAALZGVsYXllZEluaXRzcQB+AAu/JUBcdAACIyNzcQB+AAvv9MHAdAAIZmluYWxpemVzcQB+AAsWRHhwdAAIaGFzaENvZGVzcQB+AAtAgh1QdAAOYXJvdW5kUHJlU3RhcnRzcgATeHNidGkuYXBpLlNvdXJjZUFQSblep/kpIzikAgACWwALZGVmaW5pdGlvbnN0ABdbTHhzYnRpL2FwaS9EZWZpbml0aW9uO1sACHBhY2thZ2VzdAAUW0x4c2J0aS9hcGkvUGFja2FnZTt4cHVyABdbTHhzYnRpLmFwaS5EZWZpbml0aW9uO4jJXOe0414OAgAAeHAAAAACc3IAE3hzYnRpLmFwaS5DbGFzc0xpa2WDNByh37CXbAIABEwADmRlZmluaXRpb25UeXBldAAaTHhzYnRpL2FwaS9EZWZpbml0aW9uVHlwZTtbABBzYXZlZEFubm90YXRpb25zdAATW0xqYXZhL2xhbmcvU3RyaW5nO0wACHNlbGZUeXBldAAQTHhzYnRpL2FwaS9MYXp5O0wACXN0cnVjdHVyZXEAfgB7eHIAIXhzYnRpLmFwaS5QYXJhbWV0ZXJpemVkRGVmaW5pdGlvbvkRbrHVUDziAgABWwAOdHlwZVBhcmFtZXRlcnN0ABpbTHhzYnRpL2FwaS9UeXBlUGFyYW1ldGVyO3hyABR4c2J0aS5hcGkuRGVmaW5pdGlvbocqG+hxQuNGAgAETAAGYWNjZXNzdAASTHhzYnRpL2FwaS9BY2Nlc3M7WwALYW5ub3RhdGlvbnN0ABdbTHhzYnRpL2FwaS9Bbm5vdGF0aW9uO0wACW1vZGlmaWVyc3QAFUx4c2J0aS9hcGkvTW9kaWZpZXJzO0wABG5hbWVxAH4ADHhwc3IAEHhzYnRpLmFwaS5QdWJsaWO6WD2ubC1gQgIAAHhyABB4c2J0aS5hcGkuQWNjZXNz3WKa+B1jMUgCAAB4cHVyABdbTHhzYnRpLmFwaS5Bbm5vdGF0aW9uO+uX6xkQ9o1IAgAAeHAAAAAAc3IAE3hzYnRpLmFwaS5Nb2RpZmllcnPHERMhaZzcJAIAAUIABWZsYWdzeHAAdAALbG9jYWwuTG9jYWx1cgAaW0x4c2J0aS5hcGkuVHlwZVBhcmFtZXRlcjvZbSYPKJ3ytgIAAHhwAAAAAH5yABh4c2J0aS5hcGkuRGVmaW5pdGlvblR5cGUAAAAAAAAAABIAAHhyAA5qYXZhLmxhbmcuRW51bQAAAAAAAAAAEgAAeHB0AAZNb2R1bGV1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAAAc3IAE3hzYnRpLlNhZmVMYXp5JEltcGxQAi6Tl5dAPwIAA1oACGJpdG1hcCQwTAACX3R0ABJMamF2YS9sYW5nL09iamVjdDtMAARldmFsdAARTHNjYWxhL0Z1bmN0aW9uMDt4cgAWeHNidGkuYXBpLkFic3RyYWN0TGF6edN3tQFfu+egAgAAeHAAcHNyACB4c2J0aS5TYWZlTGF6eSQkYW5vbmZ1biRzdHJpY3QkMQAAAAAAAAAAAgABTAAHdmFsdWUkMXEAfgCUeHBzcgATeHNidGkuYXBpLkVtcHR5VHlwZbz9nkZJO4kkAgAAeHIAFHhzYnRpLmFwaS5TaW1wbGVUeXBlcnhiiCEjv0ACAAB4cgAOeHNidGkuYXBpLlR5cGU/atkhFkmqygIAAHhwc3EAfgCTAHBzcQB+AJhzcgATeHNidGkuYXBpLlN0cnVjdHVyZamq+YCTb9gAAgADTAAIZGVjbGFyZWRxAH4Ae0wACWluaGVyaXRlZHEAfgB7TAAHcGFyZW50c3EAfgB7eHEAfgCcc3EAfgCTAHBzcQB+AJh1cQB+AHYAAAAAc3EAfgCTAHBzcQB+AJh1cQB+AHYAAAABc3IADXhzYnRpLmFwaS5EZWZSvp/ifLQ2aQIAAkwACnJldHVyblR5cGV0ABBMeHNidGkvYXBpL1R5cGU7WwAPdmFsdWVQYXJhbWV0ZXJzdAAaW0x4c2J0aS9hcGkvUGFyYW1ldGVyTGlzdDt4cQB+AHxxAH4AhXVxAH4AhgAAAABzcQB+AIgAcQB+ADN1cQB+AIsAAAAAc3IAFHhzYnRpLmFwaS5Qcm9qZWN0aW9u89KNVOlFpC0CAAJMAAJpZHEAfgAMTAAGcHJlZml4dAAWTHhzYnRpL2FwaS9TaW1wbGVUeXBlO3hxAH4Am3QABFVuaXRzcgATeHNidGkuYXBpLlNpbmdsZXRvbvynX/jPVuRGAgABTAAEcGF0aHQAEEx4c2J0aS9hcGkvUGF0aDt4cQB+AJtzcgAOeHNidGkuYXBpLlBhdGibPVwIzqUnhAIAAVsACmNvbXBvbmVudHN0ABpbTHhzYnRpL2FwaS9QYXRoQ29tcG9uZW50O3hwdXIAGltMeHNidGkuYXBpLlBhdGhDb21wb25lbnQ7Q9oJdC1nFnQCAAB4cAAAAAJzcgAMeHNidGkuYXBpLklkmDJsizdTxEACAAFMAAJpZHEAfgAMeHIAF3hzYnRpLmFwaS5QYXRoQ29tcG9uZW50X5oiWy6Gn7wCAAB4cHQABXNjYWxhc3IADnhzYnRpLmFwaS5UaGlz2wntpsxaQFwCAAB4cQB+ALx1cgAaW0x4c2J0aS5hcGkuUGFyYW1ldGVyTGlzdDv10zod8rNw7gIAAHhwAAAAAXNyABd4c2J0aS5hcGkuUGFyYW1ldGVyTGlzdNbFvBxkSXTjAgACWgAKaXNJbXBsaWNpdFsACnBhcmFtZXRlcnN0ABxbTHhzYnRpL2FwaS9NZXRob2RQYXJhbWV0ZXI7eHAAdXIAHFtMeHNidGkuYXBpLk1ldGhvZFBhcmFtZXRlcjvPuMVdpd21bQIAAHhwAAAAAXNyABl4c2J0aS5hcGkuTWV0aG9kUGFyYW1ldGVyH0WuF9NJsOoCAARaAApoYXNEZWZhdWx0TAAIbW9kaWZpZXJ0AB1MeHNidGkvYXBpL1BhcmFtZXRlck1vZGlmaWVyO0wABG5hbWVxAH4ADEwAA3RwZXEAfgCpeHAAfnIAG3hzYnRpLmFwaS5QYXJhbWV0ZXJNb2RpZmllcgAAAAAAAAAAEgAAeHEAfgCOdAAFUGxhaW5xAH4AWXNyABd4c2J0aS5hcGkuUGFyYW1ldGVyaXplZBZs7mkDybt/AgACTAAIYmFzZVR5cGVxAH4AsFsADXR5cGVBcmd1bWVudHN0ABFbTHhzYnRpL2FwaS9UeXBlO3hxAH4Am3NxAH4Ar3QABUFycmF5cQB+ALV1cgARW0x4c2J0aS5hcGkuVHlwZTt0/6Vae/npQQIAAHhwAAAAAXNxAH4Ar3QABlN0cmluZ3NxAH4As3NxAH4AtnVxAH4AuQAAAANzcQB+ALt0AARqYXZhc3EAfgC7dAAEbGFuZ3EAfgDAc3EAfgCTAHBzcQB+AJh1cQB+ANMAAAAEc3EAfgCvdAADQXBwcQB+ALVzcQB+AK90AAtEZWxheWVkSW5pdHEAfgC1c3EAfgCvdAAGT2JqZWN0cQB+ANdzcQB+AK90AANBbnlxAH4AtXNxAH4AeHEAfgCFdXEAfgCGAAAAAHNxAH4AiAB0ABBsb2NhbC5Mb2NhbEFjdG9ydXEAfgCLAAAAAH5xAH4AjXQACENsYXNzRGVmdXEAfgCRAAAAAHNxAH4AkwBwc3EAfgCYcQB+AJ1zcQB+AJMAcHNxAH4AmHNxAH4AoHNxAH4AkwBwc3EAfgCYdXEAfgB2AAAAAHNxAH4AkwBwc3EAfgCYdXEAfgB2AAAAAHNxAH4AkwBwc3EAfgCYdXEAfgDTAAAAA3NxAH4Ar3QABUFjdG9yc3EAfgCzc3EAfgC2dXEAfgC5AAAAA3NxAH4Au3QABGFra2FzcQB+ALt0AAVhY3RvcnEAfgDAc3EAfgCvcQB+AOZzcQB+ALNzcQB+ALZ1cQB+ALkAAAADc3EAfgC7cQB+ANtzcQB+ALtxAH4A3XEAfgDAc3EAfgCvcQB+AOhzcQB+ALNzcQB+ALZ1cQB+ALkAAAACc3EAfgC7cQB+AL5xAH4AwHVyABRbTHhzYnRpLmFwaS5QYWNrYWdlO1sTGTdwpyehAgAAeHAAAAABc3IAEXhzYnRpLmFwaS5QYWNrYWdlflmP9q7OOVgCAAFMAARuYW1lcQB+AAx4cHQABWxvY2Fsc3IAFXhzYnRpLmFwaS5Db21waWxhdGlvbu364MNq6KBCAgACSgAJc3RhcnRUaW1lWwAHb3V0cHV0c3QAGltMeHNidGkvYXBpL091dHB1dFNldHRpbmc7eHAAAAFPxaex5HVyABpbTHhzYnRpLmFwaS5PdXRwdXRTZXR0aW5nO39qwvOnh6VCAgAAeHAAAAABc3IAF3hzYnRpLmFwaS5PdXRwdXRTZXR0aW5netmaR3T7HXsCAAJMAA9vdXRwdXREaXJlY3RvcnlxAH4ADEwAD3NvdXJjZURpcmVjdG9yeXEAfgAMeHB0AEMvaG9tZS9zaGluY2hhbi9ET1MvSGVsbG9SZW1vdGUvSGVsbG9Mb2NhbC90YXJnZXQvc2NhbGEtMi4xMC9jbGFzc2VzdAABL3VyAAJbQqzzF/gGCFTgAgAAeHAAAAAUpqWkDfZpNHUCGWUXhAkPkcEtQgs=
 external apis:
 0 items
 source infos:
 2 items
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\common.scala -> 
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/common/Common.scala -> 
 AAAAAAAAAAA=
-C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\local\HelloLocal.scala -> 
-AAAAAAAAAAEAAAEAAAAVAGEJdmFsIHJlbW90ZSA9IGNvbnRleHQuYWN0b3JGb3IoKCJha2thLnRjcDovL01pbmluZ1JlbW90ZVN5c3RlbUAxMjcuMC4wLjE6NTE1MC91c2VyL1JlbW90ZUFjdG9yIikpAQAAAdkBAAAAFgEAFgkgICAgICAgICAgICAgICAgICAgICABAFdDOlxVc2Vyc1xBbmt1clxEZXNrdG9wXERPU1xIZWxsb1JlbW90ZVxIZWxsb0xvY2FsXHNyY1xtYWluXHNjYWxhXGxvY2FsXEhlbGxvTG9jYWwuc2NhbGEBAFdDOlxVc2Vyc1xBbmt1clxEZXNrdG9wXERPU1xIZWxsb1JlbW90ZVxIZWxsb0xvY2FsXHNyY1xtYWluXHNjYWxhXGxvY2FsXEhlbGxvTG9jYWwuc2NhbGEAXm1ldGhvZCBhY3RvckZvciBpbiB0cmFpdCBBY3RvclJlZkZhY3RvcnkgaXMgZGVwcmVjYXRlZDogdXNlIGFjdG9yU2VsZWN0aW9uIGluc3RlYWQgb2YgYWN0b3JGb3IB
+/home/shinchan/DOS/HelloRemote/HelloLocal/src/main/scala/local/HelloLocal.scala -> 
+AAAAAAAAAAEAAAEAAAAVAFwJdmFsIHJlbW90ZSA9IGNvbnRleHQuYWN0b3JGb3IoKCJha2thLnRjcDovL01pbmluZ1JlbW90ZVN5c3RlbUAxMjcuMC4wLjE6NTE1MC91c2VyL01hc3RlciIpKQEAAAHHAQAAABYBABYJICAgICAgICAgICAgICAgICAgICAgAQBPL2hvbWUvc2hpbmNoYW4vRE9TL0hlbGxvUmVtb3RlL0hlbGxvTG9jYWwvc3JjL21haW4vc2NhbGEvbG9jYWwvSGVsbG9Mb2NhbC5zY2FsYQEATy9ob21lL3NoaW5jaGFuL0RPUy9IZWxsb1JlbW90ZS9IZWxsb0xvY2FsL3NyYy9tYWluL3NjYWxhL2xvY2FsL0hlbGxvTG9jYWwuc2NhbGEAXm1ldGhvZCBhY3RvckZvciBpbiB0cmFpdCBBY3RvclJlZkZhY3RvcnkgaXMgZGVwcmVjYXRlZDogdXNlIGFjdG9yU2VsZWN0aW9uIGluc3RlYWQgb2YgYWN0b3JGb3IB
 compilations:
-1 items
+2 items
 0 -> rO0ABXNyABV4c2J0aS5hcGkuQ29tcGlsYXRpb27t+uDDauigQgIAAkoACXN0YXJ0VGltZVsAB291dHB1dHN0ABpbTHhzYnRpL2FwaS9PdXRwdXRTZXR0aW5nO3hwAAABT8Vfo2R1cgAaW0x4c2J0aS5hcGkuT3V0cHV0U2V0dGluZzt/asLzp4elQgIAAHhwAAAAAXNyABd4c2J0aS5hcGkuT3V0cHV0U2V0dGluZ3rZmkd0+x17AgACTAAPb3V0cHV0RGlyZWN0b3J5dAASTGphdmEvbGFuZy9TdHJpbmc7TAAPc291cmNlRGlyZWN0b3J5cQB+AAZ4cHQAS0M6XFVzZXJzXEFua3VyXERlc2t0b3BcRE9TXEhlbGxvUmVtb3RlXEhlbGxvTG9jYWxcdGFyZ2V0XHNjYWxhLTIuMTBcY2xhc3Nlc3QAAS8=
+1 -> rO0ABXNyABV4c2J0aS5hcGkuQ29tcGlsYXRpb27t+uDDauigQgIAAkoACXN0YXJ0VGltZVsAB291dHB1dHN0ABpbTHhzYnRpL2FwaS9PdXRwdXRTZXR0aW5nO3hwAAABT8WnseR1cgAaW0x4c2J0aS5hcGkuT3V0cHV0U2V0dGluZzt/asLzp4elQgIAAHhwAAAAAXNyABd4c2J0aS5hcGkuT3V0cHV0U2V0dGluZ3rZmkd0+x17AgACTAAPb3V0cHV0RGlyZWN0b3J5dAASTGphdmEvbGFuZy9TdHJpbmc7TAAPc291cmNlRGlyZWN0b3J5cQB+AAZ4cHQAQy9ob21lL3NoaW5jaGFuL0RPUy9IZWxsb1JlbW90ZS9IZWxsb0xvY2FsL3RhcmdldC9zY2FsYS0yLjEwL2NsYXNzZXN0AAEv

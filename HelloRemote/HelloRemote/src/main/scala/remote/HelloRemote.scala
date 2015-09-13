@@ -20,12 +20,13 @@ class Master extends Actor {
   private var clientList = new ListBuffer[clientData]()
   private var nNodes = 0
   private var bitCoinList = new ListBuffer[Bitcoin]()
-  val (workSize,difficulty,threshold)=(10,3,3)
+  val (workSize,difficulty,threshold)=(50000000,5,3)
   
   def receive = {
     
     case "nodeUp" =>
        //add to list of clients
+      println("Node trying to contact me... yay!")
       nNodes += 1
       clientList += new clientData(nNodes)
       sender ! AssignWork(workSize,difficulty)
