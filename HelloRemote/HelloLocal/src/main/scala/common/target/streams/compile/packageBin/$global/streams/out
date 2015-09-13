@@ -1,0 +1,17 @@
+[0m[[0minfo[0m] [0mPackaging C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\common_2.10-0.1-SNAPSHOT.jar ...[0m
+[0m[[0mdebug[0m] [0mInput file mappings:[0m
+[0m[[0mdebug[0m] [0m	common\BitcoinList$.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\BitcoinList$.class[0m
+[0m[[0mdebug[0m] [0m	common\Bitcoin.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\Bitcoin.class[0m
+[0m[[0mdebug[0m] [0m	common[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common[0m
+[0m[[0mdebug[0m] [0m	common\Message.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\Message.class[0m
+[0m[[0mdebug[0m] [0m	common\Message$.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\Message$.class[0m
+[0m[[0mdebug[0m] [0m	common\Bitcoin$.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\Bitcoin$.class[0m
+[0m[[0mdebug[0m] [0m	common\BitcoinList.class[0m
+[0m[[0mdebug[0m] [0m	  C:\Users\Ankur\Desktop\DOS\HelloRemote\HelloLocal\src\main\scala\common\target\scala-2.10\classes\common\BitcoinList.class[0m
+[0m[[0minfo[0m] [0mDone packaging.[0m
