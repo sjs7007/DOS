@@ -4,8 +4,8 @@ import akka.actor._
 import scala.collection.mutable.ListBuffer
 import common._
 
-sealed trait ServerMessage
-case class assignWork(workSize: Int, nZeros: Int) extends ServerMessage
+//sealed trait ServerMessage
+case class assignWork(workSize: Int, nZeros: Int) 
 //case class receiveBitcoin(bitcoin: String) extends ServerMessage
 
 //var workerRef //store ref to worker of server
@@ -65,6 +65,6 @@ class Master extends Actor {
 
 object HelloRemote extends App {
   val system = ActorSystem("HelloRemoteSystem") //to use actor boiler plate
-  val remoteActor = system.actorOf(Props[RemoteActor], name="RemoteActor") //create actor of type RemoteActor
+  val remoteActor = system.actorOf(Props[RemoteActor], name = "RemoteActor")
   remoteActor ! "The RemoteActor is alive" //send string to remote actor
 }
