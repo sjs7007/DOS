@@ -60,14 +60,16 @@ class Master extends Actor {
 			if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp))*0.97 >= clientList(node).workRatio)  {
 				clientList(node).workRatio = (clientList(node).workSize/(System.nanoTime-clientList(node).lastTimeStamp))
 				clientList(node).workSize = (clientList(node).workSize*1.25).toInt
-				clientList(node).lastTimeStamp = System.nanoTime
 				}
 			else if (((clientList(node).workSize)/(System.nanoTime-clientList(node).lastTimeStamp)) <= clientList(node).workRatio*0.97)  {
 				clientList(node).workRatio = (clientList(node).workSize.toDouble/(System.nanoTime-clientList(node).lastTimeStamp))
 				clientList(node).workSize = (clientList(node).workSize*0.8).toInt
-				clientList(node).lastTimeStamp = System.nanoTime
-			}
 				
+				if (clientList(node).workSize < 100)
+					clientList(node).workSize = 100
+	
+			}
+			clientList(node).lastTimeStamp = System.nanoTime
 			sender ! AssignWork(difficulty,clientList(node).workSize)
 			
 			}
