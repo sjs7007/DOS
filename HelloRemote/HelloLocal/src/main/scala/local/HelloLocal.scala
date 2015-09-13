@@ -11,7 +11,7 @@ object Local extends App {
   implicit val system = ActorSystem("LocalSystem")
   val localActor = system.actorOf(Props[LocalActor], name = "LocalActor")  // the local actor
 		
-  localActor ! Message (5, 500000000)								// start the action
+  localActor ! AssignWork (5, 500000000)								// start the action
 
 }
 
@@ -28,10 +28,10 @@ class LocalActor extends Actor {
 
   def receive = {
 		
-		case Message(diff, size) =>
+		case AssignWork(diff, size) =>
 		
 				difficulty = diff
-        println("LocalActor received message: " + size)
+        println("LocalActor received AssignWork: " + size)
 				
 				var bitcoins = new ListBuffer[Bitcoin]()
 
