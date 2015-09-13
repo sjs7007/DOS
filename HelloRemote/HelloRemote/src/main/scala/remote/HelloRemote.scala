@@ -66,9 +66,10 @@ class Master extends Actor {
 }*/
 
 object HelloRemote extends App {
-  val system = ActorSystem("HelloRemoteSystem") //to use actor boiler plate
+  val system = ActorSystem("MiningRemoteSystem") //to use actor boiler plate
   val remoteActor = system.actorOf(Props[Master], name="Master") //create actor of type Master
   remoteActor ! "The RemoteActor is alive" //send string to remote actor ie self
+  
 }
 
 
