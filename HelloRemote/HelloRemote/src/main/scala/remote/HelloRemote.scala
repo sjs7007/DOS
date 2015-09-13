@@ -20,7 +20,7 @@ class Master extends Actor {
   private var clientList = new ListBuffer[clientData]()
   private var nNodes = 0
   private var bitCoinList = new ListBuffer[Bitcoin]()
-  val (workSize,difficulty,threshold)=(50000000,5,3)
+  val (workSize,difficulty,threshold)=(5000000,5,3)
   
   def receive = {
     
@@ -29,7 +29,7 @@ class Master extends Actor {
       println("Node trying to contact me... yay!")
       nNodes += 1
       clientList += new clientData(nNodes)
-      sender ! AssignWork(workSize,difficulty)
+      sender ! AssignWork(difficulty,workSize)
       
      case BitcoinList(bitcoins) => 
       //println(s"Server received new bitcoin : '$bitcoin'")
@@ -38,7 +38,7 @@ class Master extends Actor {
         println(bitcoins(i).input+" : "+bitcoins(i).hash)
         bitCoinList += new Bitcoin(bitcoins(i).input,bitcoins(i).hash)
       }
-
+			sender ! AssignWork(difficulty,workSize)
       case msg: String => 
       println(s"Remote Actor received '$msg'")
 
@@ -50,7 +50,7 @@ class Master extends Actor {
      }*/
       
      //else send more work
-     sender ! AssignWork(difficulty,workSize)
+     //sender ! AssignWork(difficulty,workSize)
     
   }
 }

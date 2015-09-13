@@ -3,43 +3,90 @@ import common._
 import java.security.MessageDigest
 import scala.collection.mutable.ListBuffer
 import scala.util
-
 import akka.actor._
+import akka.routing.RoundRobinRouter
 
 object Local extends App {
 
   implicit val system = ActorSystem("LocalSystem")
-  val localActor = system.actorOf(Props[LocalActor], name = "LocalActor")  // the local actor
-		
-  //localActor ! AssignWork (5, 500000000)								// start the action
+  val client = system.actorOf(Props[Client], name = "Client")  // the local actor
+	
 
 }
 
 
-class LocalActor extends Actor {
+class Client extends Actor {
+
+	var start = System.nanoTime
 
 	val remote = context.actorFor(("akka.tcp://MiningRemoteSystem@127.0.0.1:5150/user/Master"))
 	
 	remote ! "nodeUp"
-
-  var counter = 0
-	var difficulty = 0
-	var base = "ankurbagchi"
+	
+	var minersComplete : Int = 0
+	var totalCoinsFound : Int = 0
+	
+	var numberOfProcessors : Int = Runtime.getRuntime().availableProcessors()
+	
+	var listOfCoins = new ListBuffer[Bitcoin]()
+	
+	var Server : ActorRef = _
 
   def receive = {
 		
 		case AssignWork(diff, size) =>
 		
+				minersComplete = 0
+				listOfCoins = new ListBuffer[Bitcoin]()
+		
+        println("Client received work unit of size : " + size)
+				
+				val worker = context.actorOf(Props[Miner].withRouter(RoundRobinRouter(nrOfInstances=numberOfProcessors)))
+				
+				for (n <- 1 to numberOfProcessors)
+					worker ! AssignWork (diff, size/(numberOfProcessors))
+					
+				Server = sender
+
+		case BitcoinList (bitcoins) => 
+		
+			minersComplete += 1
+			
+			for (x <- 0 until bitcoins.length) 
+				listOfCoins += bitcoins(x)
+				
+			if (minersComplete >= numberOfProcessors) {
+				Server ! BitcoinList (listOfCoins)
+				totalCoinsFound += listOfCoins.length
+				println("Total bitcoins found by this node : " + totalCoinsFound)
+				println("Total time : " + (System.nanoTime - start) / 1e6 + "ms")
+				}
+				
+				
+		
+			
+		
+  }
+	
+}
+
+
+class Miner extends Actor {
+
+	var counter = 0
+	var difficulty = 0
+	var base = "ankurbagchi"
+	
+	def receive = {
+		
+		case AssignWork(diff, size) =>
+		
 				difficulty = diff
-        println("LocalActor received AssignWork: " + size)
 				
 				var bitcoins = new ListBuffer[Bitcoin]()
-
+	
+	for (counter <- 1 to size) {
 				
-        for (counter <- 1 to size) {
-				
-            //sender ! "Hello back to you"
-							
 							var r = new scala.util.Random
 							var sb = new StringBuilder
 							for (i <- 1 to 15) {
@@ -72,15 +119,13 @@ class LocalActor extends Actor {
 		
 						if (isDif == 1) {
 							bitcoins += Bitcoin(toFind, s)
-							println (toFind + "\t" + s)
+							//println (toFind + "\t" + s)
 						}
         }
-
-				//sender ! ReturnedBitcoins(bitcoins)				
-				println ("Terminated")
-				
-  }
+				sender ! BitcoinList(bitcoins)				
+				}
 	
-}
+
+} 
 
 
