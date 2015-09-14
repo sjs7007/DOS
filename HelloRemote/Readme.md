@@ -3,10 +3,6 @@ Bitcoin Mining
 - Saravanan Setty (33299221)
 - Ankur Bagchi (05549066)
 
-Best Result:
-Bitcoin: ankurbagchi;JgO_sQB?[Pd!|>
-Difficulty: 8
-
 ----------------------------------
 
 1. How to Run:
@@ -53,7 +49,14 @@ The outputs from the Client terminals reveal the periodic update of work unit si
 Example of Server output: http://showterm.io/1b872855bbadfdb2c57f5
 Example of Client output: http://showterm.io/3e5e122c77787cf29002b
 
-
 Running for bitcoin difficulty 4: http://showterm.io/3d3085f8fad3ee8479664
 
 User Time vs Real Time output for difficulty 5: http://showterm.io/49db3eef70f4e6c8b0276
+As seen, the ratio of user time to real time is over 3.5.
+
+----------------------------------
+
+5. Best Result
+
+Bitcoin: ankurbagchi;JgO_sQB?[Pd!|>
+Difficulty: 8
