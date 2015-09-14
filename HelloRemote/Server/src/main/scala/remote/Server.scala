@@ -43,7 +43,7 @@ class Master extends Actor {
 
       n match {
         case 1 => // New client
-        println("Contacted by node #" + (nNodes+1))
+        println("=================\nContacted by node #" + (nNodes+1) + "\n=================")
         clientList += new clientData(nNodes, sender, workSize)
         sender ! ClientState (nNodes, 1)
         nNodes += 1
@@ -78,14 +78,16 @@ class Master extends Actor {
          First we determine which node requires work, then based on the last cycle,
          we calculate the new work ratio. */
       
-      if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp))*0.97 > clientList(nodeID).workRatio)  {
+      if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp))*0.8 > clientList(nodeID).workRatio)  {
         clientList(nodeID).workRatio = (clientList(nodeID).workSize/(System.nanoTime-clientList(nodeID).lastTimeStamp))
         clientList(nodeID).workSize = (clientList(nodeID).workSize*1.25).toInt
         }
-      else if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp)) < clientList(nodeID).workRatio*0.97){
+      else if (((clientList(nodeID).workSize)/(System.nanoTime-clientList(nodeID).lastTimeStamp)) < clientList(nodeID).workRatio*0.8){
         clientList(nodeID).workRatio = (clientList(nodeID).workSize.toDouble/(System.nanoTime-clientList(nodeID).lastTimeStamp))
         clientList(nodeID).workSize = (clientList(nodeID).workSize*0.8).toInt
         
+				// Minimum work size
+				
         if (clientList(nodeID).workSize < 100)
           clientList(nodeID).workSize = 100
   
