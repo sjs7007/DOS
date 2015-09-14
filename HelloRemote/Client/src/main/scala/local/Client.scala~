@@ -5,8 +5,6 @@ import scala.collection.mutable.ListBuffer
 import scala.util
 import akka.actor._
 import akka.routing.RoundRobinRouter
-import java.io.File
-import com.typesafe.config.ConfigFactory
 
 object Client extends App {
 

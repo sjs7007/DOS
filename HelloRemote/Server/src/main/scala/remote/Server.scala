@@ -6,6 +6,8 @@ import common._
 import akka.routing.RoundRobinRouter
 import java.security.MessageDigest
 import scala.util._
+import com.typesafe.config.ConfigFactory
+import java.io.File
 
 class clientData(x: Int, act: ActorRef, ws: Int)
 {
@@ -104,7 +106,19 @@ class Master extends Actor {
 }
 
 object ServerStarter extends App {
-  val system = ActorSystem("MiningRemoteSystem") //to use actor boiler plate
+  
+  //get config from classpatrh
+  val configFile = getClass.getClassLoader.getResource("application.conf").getFile
+  
+  val config = ConfigFactory.parseFile(new File(configFile))
+
+  
+  
+  
+  
+  
+  
+  val system = ActorSystem("MiningRemoteSystem",config) //to use actor boiler plate
   val remoteActor = system.actorOf(Props[Master], name="Master") //create actor of type Master
   
    val intRegex = """(\d+)""".r
