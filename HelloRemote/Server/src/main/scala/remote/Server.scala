@@ -7,7 +7,10 @@ import akka.routing.RoundRobinRouter
 import java.security.MessageDigest
 import scala.util._
 import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigValueFactory
+
 import java.io.File
+import java.net._
 
 class clientData(x: Int, act: ActorRef, ws: Int)
 {
@@ -110,26 +113,17 @@ object ServerStarter extends App {
   //get config from classpatrh
   val configFile = getClass.getClassLoader.getResource("application.conf").getFile
   
-  val config = ConfigFactory.parseFile(new File(configFile))
-
-  
-  
-  
-  
-  
+	val config = ConfigFactory.parseFile(new File(configFile)).withValue ("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(InetAddress.getLocalHost().getHostAddress()))
+    
   
   val system = ActorSystem("MiningRemoteSystem",config) //to use actor boiler plate
   val remoteActor = system.actorOf(Props[Master], name="Master") //create actor of type Master
   
    val intRegex = """(\d+)""".r
-   if (args.length > 0) {
-    val param = args(0) match {
-    case intRegex(str) => remoteActor ! Difficulty(args(0).toInt)
-    case _ => println ("Warning: Improper difficulty input in command line. Defaulting to 5.")
-    remoteActor ! Difficulty(5)
- }
- } else {
- ("Warning: Improper difficulty input in command line. Defaulting to 5.")
+   if (args.length > 0) 
+    remoteActor ! Difficulty(args(0).toInt)
+  else {
+		println("Warning: Improper difficulty input in command line. Defaulting to 5.")
     remoteActor ! Difficulty(5)
     }
 
