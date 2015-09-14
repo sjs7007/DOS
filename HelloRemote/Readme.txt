@@ -56,4 +56,4 @@ Example of Client output: http://showterm.io/3e5e122c77787cf29002b
 
 Running for bitcoin difficulty 4: http://showterm.io/3d3085f8fad3ee8479664
 
-The above link also contains
+User Time vs Real Time output for difficulty 5: http://showterm.io/49db3eef70f4e6c8b0276
