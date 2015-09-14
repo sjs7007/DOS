@@ -27,10 +27,6 @@ class Client(remotePath: String) extends Actor {
   var lastWorkSize = 0
   var currentWorkSize = 0
 
-  println("remote path is "+remotePath+".")
-
-
-	
   val remote = context.actorSelection(("akka.tcp://MiningRemoteSystem@"+remotePath+":5150/user/Master"))
 	
   remote ! ClientState(-1, 1)
@@ -79,20 +75,15 @@ class Client(remotePath: String) extends Actor {
         totalCoinsFound += listOfCoins.length
         totalWorkDone += currentWorkSize
         
-        
-        
-        if (workCycles %5 == 0) {
-                
-        println("Total work units done by this node : " + totalWorkDone.toInt)
-        println("Total time taken by this node      : " + (System.nanoTime - start) / 1e6 + "ms")
+        if (workCycles % 10 == 0) {         
+					println("============\nNode Stats:\nWork units  : " + totalWorkDone.toInt)
+					println("Active time : " + (System.nanoTime - start) / 1e6 + "ms\n============")
         }
-        }
+      }
         
     case ClientState(id, a) => nodeID = id
   }
-  
 }
-
 
 class Miner extends Actor {
 
@@ -146,7 +137,7 @@ class Miner extends Actor {
             }
         }
         sender ! BitcoinList(bitcoins)        
-        }
+    }
 }
 
 

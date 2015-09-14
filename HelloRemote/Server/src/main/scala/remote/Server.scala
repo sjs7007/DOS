@@ -99,7 +99,7 @@ class Master extends Actor {
         
         }
       else {
-      
+			      
         // Assign work to Server's Miners
       
         for (n <- 1 to numberOfProcessors)
@@ -112,7 +112,7 @@ class Master extends Actor {
 
 object ServerStarter extends App {
   
-  //get config from classpatrh
+  //get config
   val configFile = getClass.getClassLoader.getResource("application.conf").getFile
   
 	val config = ConfigFactory.parseFile(new File(configFile)).withValue ("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(InetAddress.getLocalHost().getHostAddress()))
@@ -129,7 +129,7 @@ object ServerStarter extends App {
     remoteActor ! Difficulty(5)
     }
 
-  
+  println ("=================\nMining Bitcoins\n=================")
 }
 
 class Miner extends Actor {
@@ -175,13 +175,12 @@ class Miner extends Actor {
             for ( i <- 0 to (difficulty-1))
             {
               if (s.charAt(i) != '0')
-              isDif = 0;
+								isDif = 0;
             }
     
-            if (isDif == 1) {
+            if (isDif == 1) 
               bitcoins += Bitcoin(toFind, s)
-              //println (toFind + "\t" + s)
-            }
+            
         }
         sender ! BitcoinList(bitcoins)        
         }
