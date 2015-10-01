@@ -7,7 +7,7 @@ object Simulate extends App {
   
     val system = ActorSystem("Gossip")
     val node1 = system.actorOf(Props(new Node(1)),name="node")
-    val node2 = system.actorOf(Props(new Node(2)),name="node2")
+    val node2 = system.actorOf(Props(new Node(3)),name="node2")
 
   
  // node1.neighborList += node2
