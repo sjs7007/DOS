@@ -13,20 +13,19 @@ object Simulate extends App {
     var gossipRecCount=0 // used for termination condition
     var ratioChange=0 //used for termination condition
     var rumorCount=0
+    var change = new Array[Double](3)
 
     def shouldITerminate() = {
-      gossipRecCount = gossipRecCount + 1
       var newRatio = s/w
-      ratioChange = ratioChange + math.abs(newRatio - ratio)
+      change(gossipRecCount%3) = math.abs(newRatio - ratio)
       ratio = newRatio
+      gossipRecCount = gossipRecCount + 1
 
-      if(gossipRecCount%3==0) { //if difference is 
-        if(ratioChange<0.0001) {
+      if(gossipRecCount>=3) { //if difference is 
+        var sumChange = change(0)+change(1)+change(2)
+        if(sumChange<0.0001) {
           // terminate the actor
           context.stop(self)
-        }
-        else {
-          ratioChange=0
         }
       }
     }
