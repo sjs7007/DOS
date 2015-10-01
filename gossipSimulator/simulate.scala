@@ -6,14 +6,15 @@ import scala.util._ //for random number
 object Simulate extends App {
   
     val system = ActorSystem("Gossip")
-    val node1 = system.actorOf(Props[Node],name="node")
-    val node2 = system.actorOf(Props[Node],name="node2")
+    val node1 = system.actorOf(Props(new Node(1)),name="node")
+    val node2 = system.actorOf(Props(new Node(2)),name="node2")
+
   
-  //node1.neighborList += node2
+ // node1.neighborList += node2
   //node2.neighborList += node1
- // node1 ! addNeighbor(node2)
- // node2 ! addNeighbor(node1)
-  //node1 ! start 
+  node1 ! addNeighbor(node2)
+  node2 ! addNeighbor(node1)
+  node1 ! Start 
   
   case class gossipMsg(s: Double,w: Double)
   case class Start
@@ -40,6 +41,7 @@ object Simulate extends App {
         var sumChange = change(0)+change(1)+change(2)
         if(sumChange<Math.pow(10,-10)) {
           // terminate the actor
+          println("Node "+nodeId.toString()+" terminated.")
           context.stop(self)
         }
       }
@@ -47,18 +49,18 @@ object Simulate extends App {
 
     def receive = {
       case gossipMsg(s_r,w_r) =>
-        println("Received gossip message. ratio = "+ratio)
+        println("Node "+nodeId.toString()+" received gossip message. ratio = "+ratio)
         s = s + s_r
         w = w + w_r
         rumorCount = rumorCount+1
         shouldITerminate()
 
         //select neighbor and send gossip if rumorCount <= 10
-        if(rumorCount<10) {
+        if(rumorCount<10000) {
           s=s/2
           w=w/2
           ratio=s/w
-          println("Forwarding gossip message. ratio = "+ratio)
+          println("Node "+nodeId.toString()+" forwarding gossip message. ratio = "+ratio)
           neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(s,w)
         }
 
