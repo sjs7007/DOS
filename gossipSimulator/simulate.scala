@@ -5,17 +5,18 @@ import scala.util._ //for random number
 
 object Simulate extends App {
   
-  val system = ActorSystem("Gossip")
-  val node1 = system.actorOf(Props[Node],name="node")
-  val node2 = system.actorOf(Props[Node],name="node2")
+    val system = ActorSystem("Gossip")
+    val node1 = system.actorOf(Props[Node],name="node")
+    val node2 = system.actorOf(Props[Node],name="node2")
+  
   //node1.neighborList += node2
   //node2.neighborList += node1
-  node1 ! addNeighbor(node2)
-  node2 ! addNeighbor(node1)
-  node1 ! start 
+ // node1 ! addNeighbor(node2)
+ // node2 ! addNeighbor(node1)
+  //node1 ! start 
   
   case class gossipMsg(s: Double,w: Double)
-  case class start
+  case class Start
   case class addNeighbor(x: ActorRef)
 
   class Node(id: Double) extends Actor {
@@ -61,7 +62,7 @@ object Simulate extends App {
           neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(s,w)
         }
 
-      case start =>
+      case Start =>
         s=s/2
         w=w/2
         rumorCount=rumorCount+1
@@ -71,4 +72,5 @@ object Simulate extends App {
         neighborList+= x
     }  
   }
+
 }
