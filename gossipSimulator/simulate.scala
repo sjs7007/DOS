@@ -6,7 +6,7 @@ import scala.util._ //for random number
 object Simulate extends App {
   
     val system = ActorSystem("Gossip")
-    val node1 = system.actorOf(Props(new Node(1)),name="node")
+    val node1 = system.actorOf(Props(new Node(2)),name="node")
     val node2 = system.actorOf(Props(new Node(3)),name="node2")
 
   
@@ -14,15 +14,19 @@ object Simulate extends App {
   //node2.neighborList += node1
   node1 ! addNeighbor(node2)
   node2 ! addNeighbor(node1)
-  node1 ! Start 
+  //node1 ! StartPushSum 
+  node1 ! StartGossip
   
-  case class gossipMsg(s: Double,w: Double)
-  case class Start
+  //case class gossipMsg
+  case class pushSumMsg(s: Double,w: Double,senderId: Int)
+  case class StartGossip
+  case class StartPushSum
   case class addNeighbor(x: ActorRef)
+  case class gossipMsg(nodeId: Int)
 
-  class Node(id: Double) extends Actor {
+  class Node(id: Int) extends Actor {
     var nodeId = id //actor number
-    var s : Double= nodeId 
+    var s : Double= id.toDouble
     var w : Double= 1
     var ratio : Double= s/w
     var gossipRecCount=0 // used for termination condition
@@ -31,7 +35,7 @@ object Simulate extends App {
     var change = new Array[Double](3)
     var neighborList = new ListBuffer[ActorRef]
 
-    def shouldITerminate() = {
+    def shouldITerminatePushSum() = {
       var newRatio = s/w
       change(gossipRecCount%3) = math.abs(newRatio - ratio)
       ratio = newRatio
@@ -48,30 +52,44 @@ object Simulate extends App {
     }
 
     def receive = {
-      case gossipMsg(s_r,w_r) =>
-        println("Node "+nodeId.toString()+" received gossip message. ratio = "+ratio)
+      case pushSumMsg(s_r,w_r,senderId) =>
+        println("Node "+nodeId.toString()+" received push sum message from node "+senderId.toString()+". ratio = "+ratio)
         s = s + s_r
         w = w + w_r
-        rumorCount = rumorCount+1
-        shouldITerminate()
+        shouldITerminatePushSum() //terminate if not much change in sum for 3 consec rounds
+        s=s/2
+        w=w/2
+        ratio=s/w
+        var receiver=Random.nextInt(neighborList.length)
+       // println("Node "+nodeId.toString()+" forwarding push sum message to node "+receiver.toString()+". ratio = "+ratio)
+        println("Node "+nodeId.toString()+" forwarding push sum message . ratio = "+ratio+"\n")
+        neighborList(receiver) ! pushSumMsg(s,w,nodeId)
 
-        //select neighbor and send gossip if rumorCount <= 10
-        if(rumorCount<10000) {
-          s=s/2
-          w=w/2
-          ratio=s/w
-          println("Node "+nodeId.toString()+" forwarding gossip message. ratio = "+ratio)
-          neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(s,w)
-        }
-
-      case Start =>
+      case StartPushSum =>
         s=s/2
         w=w/2
         rumorCount=rumorCount+1
-        neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(s,w)
+        neighborList(Random.nextInt(neighborList.length)) ! pushSumMsg(s,w,nodeId)
 
       case addNeighbor(x) =>
         neighborList+= x
+
+      case StartGossip =>
+        neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(nodeId)
+
+      case gossipMsg(senderId) => 
+        gossipRecCount = gossipRecCount + 1
+        println("Node "+nodeId.toString()+" received gossip msg from node "+senderId.toString()+". Gossip Count="+gossipRecCount+".");
+        if(gossipRecCount>=10) {
+          println("Node "+nodeId.toString()+ " terminated.\n")
+          context.stop(self)
+        }
+        else {
+          var receiver = Random.nextInt(neighborList.length)
+          println("Node "+nodeId.toString()+" forwarding gossip message.\n")
+          neighborList(receiver) ! gossipMsg(nodeId) 
+        }
+
     }  
   }
 
