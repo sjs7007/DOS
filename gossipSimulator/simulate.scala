@@ -6,16 +6,45 @@ import scala.util._ //for random number
 object Simulate extends App {
   
     val system = ActorSystem("Gossip")
-    val node1 = system.actorOf(Props(new Node(2)),name="node")
-    val node2 = system.actorOf(Props(new Node(3)),name="node2")
+		
+    //val node1 = system.actorOf(Props(new Node(2)),name="node")
+    //val node2 = system.actorOf(Props(new Node(3)),name="node2")
 
-  
- // node1.neighborList += node2
-  //node2.neighborList += node1
-  node1 ! addNeighbor(node2)
-  node2 ! addNeighbor(node1)
-  //node1 ! StartPushSum 
-  node1 ! StartGossip
+		var nodeList = new ListBuffer[ActorRef]
+		
+		var n = 10
+		var x = 1
+		
+		// LINEBRO
+		
+		/*
+		for (x <- 0 to (n-1)) {
+		nodeList += system.actorOf(Props(new Node(x)))
+
+		if (x > 0) {
+			println (x.toString+" "+(x-1).toString())
+			nodeList(x) ! addNeighbor (nodeList(x-1))
+			nodeList(x-1) ! addNeighbor (nodeList(x))
+			}
+		}
+		*/
+		
+		// EVERYWHEREBRO
+		
+		var y = 0
+		for (x <- 0 to (n-1)) {
+		nodeList += system.actorOf(Props(new Node(x)))
+	
+		for (y <- 0 to (x-1)) {
+			nodeList(y) ! addNeighbor (nodeList(x))
+			}
+		}
+
+		for (y <- 0 to (n-2)) {
+			nodeList(n-1) ! addNeighbor (nodeList(y))
+		}
+		
+  nodeList(0) ! StartPushSum
   
   //case class gossipMsg
   case class pushSumMsg(s: Double,w: Double,senderId: Int)
@@ -89,7 +118,6 @@ object Simulate extends App {
           println("Node "+nodeId.toString()+" forwarding gossip message.\n")
           neighborList(receiver) ! gossipMsg(nodeId) 
         }
-
     }  
   }
 
