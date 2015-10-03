@@ -12,7 +12,7 @@ object Simulate extends App {
 
 		println ("wtf")
 		
-		var n = 10
+		var n = 27
 		var counter = 1
 		var x = 0
 		var y = 0
@@ -68,7 +68,8 @@ object Simulate extends App {
 					}
 				}
 		
-
+		/*
+		
 		for (x <- 0 to (a-1))
 			for (y <- 0 to (b-1))
 				for (z <- 0 to (c-1)) {
@@ -81,7 +82,7 @@ object Simulate extends App {
 		
 		// LINEBRO
 		
-		/*
+		
 		for (x <- 0 to (n-1)) {
 		nodeList(0)(0) += system.actorOf(Props(new Node(x)))
 
@@ -107,55 +108,12 @@ object Simulate extends App {
 		for (y <- 0 to (n-2)) {
 			nodeList(n-1) ! addNeighbor (nodeList(y))
 		}
-		
-		
-		
-		// 3DBRO
-		
-		for (x <- 0 to 2) 
-			nodeList += system.actorOf(Props(new Node(x)))
-		
-		for (x <- 0 to 2) 
-			for (y <- 0 to 2) 
-				if (x != y)
-					nodeList(x) ! addNeighbor (nodeList(y))
-			
-		//3DLattice (nodeList(0), nodeList(1), nodeList(2), (n-3))
-		
-		
-		
-		object 3DLattice (n1, n2, n3 : Node, n: Int) {
-		
-		if (n <= 0)
-			return	
-			
-		else {
-			var newNode = system.actorOf(Props(new Node(n)))
-			nodeList += newNode
-			newNode ! addNeighbor (n1)
-			newNode ! addNeighbor (n2)
-			newNode ! addNeighbor (n3)
-			n1 ! addNeighbor (newNode)
-			n2 ! addNeighbor (newNode)
-			n3 ! addNeighbor (newNode)
-			
-			if (n%3 == 0)
-				3DLattice (n1, n2, newNode, --n)
-				
-			else if (n%3 == 1)
-				3DLattice (n1, n3, newNode, --n)
-			else
-				3DLattice (n2, n3, newNode, --n)
-		}
-		
-		
-		}
-		
-		
-		
-  nodeList(0) ! StartPushSum
 	
 	*/
+	
+  nodeList(0)(0)(0) ! StartPushSum
+	
+	
   
   //case class gossipMsg
   case class pushSumMsg(s: Double,w: Double,senderId: Int)
