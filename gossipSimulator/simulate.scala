@@ -26,9 +26,13 @@ object Simulate extends App {
 		println (a, b, c)
 		
 		
-		var nodeList = new ListBuffer[ActorRef]
+		//var nodeList = new ListBuffer[ActorRef]
 		
-		//var nodeList = Array.ofDim[ActorRef](a,b,c)
+		a = n
+		b = 1
+		c = 1
+		
+		var nodeList = Array.ofDim[ActorRef](a,b,c)
 		
 		
 		
@@ -86,12 +90,12 @@ object Simulate extends App {
 		
 		
 		for (x <- 0 to (n-1)) {
-		nodeList(0)(0) += system.actorOf(Props(new Node(x)))
+		nodeList(x)(0)(0) = system.actorOf(Props(new Node(x+1)))
 
 		if (x > 0) {
 			println (x.toString+" "+(x-1).toString())
-			nodeList(x) ! addNeighbor (nodeList(x-1))
-			nodeList(x-1) ! addNeighbor (nodeList(x))
+			nodeList(x)(0)(0) ! addNeighbor (nodeList(x-1)(0)(0))
+			nodeList(x-1)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
 			}
 		}
 		
