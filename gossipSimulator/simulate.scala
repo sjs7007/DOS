@@ -12,7 +12,7 @@ object Simulate extends App {
 
 		println ("wtf")
 		
-		var n = 8
+		var n = 16
 		var counter = 1
 		var x = 0
 		var y = 0
@@ -28,19 +28,19 @@ object Simulate extends App {
 		
 		//var nodeList = new ListBuffer[ActorRef]
 		
-		a = n
-		b = 1
-		c = 1
+		//a = n
+		//b = 1
+		//c = 1
 		
 		var nodeList = Array.ofDim[ActorRef](a,b,c)
 		
 		
 		
-		/*for (x <- 0 to (a-1))
+		for (x <- 0 to (a-1))
 			for (y <- 0 to (b-1))
 				for (z <- 0 to (c-1)) {
 					if (counter <= n) {
-					println (counter)
+					//println (counter)
 					nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
 					counter += 1
 					}				
@@ -74,7 +74,7 @@ object Simulate extends App {
 		
 		
         
-        
+       /* 
 		
 		for (x <- 0 to (a-1))
 			for (y <- 0 to (b-1))
@@ -85,7 +85,7 @@ object Simulate extends App {
 				
 				}
 		
-		*/
+		
 		// LINEBRO
 		
 		
@@ -101,7 +101,7 @@ object Simulate extends App {
 		
 		
 		// EVERYWHEREBRO
-		/*
+		
 		
 		for (x <- 0 to (n-1)) {
 		nodeList += system.actorOf(Props(new Node(x)))
@@ -117,7 +117,7 @@ object Simulate extends App {
 	
 	*/
 	
-  nodeList(0)(0)(0) ! StartPushSum
+  //nodeList(0)(0)(0) ! StartPushSum
 	
 	
   
