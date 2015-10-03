@@ -171,11 +171,16 @@ object Simulate extends App {
         s=s/2
         w=w/2
         ratio=s/w
-        var receiver=Random.nextInt(neighborList.length)
-       // println("Node "+nodeId.toString()+" forwarding push sum message to node "+receiver.toString()+". ratio = "+ratio)
-        println("Node "+nodeId.toString()+" forwarding push sum message . ratio = "+ratio+"\n")
-        neighborList(receiver) ! pushSumMsg(s,w,nodeId)
-
+        if(neighborList.length==0) {
+          println("All neighboring nodes "+nodeId+" are down. Not sending message.")
+        }
+        else {
+          var receiver=Random.nextInt(neighborList.length)
+          // println("Node "+nodeId.toString()+" forwarding push sum message to node "+receiver.toString()+". ratio = "+ratio)
+          println("Node "+nodeId.toString()+" forwarding push sum message . ratio = "+ratio+"\n")
+          neighborList(receiver) ! pushSumMsg(s,w,nodeId)
+        }
+        
       case StartPushSum =>
         s=s/2
         w=w/2
@@ -201,6 +206,9 @@ object Simulate extends App {
           context.stop(self)
         }
         else {
+          if(neighborList.length==0) {
+            println("All neighboring nodes of node "+nodeId+" are down. Not sending message.")
+          }
           var receiver = Random.nextInt(neighborList.length)
           println("Node "+nodeId.toString()+" forwarding gossip message.\n")
           neighborList(receiver) ! gossipMsg(nodeId) 
