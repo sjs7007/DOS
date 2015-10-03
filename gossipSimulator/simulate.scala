@@ -12,7 +12,7 @@ object Simulate extends App {
 
 		println ("wtf")
 		
-		var n = 8
+		var n = 100
 		var counter = 1
 		var x = 0
 		var y = 0
