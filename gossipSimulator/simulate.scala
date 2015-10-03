@@ -10,17 +10,80 @@ object Simulate extends App {
     //val node1 = system.actorOf(Props(new Node(2)),name="node")
     //val node2 = system.actorOf(Props(new Node(3)),name="node2")
 
-		var nodeList = new ListBuffer[ActorRef]
+		println ("wtf")
 		
 		var n = 10
+		var counter = 1
 		var x = 0
 		var y = 0
+		
+		// 3DCube
+		
+		var a = math.ceil(math.cbrt(n)).toInt
+		var b = math.ceil(math.sqrt(n/a)).toInt
+		var c = math.ceil(n/(a*b)).toInt + 1
+		
+		println (a, b, c)
+		
+		
+		//var nodeList = new ListBuffer[ActorRef]
+		
+		var nodeList = Array.ofDim[ActorRef](a,b,c)
+		
+		
+		
+		for (x <- 0 to (a-1))
+			for (y <- 0 to (b-1))
+				for (z <- 0 to (c-1)) {
+					if (counter <= n) {
+					println (counter)
+					nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
+					counter += 1
+					}				
+				}
+		
+		for (x <- 0 to (a-1))
+			for (y <- 0 to (b-1))
+				for (z <- 0 to (c-1)) {
+				
+				if (nodeList(x)(y)(z) != null) {
+				
+					if (z < (c-1) && nodeList(x)(y)(z+1) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
+						
+					if (y < (b-1) && nodeList(x)(y+1)(z) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
+						
+					if (x < (a-1) && nodeList(x+1)(y)(z) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
+					
+					if (z > 0 && nodeList(x)(y)(z-1) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
+						
+					if (y > 0 && nodeList(x)(y-1)(z) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
+						
+					if (x > 0 && nodeList(x-1)(y)(z) != null)
+						nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
+					}
+				}
+		
+
+		for (x <- 0 to (a-1))
+			for (y <- 0 to (b-1))
+				for (z <- 0 to (c-1)) {
+				
+				if (nodeList(x)(y)(z) != null)
+					nodeList (x)(y)(z) ! "printDetails"
+				
+				}
+		
 		
 		// LINEBRO
 		
 		/*
 		for (x <- 0 to (n-1)) {
-		nodeList += system.actorOf(Props(new Node(x)))
+		nodeList(0)(0) += system.actorOf(Props(new Node(x)))
 
 		if (x > 0) {
 			println (x.toString+" "+(x-1).toString())
@@ -45,7 +108,7 @@ object Simulate extends App {
 			nodeList(n-1) ! addNeighbor (nodeList(y))
 		}
 		
-		*/
+		
 		
 		// 3DBRO
 		
@@ -57,12 +120,14 @@ object Simulate extends App {
 				if (x != y)
 					nodeList(x) ! addNeighbor (nodeList(y))
 			
-		3DLattice (nodeList(0), nodeList(1), nodeList(2), (n-3))
+		//3DLattice (nodeList(0), nodeList(1), nodeList(2), (n-3))
+		
+		
 		
 		object 3DLattice (n1, n2, n3 : Node, n: Int) {
 		
 		if (n <= 0)
-			return
+			return	
 			
 		else {
 			var newNode = system.actorOf(Props(new Node(n)))
@@ -73,8 +138,10 @@ object Simulate extends App {
 			n1 ! addNeighbor (newNode)
 			n2 ! addNeighbor (newNode)
 			n3 ! addNeighbor (newNode)
+			
 			if (n%3 == 0)
 				3DLattice (n1, n2, newNode, --n)
+				
 			else if (n%3 == 1)
 				3DLattice (n1, n3, newNode, --n)
 			else
@@ -84,7 +151,11 @@ object Simulate extends App {
 		
 		}
 		
+		
+		
   nodeList(0) ! StartPushSum
+	
+	*/
   
   //case class gossipMsg
   case class pushSumMsg(s: Double,w: Double,senderId: Int)
@@ -95,6 +166,7 @@ object Simulate extends App {
 
   class Node(id: Int) extends Actor {
     var nodeId = id //actor number
+		println ("Initialized node with id " + id)
     var s : Double= id.toDouble
     var w : Double= 1
     var ratio : Double= s/w
@@ -158,6 +230,11 @@ object Simulate extends App {
           println("Node "+nodeId.toString()+" forwarding gossip message.\n")
           neighborList(receiver) ! gossipMsg(nodeId) 
         }
+				
+				
+			case "printDetails" =>
+				println (id)
+				println (neighborList)
     }  
   }
 
