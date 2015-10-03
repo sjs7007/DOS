@@ -12,7 +12,7 @@ object Simulate extends App {
 
 		println ("wtf")
 		
-		var n = 27
+		var n = 8
 		var counter = 1
 		var x = 0
 		var y = 0
@@ -26,13 +26,13 @@ object Simulate extends App {
 		println (a, b, c)
 		
 		
-		//var nodeList = new ListBuffer[ActorRef]
+		var nodeList = new ListBuffer[ActorRef]
 		
-		var nodeList = Array.ofDim[ActorRef](a,b,c)
+		//var nodeList = Array.ofDim[ActorRef](a,b,c)
 		
 		
 		
-		for (x <- 0 to (a-1))
+		/*for (x <- 0 to (a-1))
 			for (y <- 0 to (b-1))
 				for (z <- 0 to (c-1)) {
 					if (counter <= n) {
@@ -68,7 +68,9 @@ object Simulate extends App {
 					}
 				}
 		
-		/*
+		
+        
+        
 		
 		for (x <- 0 to (a-1))
 			for (y <- 0 to (b-1))
@@ -79,7 +81,7 @@ object Simulate extends App {
 				
 				}
 		
-		
+		*/
 		// LINEBRO
 		
 		
@@ -95,7 +97,7 @@ object Simulate extends App {
 		
 		
 		// EVERYWHEREBRO
-		
+		/*
 		
 		for (x <- 0 to (n-1)) {
 		nodeList += system.actorOf(Props(new Node(x)))
@@ -121,6 +123,7 @@ object Simulate extends App {
   case class StartPushSum
   case class addNeighbor(x: ActorRef)
   case class gossipMsg(nodeId: Int)
+  case class nodeGoingDown(nodeId: Int)
 
   class Node(id: Int) extends Actor {
     var nodeId = id //actor number
@@ -143,6 +146,11 @@ object Simulate extends App {
       if(gossipRecCount>=3) { //if difference is 
         var sumChange = change(0)+change(1)+change(2)
         if(sumChange<Math.pow(10,-10)) {
+          //send message to all neighbors that this node is going down
+          for(i<- 0 until neighborList.length) {
+            neighborList(i) ! nodeGoingDown(nodeId)
+          }
+
           // terminate the actor
           println("Node "+nodeId.toString()+" terminated.")
           context.stop(self)
@@ -175,6 +183,11 @@ object Simulate extends App {
 
       case StartGossip =>
         neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(nodeId)
+
+      case nodeGoingDown(nodeId) =>
+        println("Received message that node "+nodeId+" going down.")
+        neighborList -= sender
+
 
       case gossipMsg(senderId) => 
         gossipRecCount = gossipRecCount + 1
