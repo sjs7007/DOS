@@ -6,122 +6,146 @@ import scala.util._ //for random number
 object Simulate extends App {
   
     val system = ActorSystem("Gossip")
-		
+    
     //val node1 = system.actorOf(Props(new Node(2)),name="node")
     //val node2 = system.actorOf(Props(new Node(3)),name="node2")
-
-		println ("wtf")
 		
-		var n = 16
-		var counter = 1
-		var x = 0
-		var y = 0
+		if (args.length < 3) {
+			println ("Error: Insufficient arguments")
+			System.exit(0)
+			}
 		
-		// 3DCube
+		var n = 10
+			n = args(0).toInt
 		
-		var a = math.ceil(math.cbrt(n)).toInt
-		var b = math.ceil(math.sqrt(n/a)).toInt
-		var c = math.ceil(n/(a*b)).toInt + 1
-		
-		println (a, b, c)
-		
-		
-		//var nodeList = new ListBuffer[ActorRef]
-		
-		//a = n
-		//b = 1
-		//c = 1
+		var a = 1
+		var b = 1
+		var c = 1
+    var counter = 1
 		
 		var nodeList = Array.ofDim[ActorRef](a,b,c)
 		
-		
-		
-		for (x <- 0 to (a-1))
-			for (y <- 0 to (b-1))
-				for (z <- 0 to (c-1)) {
-					if (counter <= n) {
-					//println (counter)
-					nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
-					Thread sleep 10
-					counter += 1
-					}				
-				}
-		
-		for (x <- 0 to (a-1))
-			for (y <- 0 to (b-1))
-				for (z <- 0 to (c-1)) {
-				
-				if (nodeList(x)(y)(z) != null) {
-				
-					if (z < (c-1) && nodeList(x)(y)(z+1) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
-						
-					if (y < (b-1) && nodeList(x)(y+1)(z) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
-						
-					if (x < (a-1) && nodeList(x+1)(y)(z) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
-					
-					if (z > 0 && nodeList(x)(y)(z-1) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
-						
-					if (y > 0 && nodeList(x)(y-1)(z) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
-						
-					if (x > 0 && nodeList(x-1)(y)(z) != null)
-						nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
-					}
-				}
-		
-		
-        
-       /* 
-		
-		for (x <- 0 to (a-1))
-			for (y <- 0 to (b-1))
-				for (z <- 0 to (c-1)) {
-				
-				if (nodeList(x)(y)(z) != null)
-					nodeList (x)(y)(z) ! "printDetails"
-				
-				}
-		
-		
-		// LINEBRO
-		
-		
-		for (x <- 0 to (n-1)) {
-		nodeList(x)(0)(0) = system.actorOf(Props(new Node(x+1)))
+		args(1) match {
+			case "line" => a = n
+										 nodeList = Array.ofDim[ActorRef](a,b,c)
+										 
+										 for (x <- 0 to (n-1)) {
+											nodeList(x)(0)(0) = system.actorOf(Props(new Node(x+1)))
 
-		if (x > 0) {
-			println (x.toString+" "+(x-1).toString())
-			nodeList(x)(0)(0) ! addNeighbor (nodeList(x-1)(0)(0))
-			nodeList(x-1)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
-			}
-		}
-		
-		
-		// EVERYWHEREBRO
-		
-		
-		for (x <- 0 to (n-1)) {
-		nodeList += system.actorOf(Props(new Node(x)))
-	
-		for (y <- 0 to (x-1)) {
-			nodeList(y) ! addNeighbor (nodeList(x))
-			}
-		}
+											if (x > 0) {
+												println (x.toString+" "+(x-1).toString())
+												nodeList(x)(0)(0) ! addNeighbor (nodeList(x-1)(0)(0))
+												nodeList(x-1)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
+											}
+										}
+			case "3D" =>  a = math.ceil(math.cbrt(n)).toInt
+										b = math.ceil(math.sqrt(n/a)).toInt
+										c = math.ceil(n/(a*b)).toInt + 1
+										
+										nodeList = Array.ofDim[ActorRef](a,b,c)
+    
+										for (x <- 0 to (a-1))
+											for (y <- 0 to (b-1))
+												for (z <- 0 to (c-1)) {
+													if (counter <= n) {
+													nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
+													Thread sleep 5
+													counter += 1
+													}       
+												}
+										
+										for (x <- 0 to (a-1))
+											for (y <- 0 to (b-1))
+												for (z <- 0 to (c-1)) {
+												
+												if (nodeList(x)(y)(z) != null) {
+												
+													if (z < (c-1) && nodeList(x)(y)(z+1) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
+														
+													if (y < (b-1) && nodeList(x)(y+1)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
+														
+													if (x < (a-1) && nodeList(x+1)(y)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
+													
+													if (z > 0 && nodeList(x)(y)(z-1) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
+														
+													if (y > 0 && nodeList(x)(y-1)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
+														
+													if (x > 0 && nodeList(x-1)(y)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
+													}
+												}
+												
+			case "imp-3D" =>  a = math.ceil(math.cbrt(n)).toInt
+										b = math.ceil(math.sqrt(n/a)).toInt
+										c = math.ceil(n/(a*b)).toInt + 1
+										
+										nodeList = Array.ofDim[ActorRef](a,b,c)
+    
+										for (x <- 0 to (a-1))
+											for (y <- 0 to (b-1))
+												for (z <- 0 to (c-1)) {
+													if (counter <= n) {
+													nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
+													Thread sleep 5
+													counter += 1
+													}       
+												}
+												
+												// ADD-ONE-RANDOM-NODE
+										
+										for (x <- 0 to (a-1))
+											for (y <- 0 to (b-1))
+												for (z <- 0 to (c-1)) {
+												
+												if (nodeList(x)(y)(z) != null) {
+												
+													if (z < (c-1) && nodeList(x)(y)(z+1) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
+														
+													if (y < (b-1) && nodeList(x)(y+1)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
+														
+													if (x < (a-1) && nodeList(x+1)(y)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
+													
+													if (z > 0 && nodeList(x)(y)(z-1) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
+														
+													if (y > 0 && nodeList(x)(y-1)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
+														
+													if (x > 0 && nodeList(x-1)(y)(z) != null)
+														nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
+													}
+												}									
+			case "full" => a = n
+										 nodeList = Array.ofDim[ActorRef](a,b,c)
+										 
+										 for (x <- 0 to (n-1)) {
+											nodeList(x)(0)(0) = system.actorOf(Props(new Node(x)))
+										
+											for (y <- 0 to (x-1)) {
+												nodeList(y)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
+												}
+											}
 
-		for (y <- 0 to (n-2)) {
-			nodeList(n-1) ! addNeighbor (nodeList(y))
-		}
-	
-	*/
-	
-  nodeList(0)(0)(0) ! StartPushSum
-	
-	
-  
+											for (y <- 0 to (n-2)) {
+												nodeList(n-1)(0)(0) ! addNeighbor (nodeList(y)(0)(0))
+											}
+									}
+									
+		val startTime = System.currentTimeMillis;							
+    
+		args(2) match {
+			case "gossip" => nodeList(0)(0)(0) ! StartGossip
+			case "push-sum" => nodeList(0)(0)(0) ! StartPushSum
+			}
+		
   //case class gossipMsg
   case class pushSumMsg(s: Double,w: Double,senderId: Int)
   case class StartGossip
@@ -129,10 +153,10 @@ object Simulate extends App {
   case class addNeighbor(x: ActorRef)
   case class gossipMsg(nodeId: Int)
   case class nodeGoingDown(nodeId: Int)
-
+	
   class Node(id: Int) extends Actor {
     var nodeId = id //actor number
-		println ("Initialized node with id " + id)
+    println ("Initialized node with id " + id)
     var s : Double= id.toDouble
     var w : Double= 1
     var ratio : Double= s/w
@@ -173,7 +197,9 @@ object Simulate extends App {
         w=w/2
         ratio=s/w
         if(neighborList.length==0) {
-          println("All neighboring nodes of"+nodeId+" are down. Not sending message.")
+          println("All neighboring nodes of "+nodeId+" are down. Not sending message.")
+					println ("========================================\nTime taken for convergence: " + (System.currentTimeMillis-startTime))
+					System.exit (0)
         }
         else {
           var receiver=Random.nextInt(neighborList.length)
@@ -204,7 +230,8 @@ object Simulate extends App {
         println("Node "+nodeId.toString()+" received gossip msg from node "+senderId.toString()+". Gossip Count="+gossipRecCount+".");
         if(gossipRecCount>=10) {
           println("Node "+nodeId.toString()+ " terminated.\n")
-          context.stop(self)
+					println ("========================================\nTime taken for convergence: " + (System.currentTimeMillis-startTime))
+					System.exit (0)
         }
         else {
           if(neighborList.length==0) {
@@ -214,11 +241,11 @@ object Simulate extends App {
           println("Node "+nodeId.toString()+" forwarding gossip message.\n")
           neighborList(receiver) ! gossipMsg(nodeId) 
         }
-				
-				
-			case "printDetails" =>
-				println (id)
-				println (neighborList)
+        
+        
+      case "printDetails" =>
+        println (id)
+        println (neighborList)
     }  
   }
 
