@@ -172,7 +172,7 @@ object Simulate extends App {
         w=w/2
         ratio=s/w
         if(neighborList.length==0) {
-          println("All neighboring nodes "+nodeId+" are down. Not sending message.")
+          println("All neighboring nodes of"+nodeId+" are down. Not sending message.")
         }
         else {
           var receiver=Random.nextInt(neighborList.length)
