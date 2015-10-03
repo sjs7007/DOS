@@ -42,6 +42,7 @@ object Simulate extends App {
 					if (counter <= n) {
 					//println (counter)
 					nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
+					Thread sleep 10
 					counter += 1
 					}				
 				}
@@ -117,7 +118,7 @@ object Simulate extends App {
 	
 	*/
 	
-  //nodeList(0)(0)(0) ! StartPushSum
+  nodeList(0)(0)(0) ! StartPushSum
 	
 	
   
