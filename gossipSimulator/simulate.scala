@@ -14,7 +14,21 @@ object Simulate extends App {
 			println ("Error: Insufficient arguments")
 			System.exit(0)
 			}
+			
+		var wildfire = false
+		var nobacksies = false
+		var failures = false
+		var failchance = 0
 		
+		for (x <- 4 to args.length)
+			if (x < args.length) 
+				args(x) match {
+					case "wf" => wildfire = true
+					case "nb" => nobacksies = true
+					case "failchance" => args(x+1).toInt
+					case _ => 
+				}
+			
 		var n = 10
 		n = args(0).toInt
 		
@@ -122,12 +136,10 @@ object Simulate extends App {
 										
 											for (y <- 0 to (x-1)) 
 												nodeList(y)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
-												
 											}
 
-											for (y <- 0 to (n-2)) {
+											for (y <- 0 to (n-2))
 												nodeList(n-1)(0)(0) ! addNeighbor (nodeList(y)(0)(0))
-											}
 									}
 									
 		val startTime = System.currentTimeMillis;							
@@ -141,6 +153,7 @@ object Simulate extends App {
   case class pushSumMsg(s: Double,w: Double,senderId: Int)
   case class StartGossip
   case class StartPushSum
+	case class HandShake
   case class addNeighbor(x: ActorRef)
   case class gossipMsg(nodeId: Int)
   case class nodeGoingDown(nodeId: Int)
@@ -156,12 +169,13 @@ object Simulate extends App {
     var rumorCount=0
     var change = new Array[Double](3)
     var neighborList = new ListBuffer[ActorRef]
+		var pendingHandshake = false
 
     def shouldITerminatePushSum() = {
       var newRatio = s/w
       change(gossipRecCount%3) = math.abs(newRatio - ratio)
       ratio = newRatio
-      gossipRecCount = gossipRecCount + 1
+      gossipRecCount += 1
 
       if(gossipRecCount>=3) { //if difference is 
         var sumChange = change(0)+change(1)+change(2)
@@ -170,7 +184,6 @@ object Simulate extends App {
           for(i<- 0 until neighborList.length) 
             neighborList(i) ! nodeGoingDown(nodeId)
           
-
           // terminate the actor
           println("Node "+nodeId.toString()+" terminated.")
           context.stop(self)
@@ -180,6 +193,13 @@ object Simulate extends App {
 
     def receive = {
       case pushSumMsg(s_r,w_r,senderId) =>
+			
+			if (failures) {
+				if (!neighborList.contains(sender))
+				neighborList += sender
+				sender ! HandShake
+				}
+			
         println("Node "+nodeId.toString()+" received push sum message from node "+senderId.toString()+". ratio = "+ratio)
         s = s + s_r
         w = w + w_r
@@ -193,31 +213,61 @@ object Simulate extends App {
 					System.exit (0)
         }
         else {
-          var receiver=Random.nextInt(neighborList.length)
-          // println("Node "+nodeId.toString()+" forwarding push sum message to node "+receiver.toString()+". ratio = "+ratio)
-          println("Node "+nodeId.toString()+" forwarding push sum message . ratio = "+ratio+"\n")
-          neighborList(receiver) ! pushSumMsg(s,w,nodeId)
+          var h=Random.nextInt(neighborList.length)
+          println("Node "+nodeId.toString()+" forwarding push sum message . ratio = "+ratio+"\n")          
+					
+					if (neighborList.length > 1) 
+						if (nobacksies) 
+							while (neighborList(h) == sender)
+								h = Random.nextInt(neighborList.length)
+					
+					neighborList(h) ! pushSumMsg(s,w,nodeId)
+					
+					if (failures) {
+						neighborList -= neighborList (h)
+						pendingHandshake = true
+					}
         }
-        
+
+			case HandShake => neighborList += sender
+												pendingHandshake = false
+				
       case StartPushSum =>
         s=s/2
         w=w/2
         rumorCount=rumorCount+1
-        neighborList(Random.nextInt(neighborList.length)) ! pushSumMsg(s,w,nodeId)
-
+				
+				if (!wildfire || neighborList.length == 1) {
+				var h = 0
+					if (neighborList.length > 1) 
+						if (nobacksies) 
+							while (neighborList(h) == sender)
+								h = Random.nextInt(neighborList.length)
+						
+				neighborList(h) ! pushSumMsg(s,w,nodeId)
+				}
+				else for (h <- 0 to (neighborList.length-1)) 
+					if (!nobacksies || neighborList(h) != sender)
+						neighborList(h) ! pushSumMsg(s,w,nodeId)
+				
       case addNeighbor(x) =>
         neighborList+= x
 
       case StartGossip =>
-        neighborList(Random.nextInt(neighborList.length)) ! gossipMsg(nodeId)
-
+			
+					var h = 0
+					if (neighborList.length > 1) 
+						if (nobacksies) 
+							while (neighborList(h) == sender)
+								h = Random.nextInt(neighborList.length)
+						
+					neighborList(h) ! gossipMsg(nodeId)
+				
       case nodeGoingDown(nodeId) =>
-        println("Received message that node "+nodeId+" going down.")
         neighborList -= sender
-
-
+				
       case gossipMsg(senderId) => 
-        gossipRecCount = gossipRecCount + 1
+        gossipRecCount += 1
         println("Node "+nodeId.toString()+" received gossip msg from node "+senderId.toString()+". Gossip Count="+gossipRecCount+".");
         if(gossipRecCount>=100) {
           println("Node "+nodeId.toString()+ " terminated.\n")
@@ -232,7 +282,6 @@ object Simulate extends App {
           println("Node "+nodeId.toString()+" forwarding gossip message.\n")
           neighborList(receiver) ! gossipMsg(nodeId) 
         }
-        
         
       case "printDetails" =>
         println (id)
