@@ -167,9 +167,9 @@ object Simulate extends App {
         var sumChange = change(0)+change(1)+change(2)
         if(sumChange<Math.pow(10,-10)) {
           //send message to all neighbors that this node is going down
-          for(i<- 0 until neighborList.length) {
+          for(i<- 0 until neighborList.length) 
             neighborList(i) ! nodeGoingDown(nodeId)
-          }
+          
 
           // terminate the actor
           println("Node "+nodeId.toString()+" terminated.")
