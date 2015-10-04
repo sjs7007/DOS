@@ -219,7 +219,7 @@ object Simulate extends App {
       case gossipMsg(senderId) => 
         gossipRecCount = gossipRecCount + 1
         println("Node "+nodeId.toString()+" received gossip msg from node "+senderId.toString()+". Gossip Count="+gossipRecCount+".");
-        if(gossipRecCount>=10) {
+        if(gossipRecCount>=100) {
           println("Node "+nodeId.toString()+ " terminated.\n")
 					println ("========================================\nTime taken for convergence: " + (System.currentTimeMillis-startTime))
 					System.exit (0)
