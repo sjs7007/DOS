@@ -16,7 +16,7 @@ object Simulate extends App {
 			}
 		
 		var n = 10
-			n = args(0).toInt
+		n = args(0).toInt
 		
 		var a = 1
 		var b = 1
@@ -25,9 +25,53 @@ object Simulate extends App {
 		
 		var nodeList = Array.ofDim[ActorRef](a,b,c)
 		
+		if (args(1) contains "3D") {
+		
+			a = math.ceil(math.cbrt(n)).toInt
+			b = math.ceil(math.sqrt(n/a)).toInt
+			c = math.ceil(n/(a*b)).toInt + 1
+			
+			nodeList = Array.ofDim[ActorRef](a,b,c)
+
+			for (x <- 0 to (a-1))
+				for (y <- 0 to (b-1))
+					for (z <- 0 to (c-1)) {
+						if (counter <= n) {
+						nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
+						Thread sleep 10
+						counter += 1
+						}       
+					}
+			
+			for (x <- 0 to (a-1))
+				for (y <- 0 to (b-1))
+					for (z <- 0 to (c-1)) {
+					
+					if (nodeList(x)(y)(z) != null) {
+					
+						if (z < (c-1) && nodeList(x)(y)(z+1) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
+							
+						if (y < (b-1) && nodeList(x)(y+1)(z) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
+							
+						if (x < (a-1) && nodeList(x+1)(y)(z) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
+						
+						if (z > 0 && nodeList(x)(y)(z-1) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
+							
+						if (y > 0 && nodeList(x)(y-1)(z) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
+							
+						if (x > 0 && nodeList(x-1)(y)(z) != null)
+							nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
+						}
+					}
+		}
+		
 		args(1) match {
-			case "line" => a = n
-										 nodeList = Array.ofDim[ActorRef](a,b,c)
+			case "line" => nodeList = Array.ofDim[ActorRef](n,1,1)
 										 
 										 for (x <- 0 to (n-1)) {
 											nodeList(x)(0)(0) = system.actorOf(Props(new Node(x+1)))
@@ -38,100 +82,47 @@ object Simulate extends App {
 												nodeList(x-1)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
 											}
 										}
-			case "3D" =>  a = math.ceil(math.cbrt(n)).toInt
-										b = math.ceil(math.sqrt(n/a)).toInt
-										c = math.ceil(n/(a*b)).toInt + 1
 										
-										nodeList = Array.ofDim[ActorRef](a,b,c)
-    
-										for (x <- 0 to (a-1))
-											for (y <- 0 to (b-1))
-												for (z <- 0 to (c-1)) {
-													if (counter <= n) {
-													nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
-													Thread sleep 5
-													counter += 1
-													}       
-												}
-										
-										for (x <- 0 to (a-1))
-											for (y <- 0 to (b-1))
-												for (z <- 0 to (c-1)) {
+			case "3D" => 
 												
-												if (nodeList(x)(y)(z) != null) {
+			case "imp-3D" => 	if (a >= 3){
+			
+												var p = 1
+												var q = 1
+												var r = 1
 												
-													if (z < (c-1) && nodeList(x)(y)(z+1) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
+												var connected = Array.ofDim[Int](a,b,c)
+												
+												for (x <- 0 to (a-1))
+													for (y <- 0 to (b-1))
+														for (z <- 0 to (c-1)) {
+														if (nodeList(x)(y)(z) != null && connected(x)(y)(z) == 0) {
+															var stopper = 0
+															do {
+																p = Random.nextInt(a)
+																q = Random.nextInt(b)
+																r = Random.nextInt(c)
+																stopper += 1
+															} while ((nodeList(p)(q)(r) == null || (math.abs(p-x) + math.abs(q-y) + math.abs(r-z)) < 2) && stopper < 50)
 														
-													if (y < (b-1) && nodeList(x)(y+1)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
-														
-													if (x < (a-1) && nodeList(x+1)(y)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
-													
-													if (z > 0 && nodeList(x)(y)(z-1) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
-														
-													if (y > 0 && nodeList(x)(y-1)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
-														
-													if (x > 0 && nodeList(x-1)(y)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
-													}
+														if (nodeList(p)(q)(r) != null) {
+															nodeList(x)(y)(z) ! addNeighbor(nodeList(p)(q)(r))
+															nodeList(p)(q)(r) ! addNeighbor (nodeList(x)(y)(z))
+															connected(p)(q)(r) = 1
+															}
+															
+															}
+														}	
 												}
 												
-			case "imp-3D" =>  a = math.ceil(math.cbrt(n)).toInt
-										b = math.ceil(math.sqrt(n/a)).toInt
-										c = math.ceil(n/(a*b)).toInt + 1
-										
-										nodeList = Array.ofDim[ActorRef](a,b,c)
-    
-										for (x <- 0 to (a-1))
-											for (y <- 0 to (b-1))
-												for (z <- 0 to (c-1)) {
-													if (counter <= n) {
-													nodeList(x)(y)(z) = system.actorOf(Props(new Node(counter)))
-													Thread sleep 5
-													counter += 1
-													}       
-												}
-												
-												// ADD-ONE-RANDOM-NODE
-										
-										for (x <- 0 to (a-1))
-											for (y <- 0 to (b-1))
-												for (z <- 0 to (c-1)) {
-												
-												if (nodeList(x)(y)(z) != null) {
-												
-													if (z < (c-1) && nodeList(x)(y)(z+1) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z+1))
-														
-													if (y < (b-1) && nodeList(x)(y+1)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y+1)(z))
-														
-													if (x < (a-1) && nodeList(x+1)(y)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x+1)(y)(z))
-													
-													if (z > 0 && nodeList(x)(y)(z-1) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y)(z-1))
-														
-													if (y > 0 && nodeList(x)(y-1)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x)(y-1)(z))
-														
-													if (x > 0 && nodeList(x-1)(y)(z) != null)
-														nodeList(x)(y)(z) ! addNeighbor (nodeList(x-1)(y)(z))
-													}
-												}									
-			case "full" => a = n
-										 nodeList = Array.ofDim[ActorRef](a,b,c)
+			case "full" => nodeList = Array.ofDim[ActorRef](n,1,1)
 										 
 										 for (x <- 0 to (n-1)) {
-											nodeList(x)(0)(0) = system.actorOf(Props(new Node(x)))
+											nodeList(x)(0)(0) = system.actorOf(Props(new Node((x+1))))
 										
-											for (y <- 0 to (x-1)) {
+											for (y <- 0 to (x-1)) 
 												nodeList(y)(0)(0) ! addNeighbor (nodeList(x)(0)(0))
-												}
+												
 											}
 
 											for (y <- 0 to (n-2)) {
