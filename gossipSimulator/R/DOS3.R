@@ -44,7 +44,7 @@ lines(CImp3D,type="o",pch=24,lty=4,col="brown")
 
 
 #title
-title(main="Convergence Time for Gossip",col.main="red",font.main=4)
+title(main="Convergence Time for Gossip, termination threshold=100.",col.main="red",font.main=4)
 
 #label x and y axes
 title(ylab="log(Time in milliseconds)",col.lab=rgb(0,0.5,0))
