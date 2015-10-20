@@ -10,39 +10,50 @@ object Main extends App {
 		
 		var nodeList = Array.ofDim[ActorRef](n)
 		
-		var circleSize = 1
-		var m = 0
+		var circleSize = 1073741824
+		var m = 30
 		
-		while (circleSize < n){
-				circleSize *= 2
-				m += 1
-		}
+		var counter = 1
 		
+		
+		
+		system.actorOf(Props(new NodeProcess(counter, null)))
+		//system.actorOf(Props(new NodeProcess(counter, ref)))
+		
+		
+			/*
 		for (i <- 0 to (n-1))
 			nodeList(i) = system.actorOf(Props(new Node(i+1)))
-			
+		
+		
 		var nextPointer = 0
-			
+		
 		for (i <- 0 to (n-1)) {
 			for (j <- 0 to (m-1)) {
-				nodeList(i) ! addFinger(findNext(nodeList, (i + scala.math.pow(2,j).toInt)%circleSize))
+				nodeList(i) ! (findNext(nodeList, (i + scala.math.pow(2,j).toInt)%circleSize))
 			}
 		}
+		*/
 }
 
-def findNext (nodeList: Array, index: Int) : ActorRef = {
-   
-	 while (nodeList(index%nodeList.length) == null)
-		index++
-	 
-   return nodeList(index%nodeList.length)
+
+//case class addFinger (actor: ActorRef)
+
+case class Node(x: Int, act: ActorRef)
+{
+  var clientId = x
+  var actor = act
+	var fingerList = new ListBuffer[ActorRef]()
 }
 
-case class addFinger (actor: ActorRef)
-
-class Node(id: Int) extends Actor {
+class NodeProcess(id: Int, ref: Node) extends Actor {
     var nodeId = id //actor number
-		var fingerList = new ListBuffer[ActorRef]()
+		
+		
+		if (ref != null)
+			println (ref.nodeId)
+		
+		
 		def receive = {
 		case addFinger(actor) => fingerList += actor
 		}
