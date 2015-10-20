@@ -17,44 +17,38 @@ object Main extends App {
 		
 		
 		
-		system.actorOf(Props(new NodeProcess(counter, null)))
-		//system.actorOf(Props(new NodeProcess(counter, ref)))
+		system.actorOf(Props(new Node(counter, null)))
+		//system.actorOf(Props(new Node(counter, ref)))
 		
-		
-			/*
-		for (i <- 0 to (n-1))
-			nodeList(i) = system.actorOf(Props(new Node(i+1)))
-		
-		
-		var nextPointer = 0
-		
-		for (i <- 0 to (n-1)) {
-			for (j <- 0 to (m-1)) {
-				nodeList(i) ! (findNext(nodeList, (i + scala.math.pow(2,j).toInt)%circleSize))
-			}
-		}
-		*/
 }
 
 
-//case class addFinger (actor: ActorRef)
+case class addFinger (actor: ActorRef)
+case class request ()
+case class gotTable (t: Table)
 
-case class Node(x: Int, act: ActorRef)
+class Table(x: Int, act: ActorRef)
 {
   var clientId = x
   var actor = act
 	var fingerList = new ListBuffer[ActorRef]()
+  var predecessor = new Table
 }
 
-class NodeProcess(id: Int, ref: Node) extends Actor {
-    var nodeId = id //actor number
-		
-		
-		if (ref != null)
-			println (ref.nodeId)
-		
+class Node(id: Int, ref: ActorRef) extends Actor {
+
+		var myTable = new Table (id, ref)
+    
+    if (ref != null)
+      ref ! request()
+    else {
+      myTable.fingerList += myTable
+      myTable.predecessor = myTable
+    }
 		
 		def receive = {
-		case addFinger(actor) => fingerList += actor
+      case addFinger(actor) => fingerList += actor
+      case request () => sender ! gotTable(myTable)
+      case gotTable (t) =>
 		}
 }
