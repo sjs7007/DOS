@@ -31,13 +31,13 @@ class Table(x: Int, act: ActorRef)
 {
   var clientId = x
   var actor = act
-	var fingerList = new ListBuffer[ActorRef]()
-  var predecessor = new Table
+	var fingerList = new ListBuffer[Table]()
+  var predecessor : Table = null
 }
 
 class Node(id: Int, ref: ActorRef) extends Actor {
 
-		var myTable = new Table (id, ref)
+		var myTable = new Table (id, self)
     
     if (ref != null)
       ref ! request()
@@ -47,7 +47,6 @@ class Node(id: Int, ref: ActorRef) extends Actor {
     }
 		
 		def receive = {
-      case addFinger(actor) => fingerList += actor
       case request () => sender ! gotTable(myTable)
       case gotTable (t) =>
 		}
