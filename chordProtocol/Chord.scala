@@ -13,7 +13,7 @@ class Node(id: Int) extends Actor {
   var nodeId = id
   var successor,predecessor
   var fingerTable: Array[fingerData] = new Array[fingerData](m)
-  ActorRef myReference
+  ActorRef actorReference
 
   //ask node n to find id's successor
   def findSuccessor(id: Int) : Node = {
@@ -52,5 +52,5 @@ class Node(id: Int) extends Actor {
 
 object Chord extends App {
   val system = ActorSystem("Chord")
-
+     
 }
