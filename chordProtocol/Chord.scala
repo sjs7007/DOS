@@ -63,6 +63,6 @@ class Node(id: Int) extends Actor {
   def receive = {
     case "hello" => 
       println("ds")
-      //closestPrecedingFinger(2)
+      closestPrecedingFinger(2)
   }
 }
