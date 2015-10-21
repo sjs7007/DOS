@@ -2,6 +2,11 @@ import akka.actor._
 import scala.math._ //for absolute value
 import scala.collection.mutable.ListBuffer //for storing neighbor list : https://www.cs.helsinki.fi/u/wikla/OTS/Sisalto/examples/html/ch17.html
 import scala.util._ //for random number
+import scala.concurrent.Await
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
+
 
 object Chord extends App {
   val system = ActorSystem("Chord")
@@ -22,8 +27,6 @@ class fingerData(id: Int, x: ActorRef, y: Node) {
   var nodeReference : Node = y
 }
 
-case class getPredecessor(id: Int)
-
 class Node(id: Int , source: ActorRef) extends Actor {
   var m = 8
   var nodeId = id
@@ -41,24 +44,32 @@ class Node(id: Int , source: ActorRef) extends Actor {
 
   }
 
+  implicit val timeout = Timeout(1 seconds)
+
 
   //ask node n to find id's successor
-  def findSuccessor(id: Int) : Node = {
-    val nDash : Node = findPredecessor(id)
+  def findSuccessor(id: Int) : ActorRef = {
+    val nDash : ActorRef = findPredecessor(id)
    // return nDash.fingerTable[0].node //0th node has successor
-    return nDash.successor
+    val future = nDash ? getSuccessor 
+    val nDashSucessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
+    return nDashSucessor
   }
 
   //ask node n to find id's predecessor
-  def findPredecessor(id: Int) : Node = {
+  def findPredecessor(id: Int) : ActorRef = {
     println("here")
-    var nDash : Node = this 
+    var nDash : ActorRef = self
     println("here2")
-    println(nDash.nodeId)
-    println(nDash.successor.nodeId)
+   // println(nDash.nodeId)
+   // println(nDash.successor.nodeId)
+
+   
     if(!In(id,nDash.nodeId,nDash.successor.nodeId, false, true)) { //id not in (nDash,nDash.succ] 
       println("here3")
       nDash = nDash.closestPrecedingFinger(id) 
+
+
     }
     println("predecessor is "+nDash.nodeId)
     return nDash
@@ -140,9 +151,6 @@ class Node(id: Int , source: ActorRef) extends Actor {
     case "hello" => 
       println("ds")
       closestPrecedingFinger(2)
-
-    case getPredecessor(id: Int) =>
-      findPredecessor(id)
 
   }  
 }
