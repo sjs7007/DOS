@@ -114,6 +114,8 @@ class Node(id: Int) extends Actor {
     case "hello" => 
       println("ds")
       closestPrecedingFinger(2)
+
+    case 
   }
   
   
