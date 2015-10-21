@@ -52,18 +52,17 @@ class Node(id: Int) extends Actor {
   //return closest finger preceding id
   def closestPrecedingFinger(id: Int) : Node = {
     var i : Int =0
-    println(id)
-    /*for(i <- m-1 to 0 by -1) {
-      if(fingerTable(i).nodeId>nodeId && fingerTable(i).nodeId<id) {
+    for(i <- m-1 to 0 by -1) {
+      if(fingerTable(i).nodeId>nodeId && fingerTable(i).nodeId < id) {
         return fingerTable(i).nodeReference
       }
-    }*/
+    }
     return this
   }
 
   def receive = {
     case "hello" => 
       println("ds")
-      closestPrecedingFinger(2)
+      //closestPrecedingFinger(2)
   }
 }
