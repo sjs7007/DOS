@@ -38,6 +38,16 @@ class Node(id: Int) extends Actor {
     }
     return true
   }
+
+  //return closest finger preceding id
+  def closestPrecedingFinger(id: Int) {
+    for(i<- m-1 to 0 by -1) {
+      if(fingerTable[i].nodeId>n && fingerTable[i].nodeId<id) {
+        return fingerTable[i].node
+      }
+    return this
+    }
+  }
 }
 
 object Chord extends App {
