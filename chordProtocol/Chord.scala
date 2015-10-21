@@ -15,7 +15,7 @@ object Chord extends App {
 
   val tmp2 = system.actorOf(Props(new Node(2,tmp))) 
 
-  tmp ! getPredecessor(2)
+  //tmp ! getPredecessor(2)
   
  // val tmp3 = system.actorOf(Props(new Node(3,1))) 
   
@@ -26,7 +26,7 @@ case class  getPredecessor
 case class  setPredecessor(ref: ActorRef)
 case class  getSuccessor
 case class  setSuccessor(ref: ActorRef)
-case class findClosestPrecedingFinger (id: Int) 
+case class  findClosestPrecedingFinger (id: Int) 
 
 class fingerData(id: Int, x: ActorRef, y: Node) {
   var nodeId : Int = id
@@ -96,7 +96,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
    // println(nDash.successor.nodeId)
     var nDashNodeId = id
     var future = successor ? getId
-    var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
+    var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
 
     if(!In(id,nDashNodeId,nDashSuccessorNodeId, false, true)) { //id not in (nDash,nDash.succ] 
       println("here3")
@@ -108,7 +108,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
       nDashNodeId = Await.result(future,timeout).asInstanceOf[Int]
 
       future = nDash ? getSuccessor
-      nDashSuccessor = Await.result(future,timeout).asInstanceOf[ActorRef]
+      var nDashSuccessor = Await.result(future,timeout).asInstanceOf[ActorRef]
 
       future = nDashSuccessor ? getId
       nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
@@ -159,7 +159,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
       if (In(id + scala.math.pow(2,i+1).toInt, id, fingerTable(i).nodeId, true, false)) {
         fingerTable(i+1).nodeId = fingerTable(i).nodeId
         fingerTable(i+1).actorReference = fingerTable(i).actorReference
-        fingerTable(i+1).nodeReference =  fingerTable(i).nodeReference
+        //fingerTable(i+1).nodeReference =  fingerTable(i).nodeReference
         }
       else {
         var newNode = nDash.findSuccessor(fingerTable(i+1).nodeId)
