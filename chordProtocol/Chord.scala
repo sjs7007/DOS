@@ -105,13 +105,13 @@ class Node(id: Int , source: ActorRef) extends Actor {
       println("here3")
   //    nDash = nDash.closestPrecedingFinger(id) 
       future = nDash ? findClosestPrecedingFinger(id)
-      nDash = Await.result(future,timeout).asInstanceOf[ActorRef]
+      nDash = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
 
       future = nDash ? getId 
-      nDashNodeId = Await.result(future,timeout).asInstanceOf[Int]
+      nDashNodeId = Await.result(future,timeou.duration).asInstanceOf[Int]
 
       future = nDash ? getSuccessor
-      var nDashSuccessor = Await.result(future,timeout).asInstanceOf[ActorRef]
+      var nDashSuccessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
 
       future = nDashSuccessor ? getId
       nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
