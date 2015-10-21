@@ -13,40 +13,32 @@ class Node(id: Int) extends Actor {
   var nodeId = id
   var successor,predecessor
   var fingerTable: Array[fingerData] = new Array[fingerData](m)
+  ActorRef myReference
 
-  def receive = {
-    case findPredecessor (nid, nref) => 
-      var pred=-1
-      for(i<- 0 until m) {
-        if(fingerTable(i).nodeId>nid) {
-          pred=i-1
-          break
-        }
-      }
-
-      if (pred < 0) {
-        nref ! isPredecessor (this,fingerTable(0).ref)
-        fingerTable(0).ref ! isPredecessor (nref, null)
-        successor = nref 
-      }
-      else fingerTable(pred).ref ! findPredecessor (nid, nref)
-
-    case isPredecessor (nref,succ) => // PUT MYSELF AFTER NREF
-      predecessor = nref
-      if (succ != null)
-        successor = succ
-
-    
-
-
+  //ask node n to find id's successor
+  def findSuccessor(id: Int) : Node = {
+    Node nDash = findPredecessor(id)
+   // return nDash.fingerTable[0].node //0th node has successor
+    return nDash.successor
   }
 
-}
+  //ask node n to find id's predecessor
+  def findPredecessor(id: Int) : Node = {
+    Node nDash = n 
+    while(notIn(id,nDash,nDash.successor)) { //id not in (nDash,nDash.succ] 
+      nDash = nDash.closestPrecedingFinger(id) 
+    }
+    return nDash
+  }
 
-case class isPredecessor (ref: ActorRef, succ: ActorRef)
-case class findPredecessor (id: Int, ref: ActorRef)
-case class nodeJoin(id: Int)
-case class isSucessor()
+  //notIn
+  def notIn(x:Int, lower:Int,higher:Int) : Boolean {
+    if(x>lower && x <=higher) {
+      return false
+    }
+    return true
+  }
+}
 
 object Chord extends App {
   val system = ActorSystem("Chord")
