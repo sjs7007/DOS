@@ -27,6 +27,7 @@ case class  setPredecessor(ref: ActorRef)
 case class  getSuccessor
 case class  setSuccessor(ref: ActorRef)
 case class  findClosestPrecedingFinger (id: Int) 
+case class  findSuccessorMsg(id: Int)
 
 class fingerData(id: Int, x: ActorRef, y: Node) {
   var nodeId : Int = id
@@ -73,6 +74,8 @@ class Node(id: Int , source: ActorRef) extends Actor {
     case findClosestPrecedingFinger(nid) =>
       sender ! closestPrecedingFinger (nid)
 
+    case findSuccessorMsg(nid) =>
+      sender ! findSuccessor(nid)
 
 
 
@@ -159,13 +162,13 @@ class Node(id: Int , source: ActorRef) extends Actor {
       if (In(id + scala.math.pow(2,i+1).toInt, id, fingerTable(i).nodeId, true, false)) {
         fingerTable(i+1).nodeId = fingerTable(i).nodeId
         fingerTable(i+1).actorReference = fingerTable(i).actorReference
-        //fingerTable(i+1).nodeReference =  fingerTable(i).nodeReference
         }
       else {
-        var newNode = nDash.findSuccessor(fingerTable(i+1).nodeId)
-        fingerTable(i+1).nodeId = newNode.nodeId
-        fingerTable(i+1).actorReference = newNode.actorReference
-        fingerTable(i+1).nodeReference = newNode
+      //  var newNode = nDash.findSuccessor(fingerTable(i+1).nodeId)
+        var newNode = Await.result(nDash ? findSuccessorMsg(fingerTable(i+1).nodeId),timeout.duration).asInstanceOf[ActorRef] 
+        //fingerTable(i+1).nodeId = newNode.nodeId
+        fingerTable(i+1).nodeId = Await.result((newNode ? getId),timeout.duration).asInstanceOf[Int]
+        fingerTable(i+1).actorReference = newNode
       }
     }
   }
