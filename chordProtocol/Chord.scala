@@ -11,26 +11,18 @@ import scala.concurrent.duration._
 object Chord extends App {
   var system = ActorSystem("Chord")
   //var x : Node = new Node(2)
-  var tmp:ActorRef = system.actorOf(Props(new Node(1,null))) 
-
-  Thread.sleep(5000)
-
+  var tmp:ActorRef = system.actorOf(Props(new Node(1))) 
+  
+  tmp ! startJoin(null)
+  
+  Thread.sleep(5)
 
   implicit var timeout = Timeout(1 seconds)
 
+  var tmp2 = system.actorOf(Props(new Node(2))) 
 
-  var z = Await.result((tmp ? getId()),timeout.duration).asInstanceOf[Int]
+  tmp2 ! startJoin(tmp)
 
-  println("source : "+tmp)
-
-  var tmp2 = system.actorOf(Props(new Node(2,tmp))) 
-
-
-
-  //tmp ! getPredecessor()(2)
-  
- // var tmp3 = system.actorOf(Props(new Node(3,tmp2))) 
-  
 }
 
 case class  getId()
@@ -41,14 +33,17 @@ case class  setSuccessor(ref: ActorRef)
 case class  findClosestPrecedingFinger (id: Int) 
 case class  findSuccessorMsg(id: Int)
 
+case class startJoin (ref: ActorRef)
+
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
   var actorReference : ActorRef = x
 }
 
-class Node(id: Int , source: ActorRef) extends Actor {
+class Node(id: Int) extends Actor {
   var m = 8
   var nodeId = id
+  var source : ActorRef = null
   var successor : ActorRef = null
   var predecessor : ActorRef = null
   var fingerTable : Array[fingerData] = new Array[fingerData](m)
@@ -56,10 +51,9 @@ class Node(id: Int , source: ActorRef) extends Actor {
       fingerTable(i) = new fingerData(-1,null)
   var actorReference : ActorRef = self
   
-  join(source)
+  //join(source)
 
   implicit var timeout = Timeout(5 seconds)
-
 
   def receive = {
     case getId() => 
@@ -86,8 +80,8 @@ class Node(id: Int , source: ActorRef) extends Actor {
     case findSuccessorMsg(nid) =>
       sender ! findSuccessor(nid)
 
-
-
+    case startJoin(nref) => source = nref
+                            join(source)
   }  
 
   //ask node n to find id's successor
@@ -97,9 +91,9 @@ class Node(id: Int , source: ActorRef) extends Actor {
     var future = nDash ? getSuccessor() 
     var nDashSucessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
 
-    //var tmp = Await.result(nDash ? getId(),timeout.duration).asInstanceOf[Int] 
-    //println(tmp)
-
+    var tmp = Await.result(nDashSucessor ? getId(),timeout.duration).asInstanceOf[Int]
+    println("successor of "+id+" is : "+tmp)
+    
     return nDashSucessor
   }
 
@@ -155,6 +149,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
     if (nDash != null) {
       println("join2")
       initFingerTable(nDash)
+      println ("FINGERTABLE:")
       println(fingerTable)
       updateOthers(nDash)
     }
@@ -175,17 +170,12 @@ class Node(id: Int , source: ActorRef) extends Actor {
   // Init Finger Table
   def initFingerTable (nDash: ActorRef){
 
-    println("bhaga")
+    fingerTable(0).nodeId = Await.result((nDash ? getId()),Timeout(1 seconds).duration).asInstanceOf[Int]
     
-    //fingerTable(0).nodeId
-    println("source : "+nDash)
-    var z = Await.result((nDash ? getId()),Timeout(1 seconds).duration).asInstanceOf[Int]
-    println("haga")
-    fingerTable(0).actorReference = Await.result((nDash ? getSuccessor()),timeout.duration).asInstanceOf[ActorRef] 
+    fingerTable(0).actorReference = Await.result((nDash ? findSuccessor(fingerTable(0).nodeId)),timeout.duration).asInstanceOf[ActorRef] 
 
     predecessor = Await.result((fingerTable(0).actorReference ? getPredecessor()),timeout.duration).asInstanceOf[ActorRef] 
     
-
     fingerTable(0).actorReference ! setPredecessor(self)
   
     for (i <- 0 to (m-2)) {
@@ -196,7 +186,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
       else {
       //  var newNode = nDash.findSuccessor(fingerTable(i+1).nodeId)
         var newNode = Await.result(nDash ? findSuccessorMsg(fingerTable(i+1).nodeId),timeout.duration).asInstanceOf[ActorRef] 
-        //fingerTable(i+1).nodeId = newNode.nodeId
+     
         fingerTable(i+1).nodeId = Await.result((newNode ? getId),timeout.duration).asInstanceOf[Int]
         fingerTable(i+1).actorReference = newNode
       }
@@ -219,7 +209,4 @@ class Node(id: Int , source: ActorRef) extends Actor {
     }
     return self
   }
-  
-  
-
 }
