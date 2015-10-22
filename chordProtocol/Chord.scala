@@ -9,17 +9,27 @@ import scala.concurrent.duration._
 
 
 object Chord extends App {
-  val system = ActorSystem("Chord")
+  var system = ActorSystem("Chord")
   //var x : Node = new Node(2)
-  val tmp = system.actorOf(Props(new Node(1,null))) 
+  var tmp:ActorRef = system.actorOf(Props(new Node(1,null))) 
 
-  Thread.sleep(1000)
+  Thread.sleep(5000)
 
-  val tmp2 = system.actorOf(Props(new Node(2,tmp))) 
+
+  implicit var timeout = Timeout(1 seconds)
+
+
+  var z = Await.result((tmp ? getId()),timeout.duration).asInstanceOf[Int]
+
+  println("source : "+tmp)
+
+  var tmp2 = system.actorOf(Props(new Node(2,tmp))) 
+
+
 
   //tmp ! getPredecessor()(2)
   
- // val tmp3 = system.actorOf(Props(new Node(3,tmp2))) 
+ // var tmp3 = system.actorOf(Props(new Node(3,tmp2))) 
   
 }
 
@@ -48,11 +58,12 @@ class Node(id: Int , source: ActorRef) extends Actor {
   
   join(source)
 
-  implicit val timeout = Timeout(1 seconds)
+  implicit var timeout = Timeout(5 seconds)
 
 
   def receive = {
     case getId() => 
+      println("dsdds")
       sender ! nodeId
 
     case getPredecessor() =>
@@ -81,12 +92,12 @@ class Node(id: Int , source: ActorRef) extends Actor {
 
   //ask node n to find id's successor
   def findSuccessor(id: Int) : ActorRef = {
-    val nDash : ActorRef = findPredecessor(id)
+    var nDash : ActorRef = findPredecessor(id)
    // return nDash.fingerTable[0].node //0th node has successor
-    val future = nDash ? getSuccessor() 
-    val nDashSucessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
+    var future = nDash ? getSuccessor() 
+    var nDashSucessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
 
-    //val tmp = Await.result(nDash ? getId(),timeout.duration).asInstanceOf[Int] 
+    //var tmp = Await.result(nDash ? getId(),timeout.duration).asInstanceOf[Int] 
     //println(tmp)
 
     return nDashSucessor
@@ -97,15 +108,14 @@ class Node(id: Int , source: ActorRef) extends Actor {
     println("here")
     var nDash : ActorRef = self
     println("here2")
-   // println(nDash.nodeId)
-   // println(nDash.successor.nodeId)
+
     var nDashNodeId = id
     var future = successor ? getId()
     var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
 
     if(!In(id,nDashNodeId,nDashSuccessorNodeId, false, true)) { //id not in (nDash,nDash.succ] 
       println("here3")
-  //    nDash = nDash.closestPrecedingFinger(id) 
+
       future = nDash ? findClosestPrecedingFinger(id)
       nDash = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
 
@@ -118,7 +128,7 @@ class Node(id: Int , source: ActorRef) extends Actor {
       future = nDashSuccessor ? getId()
       nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
     }
-//    println("predecessor is "+nDash.nodeId)
+
     return nDash
   }
 
@@ -149,20 +159,32 @@ class Node(id: Int , source: ActorRef) extends Actor {
       updateOthers(nDash)
     }
 
-    else for(i <- 0 to (m-1)) { // n is the only node in the networks
-      println("join3")
-      fingerTable(i).nodeId = nodeId
-      fingerTable(i).actorReference = self
+    else 
+    {
+      for(i <- 0 to (m-1)) { // n is the only node in the networks
+        println("join3")
+        fingerTable(i).nodeId = nodeId
+        fingerTable(i).actorReference = self
+      }
+      successor = self
+      predecessor = self 
     }
+   
   }
   
   // Init Finger Table
   def initFingerTable (nDash: ActorRef){
 
-    fingerTable(0).nodeId = Await.result((nDash ? getId()),timeout.duration).asInstanceOf[Int]
-    fingerTable(0).actorReference = Await.result((nDash ? getSuccessor()),timeout.duration).asInstanceOf[ActorRef] 
+    println("bhaga")
     
+    //fingerTable(0).nodeId
+    println("source : "+nDash)
+    var z = Await.result((nDash ? getId()),Timeout(1 seconds).duration).asInstanceOf[Int]
+    println("haga")
+    fingerTable(0).actorReference = Await.result((nDash ? getSuccessor()),timeout.duration).asInstanceOf[ActorRef] 
+
     predecessor = Await.result((fingerTable(0).actorReference ? getPredecessor()),timeout.duration).asInstanceOf[ActorRef] 
+    
 
     fingerTable(0).actorReference ! setPredecessor(self)
   
