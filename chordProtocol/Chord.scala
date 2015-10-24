@@ -229,11 +229,19 @@ class Node(id: Int) extends Actor {
   
   }
   
-  def updateFingerTable (i: Int, fData: fingerData) {
-  
-  
-  
+    //if s is ith finger of n, update n's finger table with s
+  def updateFingerTable (i: Int, s: fingerData) {
+    //  def In(x:Int, lower:Int,higher:Int, includeLower: Boolean, includeUpper: Boolean) : Boolean = {
+    val iThFingerId = Await.result(fingerTable(i).actorReference ? getId(),timeout.duration).asInstanceOf[Int]
+   // val sId = s.nodeId
+    println("sId : "+s.nodeId+" iThFingerId : "+iThFingerId)
+    if(In(s.nodeId,nodeId,iThFingerId,true,false)) {
+      fingerTable(i) = s
+      predecessor ! updateFingerTable(i,s)
+    }
   }
+
+ 
 
  
   //return closest finger preceding id
@@ -245,5 +253,56 @@ class Node(id: Int) extends Actor {
       }
     }
     return self
+  }
+
+  def callFutureInt(from: ActorRef,to: ActorRef,msg: String) : Int = {
+    var tmp : Int = -1
+    if(from==to) {
+      if(msg=="getId") {
+        tmp = nodeId
+      }
+    }
+    else {
+      if(msg=="getId") {
+        implicit val timeout = Timeout(1 seconds)
+        tmp = Await.result(to ? getId(),timeout.duration).asInstanceOf[Int]
+      }
+    }
+    return tmp
+  }
+
+  def callFutureActor(from : ActorRef,to : ActorRef,nodeId: Int,msg: String) : ActorRef = {
+    var tmp : ActorRef = null
+    if(from==to) {
+      if(msg=="getSuccessor") {
+        tmp = successor
+      }
+      else if(msg=="findClosestPrecedingFinger") {
+        tmp = closestPrecedingFinger(nodeId)
+      }
+      else if(msg=="getPredecessor") {
+        tmp = predecessor
+      }
+      else if(msg=="findSuccessor") {
+        tmp =  findSuccessor(nodeId)
+      }
+    }
+
+    else {
+      implicit val timeout = Timeout(1 seconds)
+      if(msg=="getSuccessor") {
+          tmp = Await.result(to ? getSuccessor(),timeout.duration).asInstanceOf[ActorRef]
+        }
+        else if(msg=="findClosestPrecedingFinger") {
+          tmp = Await.result(to ? findClosestPrecedingFinger(nodeId),timeout.duration).asInstanceOf[ActorRef]
+        }
+        else if(msg=="getPredecessor") {
+          tmp = Await.result(to ? getPredecessor(),timeout.duration).asInstanceOf[ActorRef]
+        }
+        else if(msg=="findSuccessorMsg") {
+          tmp = Await.result(to ? findSuccessorMsg(nodeId),timeout.duration).asInstanceOf[ActorRef]
+        }
+    }
+    return tmp
   }
 }
