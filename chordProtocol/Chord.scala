@@ -104,6 +104,9 @@ class Node(id: Int) extends Actor {
     println("here2")
 
     var nDashNodeId = id
+    if(successor==null) {
+      println("this is null bro")
+    }
     var future = successor ? getId()
     var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
 
@@ -175,6 +178,8 @@ class Node(id: Int) extends Actor {
     fingerTable(0).actorReference = Await.result((nDash ? findSuccessor(fingerTable(0).nodeId)),timeout.duration).asInstanceOf[ActorRef] 
 
     predecessor = Await.result((fingerTable(0).actorReference ? getPredecessor()),timeout.duration).asInstanceOf[ActorRef] 
+    
+    successor = fingerTable(0).actorReference
     
     fingerTable(0).actorReference ! setPredecessor(self)
   
