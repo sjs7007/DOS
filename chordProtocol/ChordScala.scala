@@ -97,6 +97,7 @@ class Node(id: Int) extends Actor {
   
     var nDash : ActorRef = findPredecessor(nid)
    // return nDash.fingerTable[0].node //0th node has successor
+    println(nDash+" : "+self+" same :'(")
     var future = nDash ? getSuccessor() 
     var nDashSucessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef] 
 
@@ -116,22 +117,35 @@ class Node(id: Int) extends Actor {
       println("this is null bro at " + nid)
     }
     println ("Asking successor ID from " + id)
-    var future = successor ? getId()
-    var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
+ //   println("stuck here. sending msg to getSuccessor : "+successor)
+ //   var future = successor ? getId()
+  //  var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
+  //  var future : ActorRef = null
+    var nDashSuccessorNodeId = nodeId
+
+    var future : ActorRef = null
 
     if(!In(nid,nDashNodeId,nDashSuccessorNodeId, false, true)) { //id not in (nDash,nDash.succ] 
 
-      future = nDash ? findClosestPrecedingFinger(nid)
-      nDash = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
+      if (nDash != self)
+        nDash = Await.result((nDash ? findClosestPrecedingFinger(nid)),timeout.duration).asInstanceOf[ActorRef]
+      else nDash = closestPrecedingFinger(nid)
+      
+      if (nDash != self)
+        nDashNodeId = Await.result((nDash ? getId ()),timeout.duration).asInstanceOf[Int]
+      else nDashNodeId = nodeId
 
-      future = nDash ? getId ()
-      nDashNodeId = Await.result(future,timeout.duration).asInstanceOf[Int]
+      var nDashSuccessor : ActorRef = null
 
-      future = nDash ? getSuccessor()
-      var nDashSuccessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
+      if (nDash != self)
+        nDashSuccessor = Await.result((nDash ? getSuccessor()),timeout.duration).asInstanceOf[ActorRef]
+      else nDashSuccessor = successor
 
-      future = nDashSuccessor ? getId()
-      nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
+      if (nDashSuccessor != self)
+        nDashSuccessorNodeId = Await.result((nDashSuccessor ? getId()),timeout.duration).asInstanceOf[Int] 
+      else nDashSuccessorNodeId = nodeId
+
+
     }
 
     println ("Running findPredecessor from node: " + nodeId + " for nid: " + nid + "\nResult is: " + nDash)
@@ -228,11 +242,16 @@ class Node(id: Int) extends Actor {
  
   
   }
-  
-  def updateFingerTable (i: Int, fData: fingerData) {
-  
-  
-  
+  //if s is ith finger of n, update n's finger table with s
+  def updateFingerTable (i: Int, s: fingerData) {
+    //  def In(x:Int, lower:Int,higher:Int, includeLower: Boolean, includeUpper: Boolean) : Boolean = {
+    val iThFingerId = Await.result(fingerTable(i).actorReference ? getId(),timeout.duration).asInstanceOf[Int]
+   // val sId = s.nodeId
+    println("sId : "+s.nodeId+" iThFingerId : "+iThFingerId)
+    if(In(s.nodeId,nodeId,iThFingerId,true,false)) {
+      fingerTable(i) = s
+      predecessor ! updateFingerTable(i,s)
+    }
   }
 
  
