@@ -102,7 +102,7 @@ class Node(id: Int) extends Actor {
   
     var nDash : ActorRef = findPredecessor(nid)
    // return nDash.fingerTable[0].node //0th node has successor
-       println ("ds1111")
+//       println ("ds1111")
 
 
  /*   var future = nDash ? getSuccessor() 
@@ -111,9 +111,9 @@ class Node(id: Int) extends Actor {
 
    /* var tmp = Await.result(nDashSucessor ? getId(),timeout.duration).asInstanceOf[Int]
     */
-    var tmp = callFutureInt(self,nDashSucessor,"getId")
-    println ("Running findSuccessor from node: " + nodeId + " for nid: " + nid + "\nResult is: " + nDashSucessor)
-    println ("ds2222")
+   // var tmp = callFutureInt(self,nDashSucessor,"getId")
+   // println ("Running findSuccessor from node: " + nodeId + " for nid: " + nid + "\nResult is: " + nDashSucessor)
+   // println ("ds2222")
     return nDashSucessor
   }
 
@@ -123,12 +123,13 @@ class Node(id: Int) extends Actor {
 
     var nDashNodeId = nid
     println("inside find predecessor")
-    println ("Asking successor ID from " + id)
+    //println ("Asking successor ID from " + id)
     /*var future = successor ? getId()
     var nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
     #1 replacement
     */
 
+    //at first nDash =n. hence nDash successor = n successor = successor 
     var nDashSuccessorNodeId = callFutureInt(self,successor,"getId")
     println("still inside find predecessor")
     
@@ -184,7 +185,7 @@ class Node(id: Int) extends Actor {
 
       initFingerTable(nDash)
 
-      updateOthers(nDash)
+      updateOthers() //<--=
     }
 
     else 
@@ -196,11 +197,13 @@ class Node(id: Int) extends Actor {
         fingerTable(i).nodeId = nodeId
         fingerTable(i).actorReference = self
       }
-      successor = self
-      predecessor = self 
+      //successor = self
+      //predecessor = self 
+      successor=fingerTable(0).actorReference
+      predecessor = self
 
-       for (i <- 0 to (m-1)) 
-         println (fingerTable(i).nodeId + " " + fingerTable(i).actorReference)
+       //for (i <- 0 to (m-1)) 
+       //  println (fingerTable(i).nodeId + " " + fingerTable(i).actorReference)
 
     
   
@@ -222,28 +225,38 @@ class Node(id: Int) extends Actor {
     predecessor = Await.result((fingerTable(0).actorReference ? getPredecessor()),timeout.duration).asInstanceOf[ActorRef] 
     */
 
-    fingerTable(0).nodeId = callFutureInt(self,nDash,"getId")
     fingerTable(0).actorReference = callFutureActor(self,nDash,(nodeId+1)%m,"findSuccessorMsg")
-    predecessor = callFutureActor(self,fingerTable(0).actorReference,-1,"getPredecessor")
+    fingerTable(0).nodeId = callFutureInt(self,nDash,"getId")
 
     successor = fingerTable(0).actorReference
-    
 
-    fingerTable(0).actorReference ! setPredecessor(self)
-  
+
+    /*predecessor = callFutureActor(self,fingerTable(0).actorReference,-1,"getPredecessor")
+
+    successor = fingerTable(0).actorReference
+    */
+    var successorPredecessor = callFutureActor(self,successor,-1,"getPredecessor")
+
+    /*fingerTable(0).actorReference ! setPredecessor(self)
+    */
+    predecessor = successorPredecessor
+
+    successor ! setPredecessor(self)
+
     for (i <- 0 to (m-2)) {
-      if (In(id + scala.math.pow(2,i+1).toInt, id, fingerTable(i).nodeId, true, false)) {
+      //if (In(id + scala.math.pow(2,i+1).toInt, id, fingerTable(i).nodeId, true, false)) {
+      if(In((fingerTable(i+1).nodeId+1)%m,nodeId,fingerTable(i).nodeId,true,false)) {
         fingerTable(i+1).nodeId = fingerTable(i).nodeId
         fingerTable(i+1).actorReference = fingerTable(i).actorReference
         }
       else {
       //  var newNode = nDash.findSuccessor(fingerTable(i+1).nodeId)
      //   var newNode = Await.result(nDash ? findSuccessorMsg(fingerTable(i+1).nodeId),timeout.duration).asInstanceOf[ActorRef] 
-          var newNode = callFutureActor(self,nDash,fingerTable(i+1).nodeId,"findSuccessorMsg")
+          var newNode = callFutureActor(self,nDash,(fingerTable(i+1).nodeId+1)%m,"findSuccessorMsg")
 
        // fingerTable(i+1).nodeId = Await.result((newNode ? getId),timeout.duration).asInstanceOf[Int]
-        fingerTable(i+1).nodeId = callFutureInt(self,newNode,"getId")
         fingerTable(i+1).actorReference = newNode
+        fingerTable(i+1).nodeId = callFutureInt(self,newNode,"getId")
       }
     }
     
@@ -254,7 +267,7 @@ class Node(id: Int) extends Actor {
   }
   
   // Update Others
-  def updateOthers (nDash: ActorRef) {
+  def updateOthers () {
   
   var pre : ActorRef = null
   
@@ -272,11 +285,14 @@ class Node(id: Int) extends Actor {
     //if s is ith finger of n, update n's finger table with s
   def updateFingerTable (i: Int, s: fingerData) {
     //  def In(x:Int, lower:Int,higher:Int, includeLower: Boolean, includeUpper: Boolean) : Boolean = {
-    val iThFingerId = Await.result(fingerTable(i).actorReference ? getId(),timeout.duration).asInstanceOf[Int]
+    //val iThFingerId = Await.result(fingerTable(i).actorReference ? getId(),timeout.duration).asInstanceOf[Int]
+    val iThFingerId = callFutureInt(self,fingerTable(i).actorReference,"getId")
    // val sId = s.nodeId
     println("sId : "+s.nodeId+" iThFingerId : "+iThFingerId)
     if(In(s.nodeId,nodeId,iThFingerId,true,false)) {
-      fingerTable(i) = s
+     // fingerTable(i) = s
+      fingerTable(i).nodeId = s.nodeId
+      fingerTable(i).actorReference = s.actorReference
       predecessor ! updateFingerTable(i,s)
     }
   }
@@ -288,10 +304,13 @@ class Node(id: Int) extends Actor {
   def closestPrecedingFinger(id: Int) : ActorRef = {
     var i : Int =0
     for(i <- m-1 to 0 by -1) {
-      if(fingerTable(i).nodeId>nodeId && fingerTable(i).nodeId < id) {
+      if(fingerTable(i).nodeId>nodeId && fingerTable(i).nodeId < nodeId) {
+            println("in closestPrecedingFinger return fingerTable("+i+").actorReference")
+
         return fingerTable(i).actorReference
       }
     }
+    println("in closestPrecedingFinger return self")
     return self
   }
 
