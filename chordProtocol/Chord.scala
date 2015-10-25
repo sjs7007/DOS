@@ -137,9 +137,9 @@ class Node(id: Int) extends Actor {
     while(!In(nid,nDashNodeId,nDashSuccessorNodeId, false, true)) { //id not in (nDash,nDash.succ] 
     count=count+1
     println(nid+"..."+nDashNodeId+"...."+nDashSuccessorNodeId)
-    if(count>4)
-      break
-   // println ("IN THE WHILE YO " + id)
+  //  if(count>4)
+     // break
+     println ("IN THE WHILE YO " + id)
     
       nDash = callFutureActor(self,nDash,nid,"findClosestPrecedingFinger")
 
@@ -159,6 +159,8 @@ class Node(id: Int) extends Actor {
     //In
   def In(x:Int, lower:Int,higher:Int, includeLower: Boolean, includeUpper: Boolean) : Boolean = {
   
+  println("Is "+x+" in range of "+lower+" and "+higher)
+
   var a = 0
   var b = 0
   
@@ -168,6 +170,10 @@ class Node(id: Int) extends Actor {
    if (includeUpper)
     b = 1
   
+  if(lower==higher) {
+    return true
+  }
+
     if(lower < (x+a) && (x-b) < higher)
       return true
     return false

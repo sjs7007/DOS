@@ -1,3 +1,14 @@
+/*
+  Changes I made. 
+  1. Put wherever break was there inside a breakable block to get rid of break exception.
+
+  What I don't understand/Possible Issues
+  1. makes for n+1 nodes??
+  2. for n=0, i.e for 1 node, the finger table is not displayed.
+
+*/
+
+
 import akka.actor._
 import scala.math._ //for absolute value
 import scala.collection.mutable.ListBuffer //for storing neighbor list : https://www.cs.helsinki.fi/u/wikla/OTS/Sisalto/examples/html/ch17.html
@@ -21,13 +32,13 @@ case class updateTables (ref: ActorRef) // Send to nodes periodically to make th
 
 case class activeRequestState () // Activated when a node is ready to send and receive requests
 case class requestData (from: fingerData, to: Int, hops: Int) // Will request data from nodes and keep hopping
-case clas gotData () // Will send node back to active request state after getting data
+case class gotData () // Will send node back to active request state after getting data
 
 object Chord extends App {
   var system = ActorSystem("Chord") 
   var actorList : Array [ActorRef] = new Array[ActorRef](256)
   actorList (0) = system.actorOf(Props(new Node(1)))
-  var n = 20 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var n = 3 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   
   for (i <- 1 to n) {
     actorList (i) = system.actorOf(Props(new Node(i+1))) 
@@ -52,7 +63,7 @@ class fingerData(id: Int, x: ActorRef) {
 }
 
 class Node (mID: Int) extends Actor {
-  var m: Int = 11
+  var m: Int = 8
   var myID : Int = 0
   if (mID != 1)
     myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
@@ -120,7 +131,8 @@ class Node (mID: Int) extends Actor {
       fingerTable(0).nodeId = Await.result((ref ? getId()),t.duration).asInstanceOf[Int]
       }
       println ("Updating tables for " + myID)
-      for (i <- 1 to (m-2)) {
+      breakable {
+        for (i <- 1 to (m-2)) {
         var succ : fingerData = fingerTable(i)
         var next : fingerData = null
         while (succ.nodeId < ((myID+math.pow(2,i).toInt)%math.pow(2,m).toInt)){
@@ -133,6 +145,7 @@ class Node (mID: Int) extends Actor {
           }
           fingerTable(i) = succ
         }
+      }
         
   case activeRequestState () =>
   
