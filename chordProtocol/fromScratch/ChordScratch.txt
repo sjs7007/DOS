@@ -1,0 +1,42 @@
+import akka.actor._
+import scala.math._ //for absolute value
+import scala.collection.mutable.ListBuffer //for storing neighbor list : https://www.cs.helsinki.fi/u/wikla/OTS/Sisalto/examples/html/ch17.html
+import scala.util._ //for random number
+import scala.concurrent.Await
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
+
+case class  getId()
+case class  getPredecessor()
+case class  setPredecessor(ref: ActorRef)
+case class  getSuccessor()
+case class  setSuccessor(ref: ActorRef)
+case class  findClosestPrecedingFinger (id: Int) 
+case class  findSuccessorMsg(id: Int)
+case class startJoin (ref: ActorRef)
+case class updateFingerTableMsg (row: Int, fData: fingerData)
+
+class fingerData(id: Int, x: ActorRef) {
+  var nodeId : Int = id
+  var actorReference : ActorRef = x
+}
+
+object Chord extends App {
+  var system = ActorSystem("Chord")
+
+  var tmp:ActorRef = system.actorOf(Props(new Node(1))) 
+  
+  tmp ! startJoin(null)
+  
+  Thread.sleep(5)
+
+  implicit var timeout = Timeout(1 seconds)
+
+  var tmp2 = system.actorOf(Props(new Node(2))) 
+
+  tmp2 ! startJoin(tmp)
+}
+
+
+
