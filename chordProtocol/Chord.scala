@@ -120,30 +120,17 @@ class Node(id: Int) extends Actor {
     */
 
     var nDashSuccessorNodeId = callFutureInt(self,successor,"getId")
-
+    
     while(!In(nid,nDashNodeId,nDashSuccessorNodeId, false, true)) { //id not in (nDash,nDash.succ] 
 
-      /*var future = nDash ? findClosestPrecedingFinger(nid)
-      nDash = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
-      #2 rep */
+    println ("IN THE WHILE YO " + id)
+    
       nDash = callFutureActor(self,nDash,nid,"findClosestPrecedingFinger")
 
-      /*var future = nDash ? getId ()
-      nDashNodeId = Await.result(future,timeout.duration).asInstanceOf[Int]
-      #3
-      */
       nDashNodeId = callFutureInt(self,nDash,"getId")
 
-
-      /*var future = nDash ? getSuccessor()
-      var nDashSuccessor = Await.result(future,timeout.duration).asInstanceOf[ActorRef]
-      #4
-      */
       var nDashSuccessor = callFutureActor(self,nDash,0,"getSuccessor")
 
-      /*var future = nDashSuccessor ? getId()
-      nDashSuccessorNodeId = Await.result(future,timeout.duration).asInstanceOf[Int] 
-      #5 */
       var nDashSuccessorNodeId = callFutureInt(self,nDashSuccessor,"getId")
     }
 
@@ -227,6 +214,11 @@ class Node(id: Int) extends Actor {
         fingerTable(i+1).actorReference = newNode
       }
     }
+    
+     for (i <- 0 to (m-1)) 
+  println (fingerTable(i).nodeId + " " + fingerTable(i).actorReference)
+
+    
   }
   
   // Update Others
@@ -238,6 +230,9 @@ class Node(id: Int) extends Actor {
     pre = findPredecessor(nodeId-scala.math.pow(2, i).toInt)
     pre ! updateFingerTableMsg(i, new fingerData(nodeId, self))
   }
+ 
+ for (i <- 0 to (m-1)) 
+  println (fingerTable(i).nodeId + " " + fingerTable(i).actorReference)
  
   
   }
