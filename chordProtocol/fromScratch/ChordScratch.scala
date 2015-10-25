@@ -37,19 +37,22 @@ case class gotData () // Will send node back to active request state after getti
 object Chord extends App {
   var system = ActorSystem("Chord") 
   var actorList : Array [ActorRef] = new Array[ActorRef](256)
-  actorList (0) = system.actorOf(Props(new Node(1)))
-  var n = 3 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  actorList (0) = system.actorOf(Props(new Node()))
+  var n = 15 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   
   for (i <- 1 to n) {
-    actorList (i) = system.actorOf(Props(new Node(i+1))) 
+    actorList (i) = system.actorOf(Props(new Node())) 
     actorList (i) ! join (actorList (i-1))
     Thread.sleep (n*25) // SLEEP NEEDS TO BE DONE TO AVOID DEADLOCK
+    
+    for (j <- 1 to i) {
+        Thread.sleep (n*25)
+        actorList(j) ! updateTables(null) // THIS IS INEFFICIENT, I WILL FIX IT SOMETIME IF THERE IS TIME BUT FOR NOW IT WORKS FINE
+      }
+    
     }
     
-  for (i <- 0 to n) {
-        Thread.sleep (n*25)
-        actorList(i) ! updateTables(null) // THIS IS INEFFICIENT, I WILL FIX IT SOMETIME IF THERE IS TIME BUT FOR NOW IT WORKS FINE
-      }
+  
   
   for (i <- 0 to n) {
         Thread.sleep (n*25)
@@ -62,14 +65,11 @@ class fingerData(id: Int, x: ActorRef) {
   var actorReference : ActorRef = x
 }
 
-class Node (mID: Int) extends Actor {
+class Node () extends Actor {
   var m: Int = 8
   var myID : Int = 0
-  if (mID != 1)
-    myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
-  else myID = 1 // I currently need a base node of ID 1 to start everything off
+  myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
   
-  println (mID + ": " + myID)
   var predecessor : fingerData = new fingerData (myID, self)
   var fingerTable : Array[fingerData] = new Array[fingerData](m)
   implicit val t = Timeout(5 seconds)
@@ -94,25 +94,27 @@ class Node (mID: Int) extends Actor {
            
      var current : fingerData = new fingerData (myID, self)
      var succ : fingerData = fingerTable(0)
+     var mul = 0
      
-     if (myID != 1)
-      while (!(current.nodeId < id && (succ.nodeId > id || succ.nodeId < current.nodeId))){
-          current = new fingerData (succ.nodeId, succ.actorReference)
-       
-          if (succ.actorReference != self)
-            succ = Await.result((succ.actorReference ? takeFinger(0)),t.duration).asInstanceOf[fingerData]
-          else succ = fingerTable(0)
-          }
-          from ! takePredAndJoin (new fingerData (current.nodeId, current.actorReference))
+     if (predecessor.nodeId != myID)
+      while (!(current.nodeId < (id + mul*math.pow (2, m).toInt) && id < (succ.nodeId + mul*math.pow (2, m).toInt))){
+              println ("In node: " + myID + "Current :" + current.nodeId + " Succ: " + succ.nodeId + " and looking for pred of " + id)
+        current = new fingerData (succ.nodeId, succ.actorReference)
+        if (succ.actorReference != self)
+          succ = Await.result((succ.actorReference ? takeFinger(0)),t.duration).asInstanceOf[fingerData]
+        else succ = fingerTable(0)
+        if (succ.nodeId < current.nodeId)
+          mul = 1
+      }
+      from ! takePredAndJoin (new fingerData (current.nodeId, current.actorReference))
        
   case takePredecessor (ref: fingerData) => // Overloaded: Take or give predecessor based on whether ref is null
-    println ("Got takePredecessor at node "+ myID + " with ref: "+ref)
     if (ref != null) 
       predecessor = new fingerData (ref.nodeId, ref.actorReference)
     else sender ! (new fingerData (predecessor.nodeId, predecessor.actorReference))
     
   case takePredAndJoin (ref) => // A node who just joined gets its predecessor from this. Main work done here.
-    println ("Received pred at node "+ myID + " to join after node " + ref.nodeId)
+    println ("Node "+ myID + " joining after node " + ref.nodeId)
  
     predecessor = new fingerData (ref.nodeId, ref.actorReference)
     var tempTable = Await.result((ref.actorReference ? takeTables()),t.duration).asInstanceOf[Array[fingerData]]
@@ -130,7 +132,6 @@ class Node (mID: Int) extends Actor {
       fingerTable(0).actorReference = ref
       fingerTable(0).nodeId = Await.result((ref ? getId()),t.duration).asInstanceOf[Int]
       }
-      println ("Updating tables for " + myID)
       breakable {
         for (i <- 1 to (m-2)) {
         var succ : fingerData = fingerTable(i)
