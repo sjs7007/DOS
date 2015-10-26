@@ -32,23 +32,24 @@ case class requestData (from: fingerData, to: Int, hops: Int) // Will request da
 case class gotData () // Will send node back to active request state after getting data
 
   var system = ActorSystem("Chord") 
-  var actorList : Array [ActorRef] = new Array[ActorRef](1000)
+  var actorList : Array [ActorRef] = new Array[ActorRef](15000)
   var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
   actorList(0) ! join (null)
-  var n = 4 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var n = 10000 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   
   for (i <- 1 to (n-1)) {
+    busy = true
     actorList (i) = system.actorOf(Props(new Node())) 
     actorList (i) ! join (actorList (0))
-    busy = true
-    while (busy) {} 
+    while (busy) {print ("")} 
     
     for (j <- 1 to i) {
     busy = true
         actorList(j) ! updateTables(null) // THIS IS INEFFICIENT, I WILL FIX IT SOMETIME IF THERE IS TIME BUT FOR NOW IT WORKS FINE
-        while (busy) {}
+        while (busy) {print ("")}
       }
+      println (i)
     }
     
     println ("DONE!")
@@ -56,7 +57,7 @@ case class gotData () // Will send node back to active request state after getti
   for (i <- 0 to (n-1)) {
         busy = true
         actorList(i) ! "printFingers"
-        while (busy) {}
+        while (busy) {print ("")}
       }
 
 class fingerData(id: Int, x: ActorRef) {
@@ -65,7 +66,7 @@ class fingerData(id: Int, x: ActorRef) {
 }
 
 class Node () extends Actor {
-  var m: Int = 8
+  var m: Int = 29
   var myID : Int = 0
   myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
 
@@ -91,9 +92,7 @@ class Node () extends Actor {
     else myID = 1
      
   case findClosestPrecedingFinger (from, id) => // Find the closest preceding node to "from" - this is for JOIN
-      
-      println ("Node "+ myID + "got req to find closestPreceding for " + id)
-      
+            
       var done : Boolean = false
       var maxFingerBelowId : fingerData = new fingerData (-1, null)
            
