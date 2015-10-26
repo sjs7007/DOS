@@ -24,7 +24,7 @@ case class findClosestPrecedingFinger (requestingActor: ActorRef, id: Int)
 case class takePredAndJoin (fLine: fingerData)
 case class takePredecessor(ref: fingerData) // overloaded: update self or send
 case class addKey (id: Int, data: Int)
-case class findKey (id: Int)
+case class findKey (id: Int, hops: Int)
 case class acceptKey (data: Int)
 case class takeTables () // used while joining, take the whole fingertable of your buddy
 case class takeFinger (line: Int) // take a single finger, mostly used to get successor of successor, etc
@@ -39,8 +39,9 @@ case class gotData () // Will send node back to active request state after getti
   var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
   actorList(0) ! join (null)
-  var n = 14 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
-  var m: Int = 9
+  var n = 500 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var m: Int = 19
+  var globalHopCount: Int = 0
   
   for (i <- 1 to n) {
     busy = true
@@ -69,9 +70,21 @@ case class gotData () // Will send node back to active request state after getti
       for (i <- 1 to n) 
         actorList (0) ! addKey(sha(i.toString, m), i)
 
-      actorList(0) ! findKey(sha(1.toString,m))
-      
 
+      Thread.sleep(500)
+      busy = false
+
+      for( i<-1 to n ) {
+        busy = true
+        actorList(0) ! findKey(sha(i.toString,m), 0)
+         while (busy) {print ("")}
+         Thread.sleep(5)
+      }
+
+      Thread.sleep(500)
+
+
+      println("Total hop count is : "+globalHopCount)
 
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
@@ -174,26 +187,27 @@ class Node () extends Actor {
      }
 
 
-  case findKey (id) => 
+  case findKey (id, hops) => 
 
   var done : Boolean = false
       var maxFingerBelowId : fingerData = new fingerData (-1, null)
            
      var current : fingerData = new fingerData (myID, self)
-
      
-     if (predecessor.actorReference == self)
-        println("Key "+id+" found at "+fingerTable(0).nodeId)
-        //fingerTable(0).actorReference ! acceptKey (id)
+     if (predecessor.actorReference == self) {
+        println("Key "+id+" found at "+fingerTable(0).nodeId + " totap hops:" +globalHopCount)
+        globalHopCount += hops
+      }
      
-     else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1)
-       //fingerTable(0).actorReference ! acceptKey (id)
-        println("Key "+id+" found at "+fingerTable(0).nodeId)
+     else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1) {
+        println("Key "+id+" found at "+fingerTable(0).nodeId + " totap hops:" +globalHopCount)
+        globalHopCount += hops
+      }
      else {
        var done : Boolean = false
        for (i <- 0 to (m-2)) {
         if (fingerTable(i).nodeId < id && fingerTable (i+1).nodeId > id) {
-          fingerTable(i).actorReference ! findKey (id)
+          fingerTable(i).actorReference ! findKey (id, hops+1)
           done = true
         } 
       }
@@ -204,9 +218,10 @@ class Node () extends Actor {
         if (fingerTable(i).nodeId > largest)
           largest = i
       
-        fingerTable(largest).actorReference ! findKey (id)
+        fingerTable(largest).actorReference ! findKey (id, hops+1)
         }
      }
+     busy = false
 
     
   case takePredecessor (ref: fingerData) => // Overloaded: Take or give predecessor based on whether ref is null
