@@ -39,8 +39,10 @@ case class gotData () // Will send node back to active request state after getti
   var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
   actorList(0) ! join (null)
-  var n = 500 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
-  var m: Int = 19
+  var n: Int = 200 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var numOfMessages: Int = 3
+  var m: Int = 2 *( Math.ceil(Math.log(n)/Math.log(2)).toInt)
+  println("m : "+m)
   var globalHopCount: Int = 0
   
   for (i <- 1 to n) {
@@ -57,7 +59,7 @@ case class gotData () // Will send node back to active request state after getti
       println (i)
     }
     
-    println ("DONE!")
+    println ("Initialized all nodes!")
 
     /*
     
@@ -76,15 +78,22 @@ case class gotData () // Will send node back to active request state after getti
 
       for( i<-1 to n ) {
         busy = true
-        actorList(0) ! findKey(sha(i.toString,m), 0)
-         while (busy) {print ("")}
-         Thread.sleep(5)
+          for (j <- 1 to numOfMessages)
+            actorList(i-1) ! findKey(sha((i+math.pow(j,2).toInt).toString,m), 1)
+          while (busy) {print ("")}
+         //Thread.sleep(5)
       }
 
       Thread.sleep(500)
 
+      println("\n================\nNumber of nodes(n) : "+n)
+      println("m : "+m)
+      println("Total hop count: "+ globalHopCount)
+    
+      var avgHops : Double = globalHopCount / (n*numOfMessages)
 
-      println("Total hop count is : "+globalHopCount)
+      println ("Average number of hops per message: " + avgHops)
+
 
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
@@ -188,19 +197,19 @@ class Node () extends Actor {
 
 
   case findKey (id, hops) => 
-
+ 
   var done : Boolean = false
       var maxFingerBelowId : fingerData = new fingerData (-1, null)
            
      var current : fingerData = new fingerData (myID, self)
      
      if (predecessor.actorReference == self) {
-        println("Key "+id+" found at "+fingerTable(0).nodeId + " totap hops:" +globalHopCount)
+        println("Key "+id+" found at "+fingerTable(0).nodeId )
         globalHopCount += hops
       }
      
      else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1) {
-        println("Key "+id+" found at "+fingerTable(0).nodeId + " totap hops:" +globalHopCount)
+        println("Key "+id+" found at "+fingerTable(0).nodeId )
         globalHopCount += hops
       }
      else {
@@ -221,6 +230,8 @@ class Node () extends Actor {
         fingerTable(largest).actorReference ! findKey (id, hops+1)
         }
      }
+   
+   
      busy = false
 
     
