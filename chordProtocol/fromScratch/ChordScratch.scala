@@ -42,7 +42,7 @@ case class gotData () // Will send node back to active request state after getti
     actorList (i) = system.actorOf(Props(new Node())) 
     actorList (i) ! join (actorList (0))
     busy = true
-    while (busy) {} // SLEEP NEEDS TO BE DONE TO AVOID DEADLOCK
+    while (busy) {} 
     
     for (j <- 1 to i) {
     busy = true
