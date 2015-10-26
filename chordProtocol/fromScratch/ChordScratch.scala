@@ -24,6 +24,7 @@ case class findClosestPrecedingFinger (requestingActor: ActorRef, id: Int)
 case class takePredAndJoin (fLine: fingerData)
 case class takePredecessor(ref: fingerData) // overloaded: update self or send
 case class addKey (id: Int, data: Int)
+case class findKey (id: Int)
 case class acceptKey (data: Int)
 case class takeTables () // used while joining, take the whole fingertable of your buddy
 case class takeFinger (line: Int) // take a single finger, mostly used to get successor of successor, etc
@@ -67,7 +68,10 @@ case class gotData () // Will send node back to active request state after getti
       */
       for (i <- 1 to n) 
         actorList (0) ! addKey(sha(i.toString, m), i)
+
+      actorList(0) ! findKey(sha(1.toString,m))
       
+
 
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
@@ -168,6 +172,42 @@ class Node () extends Actor {
         fingerTable(largest).actorReference ! addKey (id, data)
         }
      }
+
+
+  case findKey (id) => 
+
+  var done : Boolean = false
+      var maxFingerBelowId : fingerData = new fingerData (-1, null)
+           
+     var current : fingerData = new fingerData (myID, self)
+
+     
+     if (predecessor.actorReference == self)
+        println("Key "+id+" found at "+fingerTable(0).nodeId)
+        //fingerTable(0).actorReference ! acceptKey (id)
+     
+     else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1)
+       //fingerTable(0).actorReference ! acceptKey (id)
+        println("Key "+id+" found at "+fingerTable(0).nodeId)
+     else {
+       var done : Boolean = false
+       for (i <- 0 to (m-2)) {
+        if (fingerTable(i).nodeId < id && fingerTable (i+1).nodeId > id) {
+          fingerTable(i).actorReference ! findKey (id)
+          done = true
+        } 
+      }
+      if (!done) {
+      var largest : Int = 0
+      
+      for (i <- 0 to (m-1))
+        if (fingerTable(i).nodeId > largest)
+          largest = i
+      
+        fingerTable(largest).actorReference ! findKey (id)
+        }
+     }
+
     
   case takePredecessor (ref: fingerData) => // Overloaded: Take or give predecessor based on whether ref is null
     if (ref != null) 
