@@ -39,11 +39,19 @@ case class gotData () // Will send node back to active request state after getti
   var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
   actorList(0) ! join (null)
-  var n: Int = 200 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var n: Int = 201 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   var numOfMessages: Int = 3
-  var m: Int = 2 *( Math.ceil(Math.log(n)/Math.log(2)).toInt)
+  var m: Int = ( 3 *( Math.ceil(Math.log(n)/Math.log(2)).toInt))
   println("m : "+m)
   var globalHopCount: Int = 0
+
+  if(args.length==2) {
+    n = args(0).toInt
+    numOfMessages = args(1).toInt
+  } 
+  else {
+    println("Arguments not proper. Default ones chosen.")
+  }
   
   for (i <- 1 to n) {
     busy = true
@@ -88,9 +96,10 @@ case class gotData () // Will send node back to active request state after getti
 
       println("\n================\nNumber of nodes(n) : "+n)
       println("m : "+m)
+      println("Number of requests per node : "+numOfMessages)
       println("Total hop count: "+ globalHopCount)
     
-      var avgHops : Double = globalHopCount / (n*numOfMessages)
+      var avgHops : Double = globalHopCount.toDouble / (n*numOfMessages)
 
       println ("Average number of hops per message: " + avgHops)
 
