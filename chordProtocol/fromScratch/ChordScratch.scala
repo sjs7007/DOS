@@ -1,14 +1,3 @@
-/*
-  Changes I made. 
-  1. Put wherever break was there inside a breakable block to get rid of break exception.
-
-  What I don't understand/Possible Issues
-  1. makes for n+1 nodes??
-  2. for n=0, i.e for 1 node, the finger table is not displayed.
-
-*/
-
-
 import akka.actor._
 import scala.math._ //for absolute value
 import scala.collection.mutable.ListBuffer //for storing neighbor list : https://www.cs.helsinki.fi/u/wikla/OTS/Sisalto/examples/html/ch17.html
@@ -20,12 +9,20 @@ import scala.concurrent.duration._
 import scala.util.control.Breaks._
 import java.security.MessageDigest
 import java.math.BigInteger
+import scala.concurrent.duration.Duration
+import akka.japi.Function
+import java.util.concurrent.Callable
+import scala.concurrent._ //Futures, Promises and goodies  
+import scala.concurrent.ExecutionContext.Implicits.global //"Thread pool" to run futures 
+
+object Chord extends App {
 
 case class  getId()
 case class join (ref: ActorRef)
-case class findClosestPrecedingFinger (requestingActor: ActorRef, id: Int, depth: Int)
+case class findClosestPrecedingFinger (requestingActor: ActorRef, id: Int)
 case class takePredAndJoin (fLine: fingerData)
 case class takePredecessor(ref: fingerData) // overloaded: update self or send
+case class addKey (id: Int, data: Int)
 case class takeTables () // used while joining, take the whole fingertable of your buddy
 case class takeFinger (line: Int) // take a single finger, mostly used to get successor of successor, etc
 case class updateTables (ref: ActorRef) // Send to nodes periodically to make them update tables
@@ -34,31 +31,33 @@ case class activeRequestState () // Activated when a node is ready to send and r
 case class requestData (from: fingerData, to: Int, hops: Int) // Will request data from nodes and keep hopping
 case class gotData () // Will send node back to active request state after getting data
 
-object Chord extends App {
   var system = ActorSystem("Chord") 
-  var actorList : Array [ActorRef] = new Array[ActorRef](256)
+  var actorList : Array [ActorRef] = new Array[ActorRef](1000)
+  var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
-  var n = 15 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  actorList(0) ! join (null)
+  var n = 4 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   
-  for (i <- 1 to n) {
+  for (i <- 1 to (n-1)) {
     actorList (i) = system.actorOf(Props(new Node())) 
-    actorList (i) ! join (actorList (i-1))
-    Thread.sleep (n*25) // SLEEP NEEDS TO BE DONE TO AVOID DEADLOCK
+    actorList (i) ! join (actorList (0))
+    busy = true
+    while (busy) {} // SLEEP NEEDS TO BE DONE TO AVOID DEADLOCK
     
     for (j <- 1 to i) {
-        Thread.sleep (n*25)
+    busy = true
         actorList(j) ! updateTables(null) // THIS IS INEFFICIENT, I WILL FIX IT SOMETIME IF THERE IS TIME BUT FOR NOW IT WORKS FINE
+        while (busy) {}
       }
-    
     }
     
-  
-  
-  for (i <- 0 to n) {
-        Thread.sleep (n*25)
+    println ("DONE!")
+    
+  for (i <- 0 to (n-1)) {
+        busy = true
         actorList(i) ! "printFingers"
+        while (busy) {}
       }
-}
 
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
@@ -69,13 +68,13 @@ class Node () extends Actor {
   var m: Int = 8
   var myID : Int = 0
   myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
-  
+
   var predecessor : fingerData = new fingerData (myID, self)
   var fingerTable : Array[fingerData] = new Array[fingerData](m)
   implicit val t = Timeout(5 seconds)
   
   for(i<- 0 to (m-1))
-        fingerTable(i) = new fingerData(myID,self)
+        fingerTable(i) = new fingerData(1,self)
       
   def receive = {
   case getId () =>
@@ -86,28 +85,45 @@ class Node () extends Actor {
     sender ! tempFinger
   
   case join (ref) => // Tell a node to join the network
-        ref ! findClosestPrecedingFinger (self, myID, 0)
     
-  case findClosestPrecedingFinger (from, id, depth) => // Find the closest preceding node to "from" - this is for JOIN
+    if (ref != null)
+        ref ! findClosestPrecedingFinger (self, myID)
+    else myID = 1
+     
+  case findClosestPrecedingFinger (from, id) => // Find the closest preceding node to "from" - this is for JOIN
+      
+      println ("Node "+ myID + "got req to find closestPreceding for " + id)
+      
       var done : Boolean = false
       var maxFingerBelowId : fingerData = new fingerData (-1, null)
            
      var current : fingerData = new fingerData (myID, self)
-     var succ : fingerData = fingerTable(0)
-     var mul = 0
      
-     if (predecessor.nodeId != myID)
-      while (!(current.nodeId < (id + mul*math.pow (2, m).toInt) && id < (succ.nodeId + mul*math.pow (2, m).toInt))){
-              println ("In node: " + myID + "Current :" + current.nodeId + " Succ: " + succ.nodeId + " and looking for pred of " + id)
-        current = new fingerData (succ.nodeId, succ.actorReference)
-        if (succ.actorReference != self)
-          succ = Await.result((succ.actorReference ? takeFinger(0)),t.duration).asInstanceOf[fingerData]
-        else succ = fingerTable(0)
-        if (succ.nodeId < current.nodeId)
-          mul = 1
-      }
+     if (predecessor.actorReference == self)
+        from ! takePredAndJoin (new fingerData (current.nodeId, current.actorReference))
+     
+     else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1)
       from ! takePredAndJoin (new fingerData (current.nodeId, current.actorReference))
-       
+      
+     else {
+       var done : Boolean = false
+       for (i <- 0 to (m-2)) {
+        if (fingerTable(i).nodeId < id && fingerTable (i+1).nodeId > id) {
+          fingerTable(i).actorReference ! findClosestPrecedingFinger (from, id)
+          done = true
+        } 
+      }
+      if (!done) {
+      var largest : Int = 0
+      
+      for (i <- 0 to (m-1))
+        if (fingerTable(i).nodeId > largest)
+          largest = i
+      
+        fingerTable(largest).actorReference ! findClosestPrecedingFinger (from, id)
+        }
+     }
+    
   case takePredecessor (ref: fingerData) => // Overloaded: Take or give predecessor based on whether ref is null
     if (ref != null) 
       predecessor = new fingerData (ref.nodeId, ref.actorReference)
@@ -128,25 +144,26 @@ class Node () extends Actor {
     sender ! fingerTable
     
   case updateTables (ref) => // First sent by a new node who joined as your successor, else sent to periodically update
-    if (ref != null) {
-      fingerTable(0).actorReference = ref
-      fingerTable(0).nodeId = Await.result((ref ? getId()),t.duration).asInstanceOf[Int]
-      }
-      breakable {
-        for (i <- 1 to (m-2)) {
-        var succ : fingerData = fingerTable(i)
-        var next : fingerData = null
-        while (succ.nodeId < ((myID+math.pow(2,i).toInt)%math.pow(2,m).toInt)){
-          if (succ.actorReference != self) 
-            next = Await.result((succ.actorReference ? takeFinger(0)),t.duration).asInstanceOf[fingerData]
-          else next = fingerTable(0)
-          if (next.nodeId < succ.nodeId)
-            break
-          else succ = next
-          }
-          fingerTable(i) = succ
+      if (ref != null) {
+        fingerTable(0).actorReference = ref
+        fingerTable(0).nodeId = Await.result((ref ? getId()),t.duration).asInstanceOf[Int]
         }
-      }
+        breakable {
+          for (i <- 1 to (m-2)) {
+          var succ : fingerData = fingerTable(i)
+          var next : fingerData = null
+          while (succ.nodeId < ((myID+math.pow(2,i).toInt)%math.pow(2,m).toInt)){
+            if (succ.actorReference != self) 
+                   next = Await.result((succ.actorReference ? takeFinger(0)),t.duration).asInstanceOf[fingerData]
+            else next = fingerTable(0)
+            if (next.nodeId < succ.nodeId)
+              break
+            else succ = next
+            }
+            fingerTable(i) = succ
+          }
+        }
+        busy = false
         
   case activeRequestState () =>
   
@@ -170,6 +187,7 @@ class Node () extends Actor {
     for (i <- 0 to (m-1))
         println ("Pos " + (myID+math.pow(2,i).toInt)%math.pow(2,m).toInt + ": " + fingerTable(i).nodeId)
       println ("Predecessor is: " + predecessor.nodeId + "\n============")
+      busy = false
   }
   
   def sha(tobehashed:String, m: Int) :Integer = {
@@ -190,4 +208,4 @@ class Node () extends Actor {
   }
 }
 
- 
+ }
