@@ -78,7 +78,8 @@ class Node () extends Actor {
   
   var myID : Int = 0
   myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
-  var dataEntries : ListBuffer = new LIstBuffer (Int)
+  //val buf = new ListBuffer[Int]   
+  var dataEntries = new ListBuffer[Int]
   var predecessor : fingerData = new fingerData (myID, self)
   var fingerTable : Array[fingerData] = new Array[fingerData](m)
   implicit val t = Timeout(5 seconds)
@@ -144,10 +145,10 @@ class Node () extends Actor {
 
      
      if (predecessor.actorReference == self)
-        fingerTable(0) ! acceptKey (id)
+        fingerTable(0).actorReference ! acceptKey (id)
      
      else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1)
-       fingerTable(0) ! acceptKey (id)
+       fingerTable(0).actorReference ! acceptKey (id)
       
      else {
        var done : Boolean = false
