@@ -8,6 +8,7 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.util.control.Breaks._
 import java.security.MessageDigest
+import scala.collection.mutable.ListBuffer
 import java.math.BigInteger
 import scala.concurrent.duration.Duration
 import akka.japi.Function
@@ -23,6 +24,7 @@ case class findClosestPrecedingFinger (requestingActor: ActorRef, id: Int)
 case class takePredAndJoin (fLine: fingerData)
 case class takePredecessor(ref: fingerData) // overloaded: update self or send
 case class addKey (id: Int, data: Int)
+case class acceptKey (data: Int)
 case class takeTables () // used while joining, take the whole fingertable of your buddy
 case class takeFinger (line: Int) // take a single finger, mostly used to get successor of successor, etc
 case class updateTables (ref: ActorRef) // Send to nodes periodically to make them update tables
@@ -36,9 +38,10 @@ case class gotData () // Will send node back to active request state after getti
   var busy : Boolean = false
   actorList (0) = system.actorOf(Props(new Node()))
   actorList(0) ! join (null)
-  var n = 10000 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var n = 14 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var m: Int = 9
   
-  for (i <- 1 to (n-1)) {
+  for (i <- 1 to n) {
     busy = true
     actorList (i) = system.actorOf(Props(new Node())) 
     actorList (i) ! join (actorList (0))
@@ -53,12 +56,18 @@ case class gotData () // Will send node back to active request state after getti
     }
     
     println ("DONE!")
+
+    /*
     
   for (i <- 0 to (n-1)) {
         busy = true
         actorList(i) ! "printFingers"
         while (busy) {print ("")}
       }
+      */
+      for (i <- 1 to n) 
+        actorList (0) ! addKey(sha(i.toString, m), i)
+      
 
 class fingerData(id: Int, x: ActorRef) {
   var nodeId : Int = id
@@ -66,10 +75,10 @@ class fingerData(id: Int, x: ActorRef) {
 }
 
 class Node () extends Actor {
-  var m: Int = 29
+  
   var myID : Int = 0
   myID = sha(self.path.toString(), m) // myID is the first m bits of SHA-1 of path
-
+  var dataEntries : ListBuffer = new LIstBuffer (Int)
   var predecessor : fingerData = new fingerData (myID, self)
   var fingerTable : Array[fingerData] = new Array[fingerData](m)
   implicit val t = Timeout(5 seconds)
@@ -122,6 +131,42 @@ class Node () extends Actor {
         fingerTable(largest).actorReference ! findClosestPrecedingFinger (from, id)
         }
      }
+
+  case acceptKey (id) => dataEntries += id
+  println ("Node " + myID + " now has key " + id)
+
+  case addKey (id, data) => 
+
+  var done : Boolean = false
+      var maxFingerBelowId : fingerData = new fingerData (-1, null)
+           
+     var current : fingerData = new fingerData (myID, self)
+
+     
+     if (predecessor.actorReference == self)
+        fingerTable(0) ! acceptKey (id)
+     
+     else if (fingerTable (0).nodeId > id || fingerTable(0).nodeId == 1)
+       fingerTable(0) ! acceptKey (id)
+      
+     else {
+       var done : Boolean = false
+       for (i <- 0 to (m-2)) {
+        if (fingerTable(i).nodeId < id && fingerTable (i+1).nodeId > id) {
+          fingerTable(i).actorReference ! addKey (id, data)
+          done = true
+        } 
+      }
+      if (!done) {
+      var largest : Int = 0
+      
+      for (i <- 0 to (m-1))
+        if (fingerTable(i).nodeId > largest)
+          largest = i
+      
+        fingerTable(largest).actorReference ! addKey (id, data)
+        }
+     }
     
   case takePredecessor (ref: fingerData) => // Overloaded: Take or give predecessor based on whether ref is null
     if (ref != null) 
@@ -171,7 +216,7 @@ class Node () extends Actor {
   */
   
   case requestData (from, to, hops) => 
-  
+
   /*
   Check my whole list to see if anyone is the recipient (by 'to' as nodeId)
     If not, do: fingerTable(0).actorReference ! requestData (from, to, (hops+1))
@@ -206,5 +251,22 @@ class Node () extends Actor {
     return hash_int
   }
 }
+
+def sha(tobehashed:String, m: Int) :Integer = {
+    var message_digest= MessageDigest.getInstance("SHA-1")
+    message_digest.update(tobehashed.getBytes())
+    var hash_value=message_digest.digest()
+    var hexstring= new StringBuffer()
+    for ( i <- 0 to (hash_value.length-1)) {
+        var hex = Integer.toHexString(0xff & hash_value(i))
+        if(hex.length() == 1) hexstring.append('0')
+        hexstring.append(hex)
+    }
+    var hex_string:String=hexstring.toString()
+    var binary_string:String= new BigInteger(hex_string, 16).toString(2);
+    binary_string=binary_string.substring(0,m-1)
+    var hash_int :Integer= Integer.parseInt(binary_string,2)
+    return hash_int
+  }
 
  }

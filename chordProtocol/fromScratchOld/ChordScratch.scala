@@ -40,7 +40,7 @@ object Chord extends App {
   var system = ActorSystem("Chord") 
   var actorList : Array [ActorRef] = new Array[ActorRef](256)
   actorList (0) = system.actorOf(Props(new Node(1)))
-  var n = 3 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
+  var n = 30 // CHANGE THIS FOR DIFFERING AMOUNT OF NODES
   
   for (i <- 1 to n) {
     actorList (i) = system.actorOf(Props(new Node(i+1))) 
