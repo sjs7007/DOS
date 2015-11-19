@@ -12,7 +12,9 @@ import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
 import scala.concurrent.duration._
-
+import collection.mutable.{ HashMap, MultiMap, Set } //http://www.scala-lang.org/api/2.11.5/index.html#scala.collection.mutable.MultiMap
+import java.util.concurrent.ConcurrentHashMap
+import scala.collection.mutable.ListBuffer
 //import java.util
 
 
@@ -37,7 +39,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   // we don't create a receive function ourselve, but use
   // the runRoute function from the HttpService to create
   // one for us, based on the supplied routes.
-  def httpReceive = runRoute(aSimpleRoute ~ anotherRoute ~ anotherThirdRoute ~ facebookStuff)
+  def httpReceive = runRoute(facebookStuff)
 
   def handle : Receive = {
     case Http.Bound(_) =>
@@ -50,128 +52,43 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       context.stop(self)
   }
 
+  //list of all users : make it more efficient
   var users = scala.collection.immutable.Vector[User]()
+  //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
 
+  //concurrent to allow simultaneous access : stores friends of each email
+  var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
+
+  //store all friend requests in the buffer below. Ba
 
   def receive = handle orElse httpReceive
 
-  // handles the api path, we could also define these in separate files
-  // this path respons to get queries, and make a selection on the
-  // media-type.
-  val aSimpleRoute = {
-    path("path1") {
-
-      get {
-
-        // Get the value of the content-header. Spray
-        // provides multiple ways to do this.
-        headerValue({
-          case x@HttpHeaders.`Content-Type`(value) => Some(value)
-          case default => None
-        }) {
-          // the header is passed in containing the content type
-          // we match the header using a case statement, and depending
-          // on the content type we return a specific object
-          header => header match {
-
-            // if we have this contentype we create a custom response
-            case ContentType(MediaType("application/vnd.type.a"), _) => {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  Person("Bob", "Type A", System.currentTimeMillis());
-                }
-              }
-            }
-
-            // if we habe another content-type we return a different type.
-            case ContentType(MediaType("application/vnd.type.b"), _) => {
-
-              respondWithMediaType(`application/json`) {
-                complete {
-                  Person("Bob", "Type B", System.currentTimeMillis());
-                }
-              }
-            }
-
-            case ContentType(MediaType("application/vnd.type.testType"),_) => {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  Person("Baaab","Type test",900)
-                }
-              }
-            }
-
-            case ContentType(MediaType("application/vnd.type.killserver"),_) => {
-              implicit val timeout = Timeout(0.seconds)
-              httpListener.get ! Http.Unbind(timeout.duration)
-              println(" killing server now")
-              respondWithMediaType(`application/json`) {
-                complete {
-                  Person("Baaab","Type test",900)
-                }
-              }
-            }
-
-            // if content-types do not match, return an error code
-            case default => {
-              complete {
-                HttpResponse(406);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // handles the other path, we could also define these in separate files
-  // This is just a simple route to explain the concept
-  val anotherRoute = {
-    path("path2") {
-      get {
-        // respond with text/html.
-        respondWithMediaType(`text/html`) {
-          complete {
-            // respond with a set of HTML elements
-            <html>
-              <body>
-                <h1>Path 2</h1>
-                <h2>some more random text</h2>
-              </body>
-            </html>
-          }
-        }
-      }
-    }
-  }
-
-  val anotherThirdRoute = {
-    path("order" / IntNumber / IntNumber ) { (orderID,orderID2) =>
-      (get | put) { ctx =>
-        ctx.complete("Received " + ctx.request.method + " request for order " + orderID+"\n OrderID 2 is : "+orderID2)
-      }
-    }
-  }
 
   val facebookStuff = {
-    pathPrefix("createUser") {
-      pathEnd {
-        post {
-          entity(as[User]) { user => requestContext =>
-            val responder = createResponder(requestContext)
-            createUser(user) match {
-              case true => responder ! UserCreated(user.Email)
-              case _ => UserAlreadyExists
-            }
-          }
+    path("createUser") {
+      post {
+        entity(as[User]) { user => requestContext =>
+          val responder = createResponder(requestContext)
+          createUser(user) match {
+            case true => responder ! UserCreated(user.Email)
+            case _ => UserAlreadyExists
           }
         }
+      }
     }
 
-    pathPrefix("user"/IntNumber/"friends") {
-      pathEnd {
-        post {
+    path("sendFriendRequest") {
+      post {
+        entity(as[FriendRequest]) { friendRequest => requestContext =>
+          val responder = createResponder(requestContext)
+          sendFriendRequest(friendRequest) match {
+            case "alreadyFriends" => responder ! AlreadyFriends
 
+            case "userNotPresent" => responder ! UserNotPresent
+
+            case "requestSent" => responder ! FriendRequestSent
+
+          }
         }
       }
     }
@@ -182,10 +99,28 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     context.actorOf(Props(new Responder(requestContext)))
   }
 
+  //create User
   private def createUser(user: User) : Boolean = {
     val doesNotExist = !users.exists(_.Email == user.Email)
     if(doesNotExist) users = users :+ user
     doesNotExist
+  }
+
+  //sendFriendRequest
+  private def sendFriendRequest(req : FriendRequest) : String = {
+    if(friendLists.isDefinedAt(req.fromEmail)) {
+      if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
+        return "alreadyFriends"
+      }
+    }
+
+    else if(!friendLists.isDefinedAt(req.toEmail)) {
+      return "userNotPresent"
+    }
+    else {
+      //store the request somewhere
+      return "requestSent"
+    }
   }
 }
 
