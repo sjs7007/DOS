@@ -2,15 +2,18 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.util.concurrent.ConcurrentHashMap
-
 import MyJsonProtocol._
 import akka.actor._
+import akka.util.Timeout
 import spray.can.Http
+import spray.http.MediaTypes._
 import spray.http._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
+import scala.concurrent.duration._
+import collection.mutable.{ HashMap, MultiMap, Set } //http://www.scala-lang.org/api/2.11.5/index.html#scala.collection.mutable.MultiMap
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.mutable.ListBuffer
 //import java.util
 
@@ -55,64 +58,49 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   //concurrent to allow simultaneous access : stores friends of each email
   var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
-
-  //store all friend requests in the buffer below.
-  var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
   
-  //store all posts in the buffer below
-  var allPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
+    var posts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
+
+
+  //store all friend requests in the buffer below. Ba
 
   def receive = handle orElse httpReceive
 
 
   val facebookStuff = {
-    pathPrefix("createUser") {
-      pathEnd {
-        post {
-          log.debug("inhere")
-          entity(as[User]) { user => requestContext =>
-            val responder = createResponder(requestContext)
-            createUser(user) match {
-              case true => responder ! UserCreated(user.Email)
-              case _ => responder ! UserAlreadyExists
-            }
+    path("createUser") {
+      post {
+        entity(as[User]) { user => requestContext =>
+          val responder = createResponder(requestContext)
+          createUser(user) match {
+            case true => responder ! UserCreated(user.Email)
+            case _ => UserAlreadyExists
           }
         }
       }
-    } ~
-    pathPrefix("sendFriendRequest") {
-      pathEnd {
-        post {
-          entity(as[FriendRequest]) { friendRequest => requestContext =>
-            val responder = createResponder(requestContext)
-            sendFriendRequest(friendRequest) match {
-              case "alreadyFriends" => responder ! AlreadyFriends
-
-              case "userNotPresent" => responder ! UserNotPresent
-
-              case "requestSent" => responder ! FriendRequestSent
-            }
-          }
-        }
-      }
-    } 
-    /*pathPrefix("user"/String) {
-      userEmail =>
-      path("friends"){
-         get {
-           requestContext =>
-           {
-             val responder = createResponder(requestContext)
-             getFriends(userEmail) match {
-               case true => responder
-               case _ =>
-             }
-           }
-         }
-      }
-    } ~*/
+    }
     
-        path("wallWrite") {
+    
+
+    path("sendFriendRequest") {
+      post {
+        entity(as[FriendRequest]) { friendRequest => requestContext =>
+          val responder = createResponder(requestContext)
+          sendFriendRequest(friendRequest) match {
+            case "alreadyFriends" => responder ! AlreadyFriends
+
+            case "userNotPresent" => responder ! UserNotPresent
+
+            case "requestSent" => responder ! FriendRequestSent
+
+          }
+        }
+      }
+    }
+    
+    
+    
+    path("wallWrite") {
       post {
         entity(as[Wallpost]) { wallpost => requestContext =>
           val responder = createResponder(requestContext)
@@ -125,6 +113,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       }
     }
     
+    
+    
   }
 
 
@@ -135,43 +125,37 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create User
   private def createUser(user: User) : Boolean = {
     val doesNotExist = !users.exists(_.Email == user.Email)
-    if(doesNotExist) {
-      users = users :+ user
-      friendLists.put(user.Email,new ListBuffer())
-      friendRequests.put(user.Email,new ListBuffer())
-    }
+    if(doesNotExist) users = users :+ user
     doesNotExist
   }
 
   //sendFriendRequest
   private def sendFriendRequest(req : FriendRequest) : String = {
-    if(friendLists.containsKey(req.fromEmail)) {
+    if(friendLists.isDefinedAt(req.fromEmail)) {
       if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
         return "alreadyFriends"
       }
     }
-    if(!friendLists.containsKey(req.toEmail)) {
+
+    else if(!friendLists.isDefinedAt(req.toEmail)) {
       return "userNotPresent"
     }
     else {
       //store the request somewhere
-      friendRequests.get(req.toEmail) += req.fromEmail
       return "requestSent"
     }
-
   }
   
-  
-    private def writePost(p : Wallpost) : String = {
-    if(friendLists.get(p.from) == friendLists.get(p.to) ||  friendLists.get(p.from).contains(p.to)) {
-        allPosts.get(p.to) += p
+    //writepost
+  private def writePost(p : wallpost) : String = {
+    if(friendLists.get(p.fromEmail).contains(p.toEmail)) {
+        /*INSERT POST INTO THAT WALL*/
       return "posted"
     }
 
     else return "cannotPost"
 
   }
-  
 }
 
 
@@ -188,19 +172,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       requestContext.complete(StatusCodes.Conflict)
       killYourself
 
-    case AlreadyFriends =>
-      requestContext.complete(StatusCodes.Conflict)
-      log.debug("Already friends with the user.")
-      killYourself
-
-    case UserNotPresent =>
-     requestContext.complete(StatusCodes.PreconditionFailed)
-     log.debug("Can't send friend request to user not present in the system.")
-
-    case FriendRequestSent =>
-     requestContext.complete(StatusCodes.Accepted)
-     log.debug("Friend request was successfully sent.")
-
+    case SendFriendRequest()
   }
 
   private def killYourself = self ! PoisonPill

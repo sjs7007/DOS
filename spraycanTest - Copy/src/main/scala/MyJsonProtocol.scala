@@ -23,19 +23,13 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object UserNotPresent
   case object FriendRequestSent
   
-   //wallwrite
+  //wallwrite
   case class Wallpost(from:String, to:String, data:String)
   case object PostSuccess
   case object PostFail
-  
-    object FriendRequest extends DefaultJsonProtocol {
-    implicit val format = jsonFormat2(FriendRequest.apply)
-  }
-  
-   
 
-    object Wallpost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(Wallpost.apply)
+  object FriendRequest extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(FriendRequest.apply)
   }
 }
 
