@@ -63,33 +63,51 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
-    path("createUser") {
-      post {
-        log.debug("inhere")
-        entity(as[User]) { user => requestContext =>
-          val responder = createResponder(requestContext)
-          createUser(user) match {
-            case true => responder ! UserCreated(user.Email)
-            case _ => responder ! UserAlreadyExists
+    pathPrefix("createUser") {
+      pathEnd {
+        post {
+          log.debug("inhere")
+          entity(as[User]) { user => requestContext =>
+            val responder = createResponder(requestContext)
+            createUser(user) match {
+              case true => responder ! UserCreated(user.Email)
+              case _ => responder ! UserAlreadyExists
+            }
           }
         }
+      }
+    } ~
+    pathPrefix("sendFriendRequest") {
+      pathEnd {
+        post {
+          entity(as[FriendRequest]) { friendRequest => requestContext =>
+            val responder = createResponder(requestContext)
+            sendFriendRequest(friendRequest) match {
+              case "alreadyFriends" => responder ! AlreadyFriends
+
+              case "userNotPresent" => responder ! UserNotPresent
+
+              case "requestSent" => responder ! FriendRequestSent
+            }
+          }
+        }
+      }
+    } ~
+    pathPrefix("user"/String) {
+      userEmail =>
+      path("friends"){
+         get {
+           requestContext =>
+           {
+             val responder = createResponder(requestContext)
+             getFriends(userEmail) match {
+               case true => responder
+               case _ =>
+             }
+           }
+         }
       }
     }
-
-   /* path("sendFriendRequest") {
-      post {
-        entity(as[FriendRequest]) { friendRequest => requestContext =>
-          val responder = createResponder(requestContext)
-          sendFriendRequest(friendRequest) match {
-            case "alreadyFriends" => responder ! AlreadyFriends
-
-            case "userNotPresent" => responder ! UserNotPresent
-
-            case "requestSent" => responder ! FriendRequestSent
-          }
-        }
-      }
-    }*/
   }
 
 
