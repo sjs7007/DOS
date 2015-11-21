@@ -10,6 +10,7 @@ import spray.can.Http
 import spray.http._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
+import MediaTypes._
 
 import scala.collection.mutable.ListBuffer
 //import java.util
@@ -50,12 +51,13 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
 
   //list of all users : make it more efficient
-  var users = scala.collection.immutable.Vector[User]()
+  //var users = scala.collection.immutable.Vector[User]()
+  var users = new ConcurrentHashMap[String,User]()
   //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
 
   //concurrent to allow simultaneous access : stores friends of each email
   var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
-
+  
   //store all friend requests in the buffer below.
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
 
@@ -77,49 +79,49 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~
-    pathPrefix("sendFriendRequest") {
-      pathEnd {
-        post {
-          entity(as[FriendRequest]) { friendRequest => requestContext =>
-            val responder = createResponder(requestContext)
-            sendFriendRequest(friendRequest) match {
-              case "alreadyFriends" => responder ! AlreadyFriends
+      pathPrefix("sendFriendRequest") {
+        pathEnd {
+          post {
+            entity(as[FriendRequest]) { friendRequest => requestContext =>
+              val responder = createResponder(requestContext)
+              sendFriendRequest(friendRequest) match {
+                case "alreadyFriends" => responder ! AlreadyFriends
 
-              case "userNotPresent" => responder ! UserNotPresent
+                case "userNotPresent" => responder ! UserNotPresent
 
-              case "requestSent" => responder ! FriendRequestSent
+                case "requestSent" => responder ! FriendRequestSent
+              }
             }
           }
         }
+      } ~
+      pathPrefix("user" / PathElement) {
+        userEmail =>
+          path("friends") {
+            get {
+              respondWithMediaType(`application/json`) {
+                complete {
+                  //userEmail
+                  //"tesloop"
+                  users.get(userEmail)
+                }
+              }
+            }
+          }
       }
-    } ~
-    pathPrefix("user"/String) {
-      userEmail =>
-      path("friends"){
-         get {
-           requestContext =>
-           {
-             val responder = createResponder(requestContext)
-             getFriends(userEmail) match {
-               case true => responder
-               case _ =>
-             }
-           }
-         }
-      }
-    }
+
   }
-
-
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
   }
 
   //create User
   private def createUser(user: User) : Boolean = {
-    val doesNotExist = !users.exists(_.Email == user.Email)
+    //val doesNotExist = !users.exists(_.Email == user.Email)
+    val doesNotExist = users.containsKey(user.Email)
     if(doesNotExist) {
-      users = users :+ user
+      //users = users :+ user
+      users.put(user.Email,user)
       friendLists.put(user.Email,new ListBuffer())
       friendRequests.put(user.Email,new ListBuffer())
     }
