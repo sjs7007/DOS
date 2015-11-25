@@ -119,11 +119,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   //userEmail
                   //"tesloop"
                   //users.get(userEmail)
-                  friendLists.get(userEmail).toString()
+                  if(users.containsKey(userEmail)) {
+                    friendLists.get(userEmail).toString()
+                  }
+                  else {
+                    userEmail+"User doesn't exist."
+                  }
                 }
               }
             }
-          }
+          } ~
           path("profile") {
             get {
               respondWithMediaType(`application/json`) {
@@ -211,7 +216,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       log.debug("To email doesn't exist. Can't post")
       return "invalidPost"
     }
-    if(friendLists.get(p.fromEmail) == friendLists.get(p.toEmail) ||  friendLists.get(p.fromEmail).contains(p.toEmail)) {
+    if(p.fromEmail==p.toEmail ||  friendLists.get(p.fromEmail).contains(p.toEmail)) {
         allPosts.get(p.toEmail) += p
       return "posted"
     }
