@@ -19,7 +19,7 @@ object Boot extends App {
   // Bind HTTP to the specified service.
   implicit val timeout = Timeout(5.seconds)
   //IO(Http) ? Http.Bind(service, interface = "localhost", port = 8082)
-  IO(Http).tell(Http.Bind(service, interface = "localhost", port = 8086), sender = service)
+  IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port = 8087), sender = service)
 
 
 }

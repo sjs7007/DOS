@@ -9,12 +9,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class Person(name: String, fistName: String, age: Long)
 
   //createUser
-  case class User(Email:String, Name: String,publickey: String)
+  case class User(Email:String, Name: String,Birthday: String,CurrentCity : String)
   case class UserCreated(Email:String)
   case object UserAlreadyExists
 
   object User extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(User.apply)
+    implicit val format = jsonFormat4(User.apply)
   }
 
   //sendFriendRequest
@@ -24,7 +24,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object FriendRequestSent
   
    //wallwrite
-  case class Wallpost(from:String, to:String, data:String)
+  case class Wallpost(fromEmail:String, toEmail:String, data:String)
   case object PostSuccess
   case object PostFail
   

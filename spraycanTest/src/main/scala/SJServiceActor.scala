@@ -68,6 +68,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    pathPrefix("users") {
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              users.toString()
+              //"sss"
+            }
+          }
+        }
+      }
+    } ~
     pathPrefix("createUser") {
       pathEnd {
         post {
@@ -98,7 +110,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       } ~
-      pathPrefix("user" / PathElement) {
+      pathPrefix("user" / Segment) {
         userEmail =>
           path("friends") {
             get {
@@ -106,6 +118,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 complete {
                   //userEmail
                   //"tesloop"
+                  //users.get(userEmail)
+                  friendLists.get(userEmail).toString()
+                }
+              }
+            }
+          }
+          path("profile") {
+            get {
+              respondWithMediaType(`application/json`) {
+                complete {
                   users.get(userEmail)
                 }
               }
@@ -150,9 +172,10 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create User
   private def createUser(user: User) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
-    val doesNotExist = users.containsKey(user.Email)
+    val doesNotExist = !users.containsKey(user.Email)
+    log.debug("User : "+doesNotExist)
     if(doesNotExist) {
-      //users = users :+ user
+      //users = users :+ ufser
       users.put(user.Email,user)
       friendLists.put(user.Email,new ListBuffer())
       friendRequests.put(user.Email,new ListBuffer())
@@ -180,16 +203,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   
   
     private def writePost(p : Wallpost) : String = {
-    if(!users.contains(p.from)) {
+    if(!users.contains(p.fromEmail)) {
       log.debug("From email doesn't exist. Can't post.")
       return "invalidPost"
     }
-    else if(!users.contains(p.to)) {
+    else if(!users.contains(p.toEmail)) {
       log.debug("To email doesn't exist. Can't post")
       return "invalidPost"
     }
-    if(friendLists.get(p.from) == friendLists.get(p.to) ||  friendLists.get(p.from).contains(p.to)) {
-        allPosts.get(p.to) += p
+    if(friendLists.get(p.fromEmail) == friendLists.get(p.toEmail) ||  friendLists.get(p.fromEmail).contains(p.toEmail)) {
+        allPosts.get(p.toEmail) += p
       return "posted"
     }
       log.debug("Can't post because not friends.")
@@ -205,12 +228,15 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
  // val log = Logging(context.system, this)
   def receive = {
     case UserCreated(email) =>
-      requestContext.complete(StatusCodes.Created)
+     // requestContext.complete(StatusCodes.Created)
+      requestContext.complete("User created.")
       log.debug("User Created with Email : "+email)
       killYourself
 
     case UserAlreadyExists =>
-      requestContext.complete(StatusCodes.Conflict)
+      //requestContext.complete(StatusCodes.Conflict)
+      requestContext.complete("User with email id already exists.")
+      log.debug("User already created with same email.")
       killYourself
 
     case AlreadyFriends =>
