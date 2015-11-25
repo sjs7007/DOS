@@ -60,6 +60,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   
   //store all friend requests in the buffer below.
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
+  
+  //store all posts in the buffer below
+  var allPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
 
   def receive = handle orElse httpReceive
 
@@ -108,9 +111,36 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               }
             }
           }
-      }
+      } ~
+      path("wallWrite") {
+        post {
+          entity(as[Wallpost]) { wallpost => requestContext =>
+            val responder = createResponder(requestContext)
+            writePost(wallpost) match {
+              case "posted" => responder ! PostSuccess
 
+              case "cannotPost" => responder ! PostFail
+            }
+          }
+        }
+      }
+    /*pathPrefix("user"/String) {
+     userEmail =>
+     path("friends"){
+        get {
+          requestContext =>
+          {
+            val responder = createResponder(requestContext)
+            getFriends(userEmail) match {
+              case true => responder
+              case _ =>
+            }
+          }
+        }
+     }
+   } ~*/
   }
+
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
   }
@@ -145,6 +175,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
 
   }
+  
+  
+    private def writePost(p : Wallpost) : String = {
+    if(friendLists.get(p.from) == friendLists.get(p.to) ||  friendLists.get(p.from).contains(p.to)) {
+        allPosts.get(p.to) += p
+      return "posted"
+    }
+
+    else return "cannotPost"
+
+  }
+  
 }
 
 
