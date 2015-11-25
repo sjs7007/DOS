@@ -60,9 +60,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   
   //store all friend requests in the buffer below.
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
-  
-  //store all posts in the buffer below
-  var allPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
 
   def receive = handle orElse httpReceive
 
@@ -111,38 +108,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               }
             }
           }
-      } ~
-      path("wallWrite") {
-        post {
-          entity(as[Wallpost]) { wallpost => requestContext =>
-            val responder = createResponder(requestContext)
-            writePost(wallpost) match {
-              case "posted" => responder ! PostSuccess
-
-              case "invalidPost" => responder ! PostFail
-
-              case "notFriends" => responder ! PostFail
-            }
-          }
-        }
       }
-    /*pathPrefix("user"/String) {
-     userEmail =>
-     path("friends"){
-        get {
-          requestContext =>
-          {
-            val responder = createResponder(requestContext)
-            getFriends(userEmail) match {
-              case true => responder
-              case _ =>
-            }
-          }
-        }
-     }
-   } ~*/
-  }
 
+  }
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
   }
@@ -177,26 +145,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
 
   }
-  
-  
-    private def writePost(p : Wallpost) : String = {
-    if(!users.contains(p.from)) {
-      log.debug("From email doesn't exist. Can't post.")
-      return "invalidPost"
-    }
-    else if(!users.contains(p.to)) {
-      log.debug("To email doesn't exist. Can't post")
-      return "invalidPost"
-    }
-    if(friendLists.get(p.from) == friendLists.get(p.to) ||  friendLists.get(p.from).contains(p.to)) {
-        allPosts.get(p.to) += p
-      return "posted"
-    }
-      log.debug("Can't post because not friends.")
-     return "notFriends"
-
-  }
-  
 }
 
 
@@ -221,21 +169,11 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
     case UserNotPresent =>
      requestContext.complete(StatusCodes.PreconditionFailed)
      log.debug("Can't send friend request to user not present in the system.")
-      killYourself
 
     case FriendRequestSent =>
      requestContext.complete(StatusCodes.Accepted)
-     log.debug("Friend request was successfully ent.")
-     killYourself
+     log.debug("Friend request was successfully sent.")
 
-    case PostSuccess =>
-     requestContext.complete(StatusCodes.Accepted)
-     log.debug("Post accepted.")
-      killYourself
-
-    case PostFail =>
-     requestContext.complete("Post failed.")
-     killYourself
   }
 
   private def killYourself = self ! PoisonPill
