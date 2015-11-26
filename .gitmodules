@@ -1,0 +1,3 @@
+[submodule "quiz-management-service"]
+	path = quiz-management-service
+	url = git://github.com:spray/spray-json.git

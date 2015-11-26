@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="quiz-management-server">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/target/scala-2.11/quiz-management-server.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
