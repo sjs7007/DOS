@@ -1,0 +1,4 @@
+basic routing : http://www.smartjava.org/content/first-steps-rest-spray-and-scala
+quiz api : http://danielasfregola.com/2015/02/23/how-to-build-a-rest-api-with-spray/
+different receieve and http : http://stackoverflow.com/questions/18943544/how-to-compose-routes-in-actors-receive-with-runroute
+get bound message : http://stackoverflow.com/questions/31798757/spray-can-simple-http-server-example-how-are-bound-messages-handled
