@@ -9,12 +9,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class Person(name: String, fistName: String, age: Long)
 
   //createUser
-  case class User(Email:String, Name: String,publickey: String)
+  case class User(Email:String, Name: String,Birthday: String,CurrentCity : String) {
+    require(!Email.isEmpty, "Email must not be empty.")
+    require(!Name.isEmpty,"Name must not be empty.")
+  }
   case class UserCreated(Email:String)
   case object UserAlreadyExists
 
   object User extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(User.apply)
+    implicit val format = jsonFormat4(User.apply)
   }
 
   //sendFriendRequest
@@ -23,8 +26,25 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object UserNotPresent
   case object FriendRequestSent
 
-  object FriendRequest extends DefaultJsonProtocol {
+  //user idenitifier, add keys here later
+  case class UserID(Email:String)
+  object UserID extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat1(UserID.apply)
+  }
+  
+   //wallwrite
+  case class Wallpost(fromEmail:String, toEmail:String, data:String)
+  case object PostSuccess
+  case object PostFail
+  
+    object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
+  }
+  
+   
+
+    object Wallpost extends DefaultJsonProtocol {
+    implicit val format = jsonFormat3(Wallpost.apply)
   }
 }
 

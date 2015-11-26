@@ -62,7 +62,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
   
   //store all posts in the buffer below
-  var allPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
+  var userPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
 
   def receive = handle orElse httpReceive
 
@@ -123,7 +123,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     friendLists.get(userEmail).toString()
                   }
                   else {
-                    userEmail+"User doesn't exist."
+                    "User "+userEmail+" doesn't exist."
                   }
                 }
               }
@@ -133,9 +133,59 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             get {
               respondWithMediaType(`application/json`) {
                 complete {
-                  users.get(userEmail)
+                  if(users.containsKey(userEmail)) {
+                    users.get(userEmail)
+                  }
+                  else {
+                    "User "+userEmail+" doesn't exist."
+                  }
+
                 }
               }
+            }
+          } ~
+          path("posts") {
+            get {
+              //entity(as[UserID]) {
+              parameters('Email.as[String]) { //(name,color) =>
+                fromUser =>
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    /*if(fromUser.Email==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                      if(userPosts.containsKey(userEmail)) {
+                        userPosts.get(userEmail).toString()
+                      }
+                      else {
+                        "User "+userEmail+"doesn't exist."
+                      }
+                    }
+                    "Don't have rights to view post."
+                  }
+                }*/
+                    if(userPosts.containsKey(userEmail)) {
+                      if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                        userPosts.get(userEmail).toString()
+                      }
+                      else {
+                        "Don't have rights to view post."
+                      }
+                    }
+                    else {
+                      "User : "+ userEmail + " doesn't exist."
+                    }
+                  }
+                }
+              }
+              /*respondWithMediaType(`application/json`) {
+                complete {
+                  if(userPosts.containsKey(userEmail)) {
+                    userPosts.get(userEmail).toString()
+                  }
+                  else {
+                    "User "+userEmail+"doesn't exist."
+                  }
+                }
+              }*/
             }
           }
       } ~
@@ -184,6 +234,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       users.put(user.Email,user)
       friendLists.put(user.Email,new ListBuffer())
       friendRequests.put(user.Email,new ListBuffer())
+      userPosts.put(user.Email,new ListBuffer())
     }
     doesNotExist
   }
@@ -208,16 +259,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   
   
     private def writePost(p : Wallpost) : String = {
-    if(!users.contains(p.fromEmail)) {
+    if(!users.containsKey(p.fromEmail)) {
       log.debug("From email doesn't exist. Can't post.")
       return "invalidPost"
     }
-    else if(!users.contains(p.toEmail)) {
+    else if(!users.containsKey(p.toEmail)) {
       log.debug("To email doesn't exist. Can't post")
       return "invalidPost"
     }
     if(p.fromEmail==p.toEmail ||  friendLists.get(p.fromEmail).contains(p.toEmail)) {
-        allPosts.get(p.toEmail) += p
+        userPosts.get(p.toEmail) += p
       return "posted"
     }
       log.debug("Can't post because not friends.")
@@ -260,8 +311,9 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
      killYourself
 
     case PostSuccess =>
-     requestContext.complete(StatusCodes.Accepted)
-     log.debug("Post accepted.")
+     //requestContext.complete(StatusCodes.Accepted)
+     requestContext.complete("Post successful.")
+      log.debug("Post accepted.")
       killYourself
 
     case PostFail =>
