@@ -152,7 +152,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     respondWithMediaType(`application/json`) {
                       complete {
                         if(userPosts.containsKey(userEmail)) {
-                          if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                          //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                          if(areFriendsOrSame(fromUser,userEmail)) {
                             userPosts.get(userEmail).toString()
                           }
                           else {
@@ -176,7 +177,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         respondWithMediaType(`application/json`) {
                           complete {
                             if (userPosts.containsKey(userEmail)) {
-                              if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                              //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                              if(areFriendsOrSame(fromUser,userEmail)) {
                                 userPosts.get(userEmail).toString()
                               }
                               else {
@@ -273,15 +275,17 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       log.debug("To email doesn't exist. Can't post")
       return "invalidPost"
     }
-    if(p.fromEmail==p.toEmail ||  friendLists.get(p.fromEmail).contains(p.toEmail)) {
+    if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
         userPosts.get(p.toEmail) += p
       return "posted"
     }
       log.debug("Can't post because not friends.")
      return "notFriends"
-
   }
-  
+
+  private def areFriendsOrSame(fromEmail: String,toEmail: String): Boolean = {
+   return (fromEmail==toEmail || friendLists.get(fromEmail).contains(toEmail))
+  }
 }
 
 

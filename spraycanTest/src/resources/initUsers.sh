@@ -7,7 +7,7 @@ echo
 #make posts
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "sjs7007","data":"my post so cooooool.","postID" : "100"}' http://localhost:8087/wallWrite
 echo
-curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sigmoid","toEmail" : "sigmoid","data":"my post so  much cooooooler.","postID" : "100"}' http://localhost:8087/wallWrite
+curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sigmoid","toEmail" : "sigmoid","data":"my post so  much cooooooler."}' http://localhost:8087/wallWrite
 echo
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "sigmoid","data":"my post so cooooool.","postID" : "100"}' http://localhost:8087/wallWrite
 echo 

@@ -33,7 +33,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String)
+  case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String = "defaultID")
   case object PostSuccess
   case object PostFail
   
