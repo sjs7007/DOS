@@ -96,30 +96,58 @@ class Client extends Actor
   var bday = "tomallow"
   var city = "loaftown"
   
-  var requestType = "createUser"
+  var serverIP = "http://192.168.0.14:8087/"
+  var requestType = "getFriendList"
 
   var jsonString = User(email, name, bday, city).toJson
   
   def receive = {
     
-  case Start => requestType = "createUser"
+  case Start => requestType = "getFriendList"
   
   
   }
+  
+  
   
   requestType match {
   
   case "createUser" => jsonString = User(email, name, bday, city).toJson
-  case "sendFriendRequest" => jsonString = FriendRequest(email, "jaadugar").toJson 
-  case "wallWrite" => jsonString = Wallpost(email, "jaadugar", "i am gay").toJson
   
-  }
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(s"http://192.168.0.21:8087/" + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
    }
    yield {
    println (response)
    }
+  
+  case "getFriendList" =>
+  for {
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/pappu/friends")))
+  }
+   yield {
+   println (response)
+   }
+   
+  case "sendFriendRequest" => jsonString = FriendRequest(email, "jaadugar").toJson 
+  
+    for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
+   }
+   yield {
+   println (response)
+   }
+  
+  
+  case "wallWrite" => jsonString = Wallpost(email, "jaadugar", "i am gay").toJson
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
+   }
+   yield {
+   println (response)
+   }
+  }
+  
    
    
 }
