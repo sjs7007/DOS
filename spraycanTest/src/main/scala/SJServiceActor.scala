@@ -64,22 +64,56 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //store all posts in the buffer below
   var userPosts = new ConcurrentHashMap[String,ListBuffer[fbPost]]()
 
+  //directory of all pages
+  //key : pageID, value : page info(adminEmail,title,pageID)
+  var pageDirectory = new ConcurrentHashMap[String,Page]()
+
+  //store content of each page : key pageID value : list of posts on the page
+  var pageContent = new ConcurrentHashMap[String,ListBuffer[pagePost]]()
+
+  //store list of followers for each pageID. only people following page can comment
+  var pageFollowers = new ConcurrentHashMap[String,ListBuffer[String]]()
+
   def receive = handle orElse httpReceive
 
 
   val facebookStuff = {
+    pathPrefix("userStats") {
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              users.size().toString()
+            }
+          }
+        }
+      }
+    } ~ 
     pathPrefix("users") {
       pathEnd {
         get {
           respondWithMediaType(`application/json`) {
             complete {
               users.toString()
+              //users.toJson()
               //"sss"
             }
           }
         }
       }
     } ~
+    pathPrefix("pageDirectory") {
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              pageDirectory.toString()
+            }
+          }
+        }
+      }
+    } ~
+    //create stuff
     pathPrefix("createUser") {
       pathEnd {
         post {
@@ -94,138 +128,170 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~
-      pathPrefix("sendFriendRequest") {
-        pathEnd {
-          post {
-            entity(as[FriendRequest]) { friendRequest => requestContext =>
+    pathPrefix("createPage") {
+      pathEnd {
+        post {
+          entity(as[Page]) {
+            page => requestContext =>
               val responder = createResponder(requestContext)
-              sendFriendRequest(friendRequest) match {
-                case "alreadyFriends" => responder ! AlreadyFriends
-
-                case "userNotPresent" => responder ! UserNotPresent
-
-                case "requestSent" => responder ! FriendRequestSent
+              createPage(page) match  {
+                case true => responder ! PageCreated(page.Title)
+                case _ => responder ! PageCreationFailed
+              }
+          }
+        }
+      }
+    } ~
+    pathPrefix("pages"/Segment) {
+      pageID => {
+        pathEnd {
+          get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                if(!doesPageExist(pageID)) {
+                  "Invalid pageID. Page doesn't exit."
+                }
+                else {
+                  pageContent.get(pageID).toString()
+                }
               }
             }
           }
         }
       } ~
-      pathPrefix("user" / Segment) {
-        userEmail =>
-          path("friends") {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  //userEmail
-                  //"tesloop"
-                  //users.get(userEmail)
-                  if(users.containsKey(userEmail)) {
-                    friendLists.get(userEmail).toString()
-                  }
-                  else {
-                    "User "+userEmail+" doesn't exist."
-                  }
+      pathPrefix("createPost") {
+        pathEnd {
+          post {
+            entity(as[pagePost]) {
+              postData => requestContext =>
+                val responder = createResponder(requestContext)
+                createPagePost(postData,pageID) match {
+                  case "posted" => responder ! PostSuccess
+                  case "invalidPost" => responder ! PostFail
+                  case "notFollowing" => responder ! PostFailNotFollowing
                 }
-              }
-            }
-          } ~
-          path("profile") {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  if(users.containsKey(userEmail)) {
-                    users.get(userEmail)
-                  }
-                  else {
-                    "User "+userEmail+" doesn't exist."
-                  }
-
-                }
-              }
-            }
-          } ~
-          pathPrefix("posts") {
-            pathEnd {
-              get {
-                parameters('Email.as[String]) { //(name,color) =>
-                  fromUser =>
-                    respondWithMediaType(`application/json`) {
-                      complete {
-                        if(userPosts.containsKey(userEmail)) {
-                          //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                          if(areFriendsOrSame(fromUser,userEmail)) {
-                            userPosts.get(userEmail).toString()
-                          }
-                          else {
-                            "Don't have rights to view posts."
-                          }
-                        }
-                        else {
-                          "User : "+ userEmail + " doesn't exist."
-                        }
-                      }
-                    }
-                }
-              }
-            }~
-            pathPrefix(Segment) {
-              postID => {
-                path("post") {
-                  get {
-                    parameters('Email.as[String]) {
-                      fromUser =>
-                        respondWithMediaType(`application/json`) {
-                          complete {
-                            if (userPosts.containsKey(userEmail)) {
-                              //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                              if(areFriendsOrSame(fromUser,userEmail)) {
-                                userPosts.get(userEmail).toString()
-                              }
-                              else {
-                                "Don't have right to view post with ID : " + postID
-                              }
-                            }
-                            else {
-                              "User : " + userEmail + " doesn't exist."
-                            }
-                          }
-                        }
-                    }
-                  }
-                }
-              }
-            }
-          }
-      } ~
-      path("wallWrite") {
-        post {
-          entity(as[fbPost]) { wallpost => requestContext =>
-            val responder = createResponder(requestContext)
-            writePost(wallpost) match {
-              case "posted" => responder ! PostSuccess
-
-              case "invalidPost" => responder ! PostFail
-
-              case "notFriends" => responder ! PostFail
             }
           }
         }
       }
-    /*pathPrefix("user"/String) {
-     userEmail =>
-     path("friends"){
-        get {
-          requestContext =>
-          {
+    } ~
+    pathPrefix("sendFriendRequest") {
+      pathEnd {
+        post {
+          entity(as[FriendRequest]) { friendRequest => requestContext =>
             val responder = createResponder(requestContext)
-            getFriends(userEmail) match {
-              case true => responder
-              case _ =>
+            sendFriendRequest(friendRequest) match {
+              case "alreadyFriends" => responder ! AlreadyFriends
+
+              case "userNotPresent" => responder ! UserNotPresent
+
+              case "requestSent" => responder ! FriendRequestSent
             }
           }
         }
-     }
-   } ~*/
+      }
+    } ~
+    pathPrefix("user" / Segment) {
+      userEmail =>
+        path("friends") {
+          get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                //userEmail
+                //"tesloop"
+                //users.get(userEmail)
+                if(users.containsKey(userEmail)) {
+                  friendLists.get(userEmail).toString()
+                }
+                else {
+                  "User "+userEmail+" doesn't exist."
+                }
+              }
+            }
+          }
+        } ~
+        path("profile") {
+          get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                if(users.containsKey(userEmail)) {
+                  users.get(userEmail)
+                }
+                else {
+                  "User "+userEmail+" doesn't exist."
+                }
+
+              }
+            }
+          }
+        } ~
+        pathPrefix("posts") {
+          pathEnd {
+            get {
+              parameters('Email.as[String]) { //(name,color) =>
+                fromUser =>
+                  respondWithMediaType(`application/json`) {
+                    complete {
+                      if(userPosts.containsKey(userEmail)) {
+                        //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                        if(areFriendsOrSame(fromUser,userEmail)) {
+                          userPosts.get(userEmail).toString()
+                        }
+                        else {
+                          "Don't have rights to view posts."
+                        }
+                      }
+                      else {
+                        "User : "+ userEmail + " doesn't exist."
+                      }
+                    }
+                  }
+              }
+            }
+          }~
+          pathPrefix(Segment) {
+            postID => {
+              path("post") {
+                get {
+                  parameters('Email.as[String]) {
+                    fromUser =>
+                      respondWithMediaType(`application/json`) {
+                        complete {
+                          if (userPosts.containsKey(userEmail)) {
+                            //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                            if(areFriendsOrSame(fromUser,userEmail)) {
+                              userPosts.get(userEmail).toString()
+                            }
+                            else {
+                              "Don't have right to view post with ID : " + postID
+                            }
+                          }
+                          else {
+                            "User : " + userEmail + " doesn't exist."
+                          }
+                        }
+                      }
+                  }
+                }
+              }
+            }
+          }
+        }
+    } ~
+    path("wallWrite") {
+      post {
+        entity(as[fbPost]) { wallpost => requestContext =>
+          val responder = createResponder(requestContext)
+          writePost(wallpost) match {
+            case "posted" => responder ! PostSuccess
+
+            case "invalidPost" => responder ! PostFail
+
+            case "notFriends" => responder ! PostFail
+          }
+        }
+      }
+    }
   }
 
   private def createResponder(requestContext: RequestContext) = {
@@ -235,8 +301,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create User
   private def createUser(user: User) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
-    val doesNotExist = !users.containsKey(user.Email)
-    log.debug("User : "+doesNotExist)
+    val doesNotExist = !doesUserExist(user.Email)
+    log.debug("Users : "+doesNotExist)
     if(doesNotExist) {
       //users = users :+ ufser
       users.put(user.Email,user)
@@ -245,6 +311,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       userPosts.put(user.Email,new ListBuffer())
     }
     doesNotExist
+  }
+
+  //create Page
+  private def createPage(page: Page) : Boolean = {
+    val didSucceed = true
+    if(doesUserExist(page.adminEmail)) {
+      pageContent.put(page.pageID,new ListBuffer())
+      pageDirectory.put(page.pageID,page)
+      pageFollowers.put(page.pageID,new ListBuffer())
+      return true
+    }
+    return false
   }
 
   //sendFriendRequest
@@ -266,25 +344,50 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
   
   
-    private def writePost(p : fbPost) : String = {
-    if(!users.containsKey(p.fromEmail)) {
+  private def writePost(p : fbPost) : String = {
+  if(!doesUserExist(p.fromEmail)) {
+    log.debug("From email doesn't exist. Can't post.")
+    return "invalidPost"
+  }
+  else if(!doesUserExist(p.toEmail)) {
+    log.debug("To email doesn't exist. Can't post")
+    return "invalidPost"
+  }
+  if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
+      userPosts.get(p.toEmail) += p
+    return "posted"
+  }
+    log.debug("Can't post because not friends.")
+   return "notFriends"
+  }
+
+  private def createPagePost(post: pagePost,pageID : String) : String = {
+    if(!doesUserExist(post.fromEmail)) {
       log.debug("From email doesn't exist. Can't post.")
       return "invalidPost"
     }
-    else if(!users.containsKey(p.toEmail)) {
-      log.debug("To email doesn't exist. Can't post")
-      return "invalidPost"
+    else if(!isFollower(post.fromEmail,pageID)) {
+      log.debug("Can't post because not following page.")
+      return "notFollowing"
     }
-    if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
-        userPosts.get(p.toEmail) += p
-      return "posted"
-    }
-      log.debug("Can't post because not friends.")
-     return "notFriends"
+    pageContent.get(pageID) += post
+    return "posted"
   }
 
   private def areFriendsOrSame(fromEmail: String,toEmail: String): Boolean = {
    return (fromEmail==toEmail || friendLists.get(fromEmail).contains(toEmail))
+  }
+
+  private def doesUserExist(Email: String): Boolean = {
+    return users.containsKey(Email)
+  }
+
+  private  def isFollower(userEmail: String,pageID: String) : Boolean = {
+    return (pageFollowers.get(pageID).contains(userEmail))
+  }
+
+  private  def doesPageExist(pageID : String): Boolean = {
+    return (pageDirectory.containsKey(pageID))
   }
 }
 
@@ -328,6 +431,19 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
     case PostFail =>
      requestContext.complete("Post failed.")
+     killYourself
+
+    case PageCreated(page) =>
+     requestContext.complete("Page creation succesful.")
+      log.debug("Page "+page+"created.")
+     killYourself
+
+    case PageCreationFailed =>
+     requestContext.complete("Page creation failed.")
+     killYourself
+
+    case PostFailNotFollowing =>
+     requestContext.complete("Post failed because not following the page.")
      killYourself
   }
 
