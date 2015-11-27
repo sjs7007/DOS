@@ -42,3 +42,8 @@ Make a fb post on someone's wall.
 Authorization : should be friend or same person to make posts.
 Type : POST 
 Parameters : fromEmail,toEmail,data,postID
+
++ /createPage/
+Allows to create page on fb.
+Type : POST 
+Parametes : adminEmail, Title, pageID

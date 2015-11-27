@@ -14,6 +14,9 @@ echo
 
 #send friend request from sjs7007 to sigmoid
 
+#create page 
+curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempID"}' http://localhost:8087/createPage
+echo 
 
 #view posts of sjs7007
 echo "Posts of sjs7007"
@@ -29,3 +32,4 @@ echo
 echo "Users Registered."
 curl  http://0.0.0.0:8087/users
 echo
+

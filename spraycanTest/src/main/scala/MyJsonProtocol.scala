@@ -20,6 +20,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
   }
 
+  //createPage
+  case class Page(adminEmail: String,Title : String,pageID : String)
+  case class PageCreated(Title: String)
+  case object PageCreationFailed
+
+  object Page extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(Page.apply)
+  }
+
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
   case object AlreadyFriends
@@ -32,16 +41,23 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit  val format = jsonFormat1(UserID.apply)
   }
   
-   //wallwrite
+   //wallwrite or pagewrite
   case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String = "defaultID")
+  case class pagePost(fromEmail:String,postID:String,data:String)
   case object PostSuccess
   case object PostFail
   
-    object FriendRequest extends DefaultJsonProtocol {
+  object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }
-    object fbPost extends DefaultJsonProtocol {
+
+  object fbPost extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(fbPost.apply)
   }
+
+  object pagePost extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(pagePost.apply)
+  }
+
 }
 
