@@ -78,6 +78,17 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    pathPrefix("userStats") {
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              users.size().toString()
+            }
+          }
+        }
+      }
+    } ~ 
     pathPrefix("users") {
       pathEnd {
         get {
