@@ -62,7 +62,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
   
   //store all posts in the buffer below
-  var userPosts = new ConcurrentHashMap[String,ListBuffer[Wallpost]]()
+  var userPosts = new ConcurrentHashMap[String,ListBuffer[fbPost]]()
 
   def receive = handle orElse httpReceive
 
@@ -144,54 +144,60 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               }
             }
           } ~
-          path("posts") {
-            get {
-              //entity(as[UserID]) {
-              parameters('Email.as[String]) { //(name,color) =>
-                fromUser =>
-                respondWithMediaType(`application/json`) {
-                  complete {
-                    /*if(fromUser.Email==userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                      if(userPosts.containsKey(userEmail)) {
-                        userPosts.get(userEmail).toString()
-                      }
-                      else {
-                        "User "+userEmail+"doesn't exist."
-                      }
-                    }
-                    "Don't have rights to view post."
-                  }
-                }*/
-                    if(userPosts.containsKey(userEmail)) {
-                      if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                        userPosts.get(userEmail).toString()
-                      }
-                      else {
-                        "Don't have rights to view post."
+          pathPrefix("posts") {
+            pathEnd {
+              get {
+                parameters('Email.as[String]) { //(name,color) =>
+                  fromUser =>
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        if(userPosts.containsKey(userEmail)) {
+                          if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                            userPosts.get(userEmail).toString()
+                          }
+                          else {
+                            "Don't have rights to view posts."
+                          }
+                        }
+                        else {
+                          "User : "+ userEmail + " doesn't exist."
+                        }
                       }
                     }
-                    else {
-                      "User : "+ userEmail + " doesn't exist."
+                }
+              }
+            }~
+            pathPrefix(Segment) {
+              postID => {
+                path("post") {
+                  get {
+                    parameters('Email.as[String]) {
+                      fromUser =>
+                        respondWithMediaType(`application/json`) {
+                          complete {
+                            if (userPosts.containsKey(userEmail)) {
+                              if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                                userPosts.get(userEmail).toString()
+                              }
+                              else {
+                                "Don't have right to view post with ID : " + postID
+                              }
+                            }
+                            else {
+                              "User : " + userEmail + " doesn't exist."
+                            }
+                          }
+                        }
                     }
                   }
                 }
               }
-              /*respondWithMediaType(`application/json`) {
-                complete {
-                  if(userPosts.containsKey(userEmail)) {
-                    userPosts.get(userEmail).toString()
-                  }
-                  else {
-                    "User "+userEmail+"doesn't exist."
-                  }
-                }
-              }*/
             }
           }
       } ~
       path("wallWrite") {
         post {
-          entity(as[Wallpost]) { wallpost => requestContext =>
+          entity(as[fbPost]) { wallpost => requestContext =>
             val responder = createResponder(requestContext)
             writePost(wallpost) match {
               case "posted" => responder ! PostSuccess
@@ -258,7 +264,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
   
   
-    private def writePost(p : Wallpost) : String = {
+    private def writePost(p : fbPost) : String = {
     if(!users.containsKey(p.fromEmail)) {
       log.debug("From email doesn't exist. Can't post.")
       return "invalidPost"

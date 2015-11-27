@@ -33,18 +33,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class Wallpost(fromEmail:String, toEmail:String, data:String)
+  case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String)
   case object PostSuccess
   case object PostFail
   
     object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }
-  
-   
-
-    object Wallpost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(Wallpost.apply)
+    object fbPost extends DefaultJsonProtocol {
+    implicit val format = jsonFormat4(fbPost.apply)
   }
 }
 
