@@ -84,7 +84,19 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           respondWithMediaType(`application/json`) {
             complete {
               users.toString()
+              //users.toJson()
               //"sss"
+            }
+          }
+        }
+      }
+    } ~
+    pathPrefix("pageDirectory") {
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              pageDirectory.toString()
             }
           }
         }
@@ -125,7 +137,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           get {
             respondWithMediaType(`application/json`) {
               complete {
-                pageContent.get(pageID).toString()
+                if(!doesPageExist(pageID)) {
+                  "Invalid pageID. Page doesn't exit."
+                }
+                else {
+                  pageContent.get(pageID).toString()
+                }
               }
             }
           }
@@ -140,7 +157,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 createPagePost(postData,pageID) match {
                   case "posted" => responder ! PostSuccess
                   case "invalidPost" => responder ! PostFail
-                  case "notFollowing" => responder ! "Can't post to page cause not a follower."
+                  case "notFollowing" => responder ! PostFailNotFollowing
                 }
             }
           }
@@ -274,7 +291,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   private def createUser(user: User) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
     val doesNotExist = !doesUserExist(user.Email)
-    log.debug("User : "+doesNotExist)
+    log.debug("Users : "+doesNotExist)
     if(doesNotExist) {
       //users = users :+ ufser
       users.put(user.Email,user)
@@ -290,6 +307,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     val didSucceed = true
     if(doesUserExist(page.adminEmail)) {
       pageContent.put(page.pageID,new ListBuffer())
+      pageDirectory.put(page.pageID,page)
+      pageFollowers.put(page.pageID,new ListBuffer())
       return true
     }
     return false
@@ -355,6 +374,10 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   private  def isFollower(userEmail: String,pageID: String) : Boolean = {
     return (pageFollowers.get(pageID).contains(userEmail))
   }
+
+  private  def doesPageExist(pageID : String): Boolean = {
+    return (pageDirectory.containsKey(pageID))
+  }
 }
 
 
@@ -408,6 +431,9 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
      requestContext.complete("Page creation failed.")
      killYourself
 
+    case PostFailNotFollowing =>
+     requestContext.complete("Post failed because not following the page.")
+     killYourself
   }
 
   private def killYourself = self ! PoisonPill

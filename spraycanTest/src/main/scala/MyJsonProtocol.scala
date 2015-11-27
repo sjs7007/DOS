@@ -46,6 +46,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class pagePost(fromEmail:String,postID:String,data:String)
   case object PostSuccess
   case object PostFail
+  case object PostFailNotFollowing
   
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
