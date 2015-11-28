@@ -154,14 +154,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       pathEnd {
         get {
           respondWithMediaType(`application/json`) {
-            /*complete {
-              if(!doesPageExist(pageID)) {
-                "Invalid pageID. Page doesn't exit."
-              }
-              else {
-                pageContent.get(pageID).toString()
-              }
-            }*/
             complete {
               pageContent.get(pageID).toString()
             }
@@ -204,13 +196,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           get {
             respondWithMediaType(`application/json`) {
               complete {
-                /*if(doesPageExist(pageID)) {
-                  pageFollowers.toString()
-                }
-                else {
-                  "Page "+pageID+" doesn't exist."
-                }*/
                 pageFollowers.toString()
+              }
+            }
+          }
+        }
+      } ~
+      pathPrefix("posts") {
+        pathEnd {
+          get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                pageContent.get(pageID).toString()
               }
             }
           }
@@ -246,15 +243,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              //userEmail
-              //"tesloop"
-              //users.get(userEmail)
-              /*if(users.containsKey(userEmail)) {
-                friendLists.get(userEmail).toString()
-              }
-              else {
-                "User "+userEmail+" doesn't exist."
-              }*/
               friendLists.get(userEmail).toString()
             }
           }
@@ -264,14 +252,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              /*if(users.containsKey(userEmail)) {
-                users.get(userEmail)
-              }
-              else {
-                "User "+userEmail+" doesn't exist."
-              }*/
               users.get(userEmail)
-
             }
           }
         }
@@ -283,18 +264,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               fromUser =>
                 respondWithMediaType(`application/json`) {
                   complete {
-                    /*if(userPosts.containsKey(userEmail)) {
-                      //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                      if(areFriendsOrSame(fromUser,userEmail)) {
-                        userPosts.get(userEmail).toString()
-                      }
-                      else {
-                        "Don't have rights to view posts."
-                      }
-                    }
-                    else {
-                      "User : "+ userEmail + " doesn't exist."
-                    }*/
                     if(areFriendsOrSame(fromUser,userEmail)) {
                       userPosts.get(userEmail).toString()
                     }
@@ -321,18 +290,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 fromUser =>
                 respondWithMediaType(`application/json`) {
                   complete {
-                    /*if (userPosts.containsKey(userEmail)) {
-                      //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                      if(areFriendsOrSame(fromUser,userEmail)) {
-                        userPosts.get(userEmail).toString()
-                      }
-                      else {
-                        "Don't have right to view post with ID : " + postID
-                      }
-                    }
-                    else {
-                      "User : " + userEmail + " doesn't exist."
-                    }*/
                     if(areFriendsOrSame(fromUser,userEmail)) {
                       userPosts.get(userEmail).toString()
                     }
