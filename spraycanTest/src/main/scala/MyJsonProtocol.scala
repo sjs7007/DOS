@@ -41,13 +41,19 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit  val format = jsonFormat1(UserID.apply)
   }
   
-   //wallwrite or pagewrite
+   //wallwrite
   case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String = "defaultID")
-  case class pagePost(fromEmail:String,postID:String,data:String)
   case object PostSuccess
   case object PostFail
+
+  //page post
+  case class pagePost(fromEmail:String,postID:String,data:String)
   case object PostFailNotFollowing
-  
+  case object FollowSuccess
+  case object FollowFail
+  case object PageNotPresent
+  case object AlreadyFollowingPage
+
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }

@@ -18,6 +18,10 @@ echo
 curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempPAGEID"}' http://localhost:8087/createPage
 echo 
 
+#follow page
+curl -H "Content-Type: application/json" -X POST -d '{"Email" : "sjs7007"}' http://localhost:8087/pages/tempPAGEID/follow
+echo 
+
 #make a post on page
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","postID" : "tempPostID","data" : "post on the haxxxor page"}' http://localhost:8087/pages/tempPAGEID/createPost
 echo 

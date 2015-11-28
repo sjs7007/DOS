@@ -88,7 +88,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       }
-    } ~ 
+    } ~
     pathPrefix("users") {
       pathEnd {
         get {
@@ -143,18 +143,27 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       }
     } ~
     pathPrefix("pages"/Segment) {
-      pageID => {
-        pathEnd {
-          get {
-            respondWithMediaType(`application/json`) {
-              complete {
-                if(!doesPageExist(pageID)) {
-                  "Invalid pageID. Page doesn't exit."
-                }
-                else {
-                  pageContent.get(pageID).toString()
-                }
+      pageID =>
+      if(!doesPageExist(pageID)) {
+        respondWithMediaType(`application/json`) {
+          complete {
+            "Page doesn't exist."
+          }
+        }
+      }
+      pathEnd {
+        get {
+          respondWithMediaType(`application/json`) {
+            /*complete {
+              if(!doesPageExist(pageID)) {
+                "Invalid pageID. Page doesn't exit."
               }
+              else {
+                pageContent.get(pageID).toString()
+              }
+            }*/
+            complete {
+              pageContent.get(pageID).toString()
             }
           }
         }
@@ -170,6 +179,39 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   case "invalidPost" => responder ! PostFail
                   case "notFollowing" => responder ! PostFailNotFollowing
                 }
+            }
+          }
+        }
+      } ~
+      pathPrefix("follow") {
+        pathEnd {
+          post {
+            entity(as[UserID]) {
+              user => requestContext =>
+                val responder = createResponder(requestContext)
+                addFollower(user.Email,pageID) match {
+                  case "invalidUser" => responder ! UserNotPresent
+                  //case "invalidPage" => responder ! PageNotPresent
+                  case "alreadyFollower" => responder ! AlreadyFollowingPage
+                  case "followSuccess" => responder ! FollowSuccess
+                }
+            }
+          }
+        }
+      } ~
+      pathPrefix("followers") {
+        pathEnd {
+          get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                /*if(doesPageExist(pageID)) {
+                  pageFollowers.toString()
+                }
+                else {
+                  "Page "+pageID+" doesn't exist."
+                }*/
+                pageFollowers.toString()
+              }
             }
           }
         }
@@ -193,90 +235,117 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     } ~
     pathPrefix("user" / Segment) {
       userEmail =>
-        path("friends") {
-          get {
-            respondWithMediaType(`application/json`) {
-              complete {
-                //userEmail
-                //"tesloop"
-                //users.get(userEmail)
-                if(users.containsKey(userEmail)) {
-                  friendLists.get(userEmail).toString()
-                }
-                else {
-                  "User "+userEmail+" doesn't exist."
-                }
+      if(!users.containsKey(userEmail)) {
+        respondWithMediaType(`application/json`) {
+          complete {
+            "User : "+userEmail+" doesn't exist."
+          }
+        }
+      }
+      path("friends") {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              //userEmail
+              //"tesloop"
+              //users.get(userEmail)
+              /*if(users.containsKey(userEmail)) {
+                friendLists.get(userEmail).toString()
               }
+              else {
+                "User "+userEmail+" doesn't exist."
+              }*/
+              friendLists.get(userEmail).toString()
             }
           }
-        } ~
-        path("profile") {
-          get {
-            respondWithMediaType(`application/json`) {
-              complete {
-                if(users.containsKey(userEmail)) {
-                  users.get(userEmail)
-                }
-                else {
-                  "User "+userEmail+" doesn't exist."
-                }
+        }
+      } ~
+      path("profile") {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              /*if(users.containsKey(userEmail)) {
+                users.get(userEmail)
+              }
+              else {
+                "User "+userEmail+" doesn't exist."
+              }*/
+              users.get(userEmail)
 
-              }
             }
           }
-        } ~
-        pathPrefix("posts") {
-          pathEnd {
-            get {
-              parameters('Email.as[String]) { //(name,color) =>
-                fromUser =>
-                  respondWithMediaType(`application/json`) {
-                    complete {
-                      if(userPosts.containsKey(userEmail)) {
-                        //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                        if(areFriendsOrSame(fromUser,userEmail)) {
-                          userPosts.get(userEmail).toString()
-                        }
-                        else {
-                          "Don't have rights to view posts."
-                        }
+        }
+      } ~
+      pathPrefix("posts") {
+        pathEnd {
+          get {
+            parameters('Email.as[String]) { //(name,color) =>
+              fromUser =>
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    /*if(userPosts.containsKey(userEmail)) {
+                      //if(fromUser==userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                      if(areFriendsOrSame(fromUser,userEmail)) {
+                        userPosts.get(userEmail).toString()
                       }
                       else {
-                        "User : "+ userEmail + " doesn't exist."
+                        "Don't have rights to view posts."
                       }
                     }
+                    else {
+                      "User : "+ userEmail + " doesn't exist."
+                    }*/
+                    if(areFriendsOrSame(fromUser,userEmail)) {
+                      userPosts.get(userEmail).toString()
+                    }
+                    else {
+                      "Don't have rights to view posts."
+                    }
                   }
+                }
+            }
+          }
+        }~
+        pathPrefix(Segment) {
+          postID =>
+          if(!userPosts.containsKey(postID)) {
+            respondWithMediaType(`application/json`) {
+              complete {
+                "Post with : "+postID+" doesn't exist."
               }
             }
-          }~
-          pathPrefix(Segment) {
-            postID => {
-              path("post") {
-                get {
-                  parameters('Email.as[String]) {
-                    fromUser =>
-                      respondWithMediaType(`application/json`) {
-                        complete {
-                          if (userPosts.containsKey(userEmail)) {
-                            //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
-                            if(areFriendsOrSame(fromUser,userEmail)) {
-                              userPosts.get(userEmail).toString()
-                            }
-                            else {
-                              "Don't have right to view post with ID : " + postID
-                            }
-                          }
-                          else {
-                            "User : " + userEmail + " doesn't exist."
-                          }
-                        }
+          }
+          path("post") {
+            get {
+              parameters('Email.as[String]) {
+                fromUser =>
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    /*if (userPosts.containsKey(userEmail)) {
+                      //if (fromUser == userEmail || friendLists.get(userEmail).contains(fromUser)) {
+                      if(areFriendsOrSame(fromUser,userEmail)) {
+                        userPosts.get(userEmail).toString()
                       }
+                      else {
+                        "Don't have right to view post with ID : " + postID
+                      }
+                    }
+                    else {
+                      "User : " + userEmail + " doesn't exist."
+                    }*/
+                    if(areFriendsOrSame(fromUser,userEmail)) {
+                      userPosts.get(userEmail).toString()
+                    }
+                    else {
+                      "Don't have right to view post with ID : " + postID
+                    }
                   }
                 }
               }
             }
           }
         }
+      }
     } ~
     path("wallWrite") {
       post {
@@ -316,6 +385,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create Page
   private def createPage(page: Page) : Boolean = {
     val didSucceed = true
+    if(pageDirectory.containsKey(page.pageID)) {
+      return false
+    }
     if(doesUserExist(page.adminEmail)) {
       pageContent.put(page.pageID,new ListBuffer())
       pageDirectory.put(page.pageID,page)
@@ -374,6 +446,24 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     return "posted"
   }
 
+  private  def addFollower(userEmail : String, pageID : String) : String = {
+    log.debug(userEmail+" ^ "+pageID)
+    if(!doesUserExist(userEmail)) {
+      return "invalidUser"
+    }
+    /*else if(!doesPageExist(pageID)) {
+      return "invalidPage"
+    }*/
+    else if(isFollower(userEmail,pageID)) {
+      log.debug(userEmail+" ^ "+pageID)
+      return "alreadyFollower"
+    }
+    else {
+      pageFollowers.get(pageID) += userEmail
+      return "followSuccess"
+    }
+  }
+
   private def areFriendsOrSame(fromEmail: String,toEmail: String): Boolean = {
    return (fromEmail==toEmail || friendLists.get(fromEmail).contains(toEmail))
   }
@@ -383,6 +473,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
 
   private  def isFollower(userEmail: String,pageID: String) : Boolean = {
+    log.debug(userEmail+" "+pageID)
     return (pageFollowers.get(pageID).contains(userEmail))
   }
 
@@ -414,8 +505,17 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       killYourself
 
     case UserNotPresent =>
-     requestContext.complete(StatusCodes.PreconditionFailed)
-     log.debug("Can't send friend request to user not present in the system.")
+     //requestContext.complete(StatusCodes.PreconditionFailed)
+     //log.debug("Can't send friend request to user not present in the system.")
+      requestContext.complete("User not present in the system.")
+      killYourself
+
+    case PageNotPresent =>
+      requestContext.complete("Page not present un the system.")
+      killYourself
+
+    case AlreadyFollowingPage =>
+      requestContext.complete("Already following the page.")
       killYourself
 
     case FriendRequestSent =>
@@ -444,6 +544,14 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
     case PostFailNotFollowing =>
      requestContext.complete("Post failed because not following the page.")
+     killYourself
+
+    case FollowSuccess =>
+     requestContext.complete("Successfully added as follower.")
+     killYourself
+
+    case FollowFail =>
+     requestContext.complete("Already following page or user doesn't exist.")
      killYourself
   }
 
