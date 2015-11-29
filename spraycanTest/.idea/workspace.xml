@@ -2,6 +2,8 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="45" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="70" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="306" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -31,8 +33,8 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.80235296">
-              <caret line="170" column="7" selection-start-line="170" selection-start-column="7" selection-end-line="170" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.210823">
+              <caret line="297" column="13" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
               <folding>
                 <element signature="e#44#63#0" expanded="true" />
               </folding>
@@ -64,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="68" column="33" selection-start-line="68" selection-start-column="33" selection-end-line="68" selection-end-column="33" />
+              <caret line="71" column="57" selection-start-line="71" selection-start-column="57" selection-end-line="71" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -280,7 +282,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/spray-template" />
-    <property name="SearchEverywhereHistoryKey" value="crea&#9;null&#9;null&#10;create&#9;null&#9;null&#10;createA&#9;null&#9;null&#10;createPa&#9;null&#9;null&#10;sendFr&#9;null&#9;null&#10;createPage&#9;null&#9;null&#10;addfollo&#9;null&#9;null&#10;isfollo&#9;null&#9;null&#10;createPageP&#9;null&#9;null&#10;posts&#9;null&#9;null&#10;writePos&#9;null&#9;null&#10;createUser&#9;null&#9;null&#10;users&#9;null&#9;null&#10;user&#9;null&#9;null&#10;facebookSt&#9;null&#9;null&#10;facebook&#9;null&#9;null&#10;case class&#9;null&#9;null&#10;sendfriend&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="createUSe&#9;null&#9;null&#10;does&#9;null&#9;null&#10;doesal&#9;null&#9;null&#10;doesAlbum&#9;null&#9;null&#10;crea&#9;null&#9;null&#10;create&#9;null&#9;null&#10;createA&#9;null&#9;null&#10;createPa&#9;null&#9;null&#10;sendFr&#9;null&#9;null&#10;createPage&#9;null&#9;null&#10;addfollo&#9;null&#9;null&#10;isfollo&#9;null&#9;null&#10;createPageP&#9;null&#9;null&#10;posts&#9;null&#9;null&#10;writePos&#9;null&#9;null&#10;createUser&#9;null&#9;null&#10;users&#9;null&#9;null&#10;user&#9;null&#9;null&#10;facebookSt&#9;null&#9;null&#10;facebook&#9;null&#9;null&#10;case class&#9;null&#9;null&#10;sendfriend&#9;null&#9;null" />
   </component>
   <component name="RunManager" selected="Application.Boot">
     <configuration default="false" name="Server" type="Application" factoryName="Application" temporary="true">
@@ -1030,15 +1032,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="33" selection-start-line="68" selection-start-column="33" selection-end-line="68" selection-end-column="33" />
+          <caret line="71" column="57" selection-start-line="71" selection-start-column="57" selection-end-line="71" selection-end-column="57" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.80235296">
-          <caret line="170" column="7" selection-start-line="170" selection-start-column="7" selection-end-line="170" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.210823">
+          <caret line="297" column="13" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
           <folding>
             <element signature="e#44#63#0" expanded="true" />
           </folding>

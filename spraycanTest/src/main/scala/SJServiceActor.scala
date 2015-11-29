@@ -63,7 +63,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
 
   //store all album meta data
-  var albumDirectory = new ConcurrentHashMap[String,AlbumMetaData]()
+  //map user email to a map of albums
+  var albumDirectory = new ConcurrentHashMap[String,ConcurrentHashMap[String,AlbumMetaData]]()
+
+  //store content image id of each image
+  //map album id to a map of post ids
+  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
 
   //directory of all pages
   //key : pageID, value : page info(adminEmail,title,pageID)
@@ -281,6 +286,38 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
       else {
+        pathPrefix("albums") {
+          pathEnd {
+            get {
+              respondWithMediaType(`application/json`) {
+                complete {
+                  albumDirectory.get(userEmail).toString()
+                }
+              }
+            }
+          } ~
+          pathPrefix(Segment) { //returns a list of ids of the images
+            albumID =>
+              if(doesAlbumExist(albumID,userEmail)) {
+                pathEnd {
+                  get {
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        albumContent.get(albumID).toString()
+                      }
+                    }
+                  }
+                }
+              }
+              else {
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    "Album with id : "+albumID+" doesn't exist."
+                  }
+                }
+              }
+          }
+        } ~
         path("friends") {
           get {
             respondWithMediaType(`application/json`) {
@@ -398,32 +435,23 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create album
   private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
     if(doesUserExist(albumMetaData.Email)) {
+
       var albumID = System.currentTimeMillis().toString()
-      albumDirectory.put(albumID,albumMetaData)
+      albumContent.put(albumID,new ConcurrentHashMap())
+      albumDirectory.get(albumMetaData.Email).put(albumID,albumMetaData)
       //create a folder userid/albumid/ to store images
       var dir = new File("users/"+albumMetaData.Email+"/"+albumID)
-      dir.mkdirs()
+      var ret = dir.mkdirs()
      // log.debug(dir.mkdir().toString)
 
-      return true
+      return ret
     }
-
-   /* File dir = new File("/Users/al/tmp/TestDirectory");
-
-    // attempt to create the directory here
-    boolean successful = dir.mkdir();
-    if (successful)
-    {
-      // creating the directory succeeded
-      System.out.println("directory was created successfully");
-    }
-    else
-    {
-      // creating the directory failed
-      System.out.println("failed trying to create the directory");
-    }*/
-
     return false
+  }
+
+  //does album exist
+  private def doesAlbumExist(albumID : String,userEmail:String) : Boolean = {
+    return albumDirectory.get(userEmail).containsKey(albumID)
   }
 
   //create User
@@ -437,6 +465,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       friendLists.put(user.Email,new ListBuffer())
       friendRequests.put(user.Email,new ListBuffer())
       userPosts.put(user.Email,new ConcurrentHashMap())
+      albumDirectory.put(user.Email,new ConcurrentHashMap())
     }
     doesNotExist
   }

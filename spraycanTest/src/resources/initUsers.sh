@@ -22,6 +22,8 @@ echo
 curl -H  "Content-Type: application/json" -X POST -d '{"Email" : "sjs7007","Title" : "dis mah album"}' http://localhost:8087/createAlbum
 echo  
 
+#get list of albumids of user
+
 #create page 
 curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempPAGEID"}' http://localhost:8087/createPage
 echo 

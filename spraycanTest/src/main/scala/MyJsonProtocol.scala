@@ -67,6 +67,10 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   case class AlbumCreated(Title: String)
   case object AlbumCreationFailed
+  case class ImageMetaData(Title:String)
+  object AlbumCreated extends DefaultJsonProtocol {
+    implicit val format = jsonFormat1(ImageMetaData.apply)
+  }
 
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
