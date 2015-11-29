@@ -54,10 +54,22 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object PageNotPresent
   case object AlreadyFollowingPage
 
-  //upload
+  /* //upload
   case class Photo(Email:String, Caption: String, Image: String)
   object Photo extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
+  }*/
+
+  //image upload
+  case class AlbumMetaData(Email:String,Title: String)
+  object AlbumMetaData extends  DefaultJsonProtocol {
+    implicit val format = jsonFormat2(AlbumMetaData.apply)
+  }
+  case class AlbumCreated(Title: String)
+  case object AlbumCreationFailed
+  case class ImageMetaData(Title:String)
+  object AlbumCreated extends DefaultJsonProtocol {
+    implicit val format = jsonFormat1(ImageMetaData.apply)
   }
 
   object FriendRequest extends DefaultJsonProtocol {

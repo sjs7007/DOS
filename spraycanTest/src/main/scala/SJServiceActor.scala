@@ -2,15 +2,14 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.{FileOutputStream, File}
-
+import java.io.{File, FileOutputStream}
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
 import akka.actor._
 import spray.can.Http
 import spray.http.MediaTypes._
-import spray.http._
+import spray.http.{HttpData, MultipartFormData}
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -64,6 +63,15 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //store all posts in the buffer below
   var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
 
+  //store all album meta data
+  //map user email to a map of albums
+  var albumDirectory = new ConcurrentHashMap[String,ConcurrentHashMap[String,AlbumMetaData]]()
+
+  //store content image id of each image
+  //map album id to a map of post ids
+ // var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
+  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,String]]()
+
   //directory of all pages
   //key : pageID, value : page info(adminEmail,title,pageID)
   var pageDirectory = new ConcurrentHashMap[String,Page]()
@@ -79,20 +87,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
-    path("up") {
-      post {
-        entity(as[MultipartFormData]) {
-          formData => {
-            val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
-            val output = new FileOutputStream(ftmp)
-            formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
-            output.close()
-            complete("done, file in: " + ftmp.getName())
-          }
-        }
-      }
-    }~
-    pathPrefix("upload") {
+    /*pathPrefix("upload") {
       pathEnd {
         post {
           log.debug("inhere")
@@ -103,7 +98,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       }
-    } ~
+    } ~ */
     pathPrefix("userStats") {
       pathEnd {
         get {
@@ -162,6 +157,20 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               createPage(page) match  {
                 case true => responder ! PageCreated(page.Title)
                 case _ => responder ! PageCreationFailed
+              }
+          }
+        }
+      }
+    } ~
+    pathPrefix("createAlbum") {
+      pathEnd {
+        post {
+          entity(as[AlbumMetaData]) {
+            albumMetaData => requestContext =>
+              val responder = createResponder(requestContext)
+              createAlbum(albumMetaData) match {
+                case true => responder ! AlbumCreated(albumMetaData.Title)
+                case _ => responder ! AlbumCreationFailed
               }
           }
         }
@@ -279,6 +288,66 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
       else {
+        pathPrefix("albums") {
+          pathEnd {
+            get {
+              respondWithMediaType(`application/json`) {
+                complete {
+                  albumDirectory.get(userEmail).toString()
+                }
+              }
+            }
+          } ~
+          pathPrefix(Segment) { //returns a list of ids of the images
+            albumID =>
+              if(doesAlbumExist(albumID,userEmail)) {
+                pathEnd {
+                  get {
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        albumContent.get(albumID).toString()
+                      }
+                    }
+                  }
+                } ~
+                path(Segment) {
+                  imageID =>
+                  get {
+                    respondWithMediaType(`image/jpeg`) {
+                      complete {
+                        HttpData(new File("users/"+userEmail+"/"+albumID+"/"+imageID))
+                      }
+                    }
+                  }
+                }~
+                path("upload") {
+                  post {
+                    entity(as[MultipartFormData]) {
+                      formData => {
+                        //val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
+
+                        //var imageID = System.currentTimeMillis().toString
+                        var imageID = (albumContent.get(albumID).size()+1).toString()
+                        albumContent.get(albumID).put(imageID,"ds")
+                        var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
+                        val output = new FileOutputStream(ftmp)
+                        formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+                        output.close()
+                        complete("done, file in: " + ftmp.getName())
+                      }
+                    }
+                  }
+                }
+              }
+              else {
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    "Album with id : "+albumID+" doesn't exist."
+                  }
+                }
+              }
+          }
+        } ~
         path("friends") {
           get {
             respondWithMediaType(`application/json`) {
@@ -393,6 +462,29 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     context.actorOf(Props(new Responder(requestContext)))
   }
 
+  //create album
+  private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
+    if(doesUserExist(albumMetaData.Email)) {
+
+      //var albumID = System.currentTimeMillis().toString()
+      var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
+      albumContent.put(albumID,new ConcurrentHashMap())
+      albumDirectory.get(albumMetaData.Email).put(albumID,albumMetaData)
+      //create a folder userid/albumid/ to store images
+      var dir = new File("users/"+albumMetaData.Email+"/"+albumID)
+      var ret = dir.mkdirs()
+     // log.debug(dir.mkdir().toString)
+
+      return ret
+    }
+    return false
+  }
+
+  //does album exist
+  private def doesAlbumExist(albumID : String,userEmail:String) : Boolean = {
+    return albumDirectory.get(userEmail).containsKey(albumID)
+  }
+
   //create User
   private def createUser(user: User) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
@@ -404,6 +496,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       friendLists.put(user.Email,new ListBuffer())
       friendRequests.put(user.Email,new ListBuffer())
       userPosts.put(user.Email,new ConcurrentHashMap())
+      albumDirectory.put(user.Email,new ConcurrentHashMap())
     }
     doesNotExist
   }
@@ -583,6 +676,14 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
     case FollowFail =>
      requestContext.complete("Already following page or user doesn't exist.")
+     killYourself
+
+    case AlbumCreated(title) =>
+     requestContext.complete("Album : "+ title+" created.")
+     killYourself
+
+    case AlbumCreationFailed =>
+     requestContext.complete("Album creation failed.")
      killYourself
   }
 
