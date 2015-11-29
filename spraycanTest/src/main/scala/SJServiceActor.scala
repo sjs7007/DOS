@@ -2,15 +2,13 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.{FileOutputStream, File}
-
+import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
 import akka.actor._
 import spray.can.Http
 import spray.http.MediaTypes._
-import spray.http._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -64,6 +62,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //store all posts in the buffer below
   var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
 
+  //store all album meta data
+  var albumDirectory = new ConcurrentHashMap[String,AlbumMetaData]()
+
   //directory of all pages
   //key : pageID, value : page info(adminEmail,title,pageID)
   var pageDirectory = new ConcurrentHashMap[String,Page]()
@@ -79,20 +80,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
-    path("up") {
-      post {
-        entity(as[MultipartFormData]) {
-          formData => {
-            val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
-            val output = new FileOutputStream(ftmp)
-            formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
-            output.close()
-            complete("done, file in: " + ftmp.getName())
-          }
-        }
-      }
-    }~
-    pathPrefix("upload") {
+    /*pathPrefix("upload") {
       pathEnd {
         post {
           log.debug("inhere")
@@ -103,7 +91,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       }
-    } ~
+    } ~ */
     pathPrefix("userStats") {
       pathEnd {
         get {
@@ -162,6 +150,20 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               createPage(page) match  {
                 case true => responder ! PageCreated(page.Title)
                 case _ => responder ! PageCreationFailed
+              }
+          }
+        }
+      }
+    } ~
+    pathPrefix("createAlbum") {
+      pathEnd {
+        post {
+          entity(as[AlbumMetaData]) {
+            albumMetaData => requestContext =>
+              val responder = createResponder(requestContext)
+              createAlbum(albumMetaData) match {
+                case true => responder ! AlbumCreated(albumMetaData.Title)
+                case _ => responder ! AlbumCreationFailed
               }
           }
         }
@@ -393,6 +395,37 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     context.actorOf(Props(new Responder(requestContext)))
   }
 
+  //create album
+  private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
+    if(doesUserExist(albumMetaData.Email)) {
+      var albumID = System.currentTimeMillis().toString()
+      albumDirectory.put(albumID,albumMetaData)
+      //create a folder userid/albumid/ to store images
+      var dir = new File("users/"+albumMetaData.Email+"/"+albumID)
+      dir.mkdirs()
+     // log.debug(dir.mkdir().toString)
+
+      return true
+    }
+
+   /* File dir = new File("/Users/al/tmp/TestDirectory");
+
+    // attempt to create the directory here
+    boolean successful = dir.mkdir();
+    if (successful)
+    {
+      // creating the directory succeeded
+      System.out.println("directory was created successfully");
+    }
+    else
+    {
+      // creating the directory failed
+      System.out.println("failed trying to create the directory");
+    }*/
+
+    return false
+  }
+
   //create User
   private def createUser(user: User) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
@@ -583,6 +616,14 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
     case FollowFail =>
      requestContext.complete("Already following page or user doesn't exist.")
+     killYourself
+
+    case AlbumCreated(title) =>
+     requestContext.complete("Album : "+ title+" created.")
+     killYourself
+
+    case AlbumCreationFailed =>
+     requestContext.complete("Album creation failed.")
      killYourself
   }
 
