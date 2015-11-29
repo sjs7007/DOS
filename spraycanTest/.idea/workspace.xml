@@ -2,7 +2,6 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="45" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="172" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -29,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1882353">
-              <caret line="276" column="14" selection-start-line="276" selection-start-column="14" selection-end-line="276" selection-end-column="14" />
+            <state vertical-scroll-proportion="78.35135">
+              <caret line="163" column="9" selection-start-line="163" selection-start-column="9" selection-end-line="163" selection-end-column="9" />
               <folding>
                 <element signature="e#44#89#0" expanded="true" />
               </folding>
@@ -71,11 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Boot.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Boot.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="25" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.25366405">
+              <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -96,10 +95,10 @@
         <option value="$PROJECT_DIR$/src/main/resources/application.conf" />
         <option value="$PROJECT_DIR$/project/plugins.sbt" />
         <option value="$PROJECT_DIR$/References.txt" />
-        <option value="$PROJECT_DIR$/src/main/scala/Boot.scala" />
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/Boot.scala" />
       </list>
     </option>
   </component>
@@ -281,7 +280,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/spray-template" />
-    <property name="SearchEverywhereHistoryKey" value="sendFr&#9;null&#9;null&#10;createPage&#9;null&#9;null&#10;addfollo&#9;null&#9;null&#10;isfollo&#9;null&#9;null&#10;createPageP&#9;null&#9;null&#10;posts&#9;null&#9;null&#10;writePos&#9;null&#9;null&#10;createUser&#9;null&#9;null&#10;users&#9;null&#9;null&#10;user&#9;null&#9;null&#10;facebookSt&#9;null&#9;null&#10;facebook&#9;null&#9;null&#10;case class&#9;null&#9;null&#10;sendfriend&#9;null&#9;null" />
+    <property name="SearchEverywhereHistoryKey" value="createPa&#9;null&#9;null&#10;sendFr&#9;null&#9;null&#10;createPage&#9;null&#9;null&#10;addfollo&#9;null&#9;null&#10;isfollo&#9;null&#9;null&#10;createPageP&#9;null&#9;null&#10;posts&#9;null&#9;null&#10;writePos&#9;null&#9;null&#10;createUser&#9;null&#9;null&#10;users&#9;null&#9;null&#10;user&#9;null&#9;null&#10;facebookSt&#9;null&#9;null&#10;facebook&#9;null&#9;null&#10;case class&#9;null&#9;null&#10;sendfriend&#9;null&#9;null" />
   </component>
   <component name="RunManager" selected="Application.Boot">
     <configuration default="false" name="Server" type="Application" factoryName="Application" temporary="true">
@@ -1038,19 +1037,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="25" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/References.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="78.35135">
+          <caret line="163" column="9" selection-start-line="163" selection-start-column="9" selection-end-line="163" selection-end-column="9" />
+          <folding>
+            <element signature="e#44#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1062,13 +1063,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1882353">
-          <caret line="276" column="14" selection-start-line="276" selection-start-column="14" selection-end-line="276" selection-end-column="14" />
-          <folding>
-            <element signature="e#44#89#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.25366405">
+          <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <folding />
         </state>
       </provider>
     </entry>

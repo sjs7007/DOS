@@ -152,78 +152,89 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~
-    pathPrefix("pages"/Segment) {
-      pageID =>
-      if(!doesPageExist(pageID)) {
-        respondWithMediaType(`application/json`) {
-          complete {
-            "Page doesn't exist."
+    pathPrefix("pages") {
+      pathPrefix("ids") {
+        get {
+          respondWithMediaType(`application/json`) {
+            complete {
+              pageDirectory.keySet().toString
+            }
           }
         }
-      }
-      else {
-        pathEnd {
-          get {
+      } ~
+      pathPrefix(Segment) {
+        pageID =>
+          if(!doesPageExist(pageID)) {
             respondWithMediaType(`application/json`) {
               complete {
-                pageContent.get(pageID).toString()
+                "Page doesn't exist."
               }
             }
           }
-        } ~
-        pathPrefix("createPost") {
-          pathEnd {
-            post {
-              entity(as[pagePost]) {
-                postData => requestContext =>
-                  val responder = createResponder(requestContext)
-                  createPagePost(postData, pageID) match {
-                    case "posted" => responder ! PostSuccess
-                    case "invalidPost" => responder ! PostFail
-                    case "notFollowing" => responder ! PostFailNotFollowing
+          else {
+            pathEnd {
+              get {
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    pageContent.get(pageID).toString()
                   }
-              }
-            }
-          }
-        } ~
-        pathPrefix("follow") {
-          pathEnd {
-            post {
-              entity(as[UserID]) {
-                user => requestContext =>
-                  val responder = createResponder(requestContext)
-                  addFollower(user.Email, pageID) match {
-                    case "invalidUser" => responder ! UserNotPresent
-                    //case "invalidPage" => responder ! PageNotPresent
-                    case "alreadyFollower" => responder ! AlreadyFollowingPage
-                    case "followSuccess" => responder ! FollowSuccess
-                  }
-              }
-            }
-          }
-        } ~
-        pathPrefix("followers") {
-          pathEnd {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  pageFollowers.toString()
                 }
               }
-            }
-          }
-        } ~
-        pathPrefix("posts") {
-          pathEnd {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  pageContent.get(pageID).toString()
+            } ~
+              pathPrefix("createPost") {
+                pathEnd {
+                  post {
+                    entity(as[pagePost]) {
+                      postData => requestContext =>
+                        val responder = createResponder(requestContext)
+                        createPagePost(postData, pageID) match {
+                          case "posted" => responder ! PostSuccess
+                          case "invalidPost" => responder ! PostFail
+                          case "notFollowing" => responder ! PostFailNotFollowing
+                        }
+                    }
+                  }
+                }
+              } ~
+              pathPrefix("follow") {
+                pathEnd {
+                  post {
+                    entity(as[UserID]) {
+                      user => requestContext =>
+                        val responder = createResponder(requestContext)
+                        addFollower(user.Email, pageID) match {
+                          case "invalidUser" => responder ! UserNotPresent
+                          //case "invalidPage" => responder ! PageNotPresent
+                          case "alreadyFollower" => responder ! AlreadyFollowingPage
+                          case "followSuccess" => responder ! FollowSuccess
+                        }
+                    }
+                  }
+                }
+              } ~
+              pathPrefix("followers") {
+                pathEnd {
+                  get {
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        pageFollowers.toString()
+                      }
+                    }
+                  }
+                }
+              } ~
+              pathPrefix("posts") {
+                pathEnd {
+                  get {
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        pageContent.get(pageID).toString()
+                      }
+                    }
+                  }
                 }
               }
-            }
           }
-        }
       }
     } ~
     pathPrefix("sendFriendRequest") {
@@ -275,7 +286,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           pathEnd {
             get {
               parameters('Email.as[String]) {
-                //(name,color) =>
                 fromUser =>
                   respondWithMediaType(`application/json`) {
                     complete {
@@ -292,11 +302,27 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               }
             } ~
           path("ids") {
-            get {
+            /*get {
               respondWithMediaType(`application/json`) {
                 complete {
                   userPosts.get(userEmail).keySet().toString()
                 }
+              }
+            }*/
+            get {
+              parameters('Email.as[String]) {
+                fromUser =>
+                  respondWithMediaType(`application/json`) {
+                    complete {
+                      if (areFriendsOrSame(fromUser, userEmail)) {
+                        userPosts.get(userEmail).keySet().toString()
+                        //"dss"
+                      }
+                      else {
+                        "Don't have rights to view posts."
+                      }
+                    }
+                  }
               }
             }
           } ~
