@@ -30,9 +30,6 @@ import spray.httpx.SprayJsonSupport
 import scala.io.Source
 
 object MyJsonProtocol extends DefaultJsonProtocol {
-  implicit val personFormat = jsonFormat3(Person)
-
-  case class Person(name: String, fistName: String, age: Long)
 
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String)
@@ -46,6 +43,11 @@ object MyJsonProtocol extends DefaultJsonProtocol {
    case class Photo(Email:String, Caption: String, Image: String)
     object Photo extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
+  }
+  
+  case class UserMap (Email:String, Person:User)
+   object UserMap extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat2(UserMap.apply)
   }
   
   
@@ -83,7 +85,7 @@ object StartHere extends App {
 
 class ClientStarter extends Actor {
         import context._
-        val noOfClients = 100
+        val noOfClients = 500
 
               def receive = {
               case _ =>
@@ -96,16 +98,18 @@ class ClientStarter extends Actor {
 }
 
 object UserVariables {
-  var nameArray = Array("Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don Corleone", "Uther", "Arthas", "Billy")
+  var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
   var emailArray = Array ("@gmail.com", "@hotmail.com", "@yahoo.com", "@aol.com", "@piratebay.se")
+  
+  var allEmails = new ListBuffer[String]()
+
 }
 
 class Client extends Actor
 {
   import UserVariables._
   import MyJsonProtocol._
-  implicit val personFormat = jsonFormat3(Person)
   import context._
   
   val r = scala.util.Random
@@ -115,57 +119,104 @@ class Client extends Actor
   // User variables
   
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
-  var email = name.substring(0, r.nextInt(5)) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
+  var email = name.substring(0, r.nextInt(3)) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
   var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
   
-  var serverIP = "http://192.168.0.21:"
-  var requestType = "createUser"
+  var baseIP = "http://192.168.0.14:"
+  var requestType = "getFriendList"
 
   var jsonString = User(email, name, bday, city).toJson
   
   //User behaviour definitions
   
-  var socialFactor = 10 + r.nextInt (90)
-  var loudFactor = 10 + r.nextInt (90)
-  var lurkFactor = 10 + r.nextInt (90)
+  var socialFactor = 1 + r.nextInt (70)
+  var loudFactor = 1 + r.nextInt (70)
+  var lurkFactor = 1 + r.nextInt (70)
+  var listOfFriends : Array[String] = new Array[String](1)
+
   var active = true
   
   //Create User
   
+  var port = "8087"// (5000 + r.nextInt(50)).toString
+  
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + port + "/" + "createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/" + "createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
    }
    yield {
+   allEmails += email
    }
 
   //Constant requesting:
    
-  while (active) {
+   var serverIP = ""
+   var dieRoller = 0
  
-  var port = (5000 + r.nextInt(50)).toString
+ while (active) {
+ 
+  serverIP = baseIP + port + "/"
   
-  serverIP = serverIP + port + "/"
+ dieRoller = r.nextInt (100)
+  
+  /*if (dieRoller < loudFactor)
+    requestType = "wallWrite"
+  else*/
+  
+  if (dieRoller < socialFactor)
+    requestType = "addNewFriend" 
+  else if (dieRoller < 20)
+    requestType = "getFriendList"
+  else requestType = "doNothing"
   
   requestType match {
-  
-  case "createUser" => 
-  
-   case "users" =>
-  for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + requestType))).mapTo[HttpResponse]
-  }
-   yield {
-   println (response.entity.asString.parseJson)
-   }
+    
+   case "doNothing" =>
   
   case "getFriendList" =>
+  
+  // Update my friend list and add a random friend if I have none
+  
   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/sjs7007/friends"))).mapTo[HttpResponse]
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/" + email + "/friends"))).mapTo[HttpResponse]  
   }
    yield {
-   println (response.entity.asString)
+   var myFriends = response.entity.asString
+   listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
+   
+   if (listOfFriends.length < 2) { 
+   for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson.toString)))
    }
+   yield {}
+   }
+  }
+  
+  case "addNewFriend" => 
+  
+  // I want to add a random friend of friend
+  
+  val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
+  
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, selectedFriend).toJson.toString))).mapTo[HttpResponse]
+   }
+   yield {
+      var theirFriends = response.entity.asString
+      var listOfTheirFriends = theirFriends.substring(11,theirFriends.length-1).split(",").map(_.trim)
+      
+      if (listOfTheirFriends.length > 1) {
+      
+      
+      for {
+      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,listOfTheirFriends(r.nextInt(listOfTheirFriends.length))).toJson.toString))).mapTo[HttpResponse]
+   }
+   yield {}
+      
+      }
+   
+   }
+   
    
    case "upload" =>
    
@@ -186,8 +237,8 @@ class Client extends Actor
    println (response)
    }
    
-  case "sendFriendRequest" => jsonString = FriendRequest(email, "jaadugar").toJson 
-  
+  case "sendFriendRequest" => jsonString = FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson
+
     for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
    }
@@ -209,10 +260,9 @@ class Client extends Actor
   // Model next behaviour here
   
   
-  
+  Thread.sleep (5+r.nextInt(500))
   
   }
-  
   
   
   
