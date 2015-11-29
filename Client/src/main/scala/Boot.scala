@@ -144,6 +144,9 @@ class Client extends Actor
   var socialFactor = 1 + r.nextInt (30)
   var loudFactor = 1 + r.nextInt (10)
   var lurkFactor = 1 + r.nextInt (70)
+  var fluxRate = 1 + r.nextInt(5)
+  
+  
   var listOfFriends : Array[String] = new Array[String](1)
   var listOfPages = new ListBuffer[String]
 
@@ -153,7 +156,6 @@ class Client extends Actor
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
-   var dieRoller = 0
    
      import context.dispatcher
 
@@ -195,7 +197,11 @@ case "Continue" =>
   
   requestType match {
     
-   case "doNothing" =>
+   case "doNothing" => 
+   
+   socialFactor += fluxRate
+   loudFactor += fluxRate
+   lurkFactor += fluxRate
   
   case "getFriendList" =>
   
@@ -217,6 +223,8 @@ case "Continue" =>
    yield {}
    }
   }
+  
+  lurkFactor -= fluxRate*fluxRate
   
   case "addNewFriend" => 
   
@@ -260,6 +268,8 @@ case "Continue" =>
       }
    }
    }
+   
+   socialFactor -= fluxRate*fluxRate
    
    
    case "upload" =>
@@ -353,20 +363,19 @@ case "Continue" =>
    }
    }
    
+   loudFactor -= fluxRate*fluxRate
+   
   }
   
   
   // Model next behaviour here
-  dieRoller = r.nextInt (100)
   
-  
-  if (listOfFriends.length < 2)
+  if (listOfFriends.length < 2 && socialFactor > 20)
     requestType = "getFriendList"
-  else if (dieRoller < loudFactor)
+  else if (r.nextInt(100) < loudFactor)
     requestType = "wallWrite"
-  else 
-  if (dieRoller < socialFactor)
-    requestType = "addNewFriend" 
+  else if (r.nextInt(100) < socialFactor)
+    requestType = "addNewFriend"
   else requestType = "doNothing"
   
   

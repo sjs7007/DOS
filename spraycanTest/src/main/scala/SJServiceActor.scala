@@ -519,6 +519,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   //sendFriendRequest
   private def sendFriendRequest(req : FriendRequest) : String = {
+  if (req != null) {
     if(friendLists.containsKey(req.fromEmail)) {
       if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
         return "alreadyFriends"
@@ -536,6 +537,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       //tmp
       return "requestSent"
     }
+    }
+    else return "userNotPresent"
 
   }
   
