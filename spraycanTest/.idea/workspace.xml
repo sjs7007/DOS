@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="45" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="70" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="306" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="46" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="71" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="307" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -33,10 +33,10 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.210823">
-              <caret line="297" column="13" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.46448705">
+              <caret line="310" column="19" selection-start-line="310" selection-start-column="19" selection-end-line="310" selection-end-column="19" />
               <folding>
-                <element signature="e#44#63#0" expanded="true" />
+                <element signature="e#44#83#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -641,7 +641,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="91" column="7" selection-start-line="91" selection-start-column="7" selection-end-line="91" selection-end-column="7" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -713,7 +713,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -762,7 +762,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -811,7 +811,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -867,7 +867,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -923,7 +923,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -964,7 +964,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1039,10 +1039,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.210823">
-          <caret line="297" column="13" selection-start-line="297" selection-start-column="13" selection-end-line="297" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.46448705">
+          <caret line="310" column="19" selection-start-line="310" selection-start-column="19" selection-end-line="310" selection-end-column="19" />
           <folding>
-            <element signature="e#44#63#0" expanded="true" />
+            <element signature="e#44#83#0" expanded="true" />
           </folding>
         </state>
       </provider>

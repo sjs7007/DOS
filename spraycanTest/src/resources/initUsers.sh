@@ -23,6 +23,12 @@ curl -H  "Content-Type: application/json" -X POST -d '{"Email" : "sjs7007","Titl
 echo  
 
 #get list of albumids of user
+echo "album ids of sjs7007"
+curl http://localhost:8087/users/sjs7007/albums
+echo
+
+#upload image to specific albumid
+curl -i -F filedata=@doge.jpg http://localhost:8087/users/sjs7007/albums/1448784671073/upload
 
 #create page 
 curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempPAGEID"}' http://localhost:8087/createPage

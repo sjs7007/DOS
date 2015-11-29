@@ -2,13 +2,14 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.File
+import java.io.{FileOutputStream, File}
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
 import akka.actor._
 import spray.can.Http
 import spray.http.MediaTypes._
+import spray.http.MultipartFormData
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -304,6 +305,21 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     respondWithMediaType(`application/json`) {
                       complete {
                         albumContent.get(albumID).toString()
+                      }
+                    }
+                  }
+                } ~
+                path("upload") {
+                  post {
+                    entity(as[MultipartFormData]) {
+                      formData => {
+                        //val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
+                        var imageID = System.currentTimeMillis().toString
+                        var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
+                        val output = new FileOutputStream(ftmp)
+                        formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+                        output.close()
+                        complete("done, file in: " + ftmp.getName())
                       }
                     }
                   }
