@@ -42,12 +42,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String = "defaultID")
+  case class fbPost(fromEmail:String, toEmail:String, data:String)
   case object PostSuccess
   case object PostFail
 
   //page post
-  case class pagePost(fromEmail:String,postID:String,data:String)
+  case class pagePost(fromEmail:String,data:String)
   case object PostFailNotFollowing
   case object FollowSuccess
   case object FollowFail
@@ -65,11 +65,11 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
 
   object fbPost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat4(fbPost.apply)
+    implicit val format = jsonFormat3(fbPost.apply)
   }
 
   object pagePost extends  DefaultJsonProtocol {
-    implicit  val format = jsonFormat3(pagePost.apply)
+    implicit  val format = jsonFormat2(pagePost.apply)
   }
 
 }

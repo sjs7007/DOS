@@ -57,3 +57,8 @@ Parameters : none
 Make post on particular page. Can post only if follower of the page.
 Type : POST 
 Parameters : fromEmail,pageID,data
+
++ /uses/<Email>/posts/ids
+Get a list of post ids.
+Type : GET
+Parameters : Email

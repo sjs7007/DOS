@@ -12,7 +12,11 @@ echo
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "sigmoid","data":"my post so cooooool.","postID" : "tempPostID"}' http://192.168.0.21:5020/wallWrite
 echo 
 
-#send friend request from sjs7007 to sigmoid
+#send friend request
+curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "sigmoid"}' http://localhost:8087/sendFriendRequest
+echo 
+curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "Do8Mufasa@gmail.com"}' http://localhost:8087/sendFriendRequest
+echo 
 
 #create page 
 curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempPAGEID"}' http://192.168.0.21:5020/createPage
@@ -38,7 +42,7 @@ echo
 
 #view users
 echo "Users Registered."
-curl  http://192.168.0.21:5020/users
+curl  http://192.168.0.21:5020/usersList
 echo
 
 #view page directory
