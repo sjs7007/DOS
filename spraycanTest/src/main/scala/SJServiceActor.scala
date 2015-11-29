@@ -511,6 +511,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       pageContent.put(page.pageID,new ConcurrentHashMap())
       pageDirectory.put(page.pageID,page)
       pageFollowers.put(page.pageID,new ListBuffer())
+      addFollower(page.adminEmail, page.pageID)
       return true
     }
     return false
