@@ -2,6 +2,8 @@
  * Created by shinchan on 11/6/15.
  */
 
+import java.io.{FileOutputStream, File}
+
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
@@ -77,6 +79,19 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    path("up") {
+      post {
+        entity(as[MultipartFormData]) {
+          formData => {
+            val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
+            val output = new FileOutputStream(ftmp)
+            formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+            output.close()
+            complete("done, file in: " + ftmp.getName())
+          }
+        }
+      }
+    }~
     pathPrefix("upload") {
       pathEnd {
         post {
@@ -515,7 +530,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       killYourself
 
     case AlreadyFriends =>
-      requestContext.complete(StatusCodes.Conflict)
+      requestContext.complete("Already friends with the user.")
       log.debug("Already friends with the user.")
       killYourself
 
@@ -534,8 +549,9 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       killYourself
 
     case FriendRequestSent =>
-     requestContext.complete(StatusCodes.Accepted)
-     log.debug("Friend request was successfully ent.")
+     //requestContext.complete(StatusCodes.Accepted)
+      requestContext.complete("Friend request was successfully sent.")
+     log.debug("Friend request was successfully sent.")
      killYourself
 
     case PostSuccess =>
