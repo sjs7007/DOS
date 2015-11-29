@@ -1,13 +1,13 @@
 /**
  * Created by shinchan on 11/6/15.
  */
-import spray.json.DefaultJsonProtocol
+
+import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val personFormat = jsonFormat3(Person)
 
   case class Person(name: String, fistName: String, age: Long)
-
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String) {
     require(!Email.isEmpty, "Email must not be empty.")
@@ -53,6 +53,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object FollowFail
   case object PageNotPresent
   case object AlreadyFollowingPage
+
+  //upload
+  case class Photo(Email:String, Caption: String, Image: String)
+  object Photo extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(Photo.apply)
+  }
 
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)

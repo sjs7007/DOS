@@ -7,15 +7,13 @@ import java.util.concurrent.ConcurrentHashMap
 import MyJsonProtocol._
 import akka.actor._
 import spray.can.Http
+import spray.http.MediaTypes._
 import spray.http._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
-import MediaTypes._
 
 import scala.collection.mutable.ListBuffer
 //import java.util
-
-
 
 
 // simple actor that handles the routes.
@@ -67,6 +65,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //directory of all pages
   //key : pageID, value : page info(adminEmail,title,pageID)
   var pageDirectory = new ConcurrentHashMap[String,Page]()
+  //var pageDirectory = new scala.util.HashMap[String,Page]()
 
   //store content of each page : key pageID value : list of posts on the page
   var pageContent = new ConcurrentHashMap[String,ListBuffer[pagePost]]()
@@ -78,6 +77,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    pathPrefix("upload") {
+      pathEnd {
+        post {
+          log.debug("inhere")
+          entity(as[Photo]) { pic => requestContext =>
+            val responder = createResponder(requestContext)
+            log.debug (pic.Image)
+            responder ! UserCreated("abc")
+          }
+        }
+      }
+    } ~
     pathPrefix("userStats") {
       pathEnd {
         get {
@@ -94,9 +105,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
+              //var A = new Map[String,User]()
               users.toString()
               //users.toJson()
-              //"sss"
+              //users.toString()
+              //users.toJson()
+              //users.get("sjs7007").toJson()
             }
           }
         }
@@ -107,7 +121,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              pageDirectory.toString()
+              pageDirectory.toString
             }
           }
         }
@@ -367,6 +381,10 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     else {
       //store the request somewhere
       friendRequests.get(req.toEmail) += req.fromEmail
+      //tmp
+      friendLists.get(req.toEmail) += req.fromEmail
+      friendLists.get(req.fromEmail) += req.toEmail
+      //tmp
       return "requestSent"
     }
 
