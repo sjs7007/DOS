@@ -2,14 +2,14 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.{FileOutputStream, File}
+import java.io.{File, FileOutputStream}
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
 import akka.actor._
 import spray.can.Http
 import spray.http.MediaTypes._
-import spray.http.MultipartFormData
+import spray.http.{HttpData, MultipartFormData}
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -69,7 +69,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   //store content image id of each image
   //map album id to a map of post ids
-  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
+ // var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
+  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,String]]()
 
   //directory of all pages
   //key : pageID, value : page info(adminEmail,title,pageID)
@@ -309,12 +310,25 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     }
                   }
                 } ~
+                path(Segment) {
+                  imageID =>
+                  get {
+                    respondWithMediaType(`image/jpeg`) {
+                      complete {
+                        HttpData(new File("users/"+userEmail+"/"+albumID+"/"+imageID))
+                      }
+                    }
+                  }
+                }~
                 path("upload") {
                   post {
                     entity(as[MultipartFormData]) {
                       formData => {
                         //val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
-                        var imageID = System.currentTimeMillis().toString
+
+                        //var imageID = System.currentTimeMillis().toString
+                        var imageID = (albumContent.get(albumID).size()+1).toString()
+                        albumContent.get(albumID).put(imageID,"ds")
                         var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
                         val output = new FileOutputStream(ftmp)
                         formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
@@ -452,7 +466,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
     if(doesUserExist(albumMetaData.Email)) {
 
-      var albumID = System.currentTimeMillis().toString()
+      //var albumID = System.currentTimeMillis().toString()
+      var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
       albumContent.put(albumID,new ConcurrentHashMap())
       albumDirectory.get(albumMetaData.Email).put(albumID,albumMetaData)
       //create a folder userid/albumid/ to store images
