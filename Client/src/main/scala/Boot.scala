@@ -74,26 +74,33 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 }
 
 case class Start()
+case class Continue()
 
 object StartHere extends App {
               val system = ActorSystem("Client")
 
   val client = system.actorOf(Props[ClientStarter], name = "ClientStarter")  // the local actor
-  client ! "start"
+  client ! Begin
   
 }
 
+case class Begin()
+
 class ClientStarter extends Actor {
         import context._
-        val noOfClients = 500
-
-              def receive = {
-              case _ =>
-        val client = context.actorOf(Props[Client].withRouter(RoundRobinRouter(noOfClients)))
+        val noOfClients = 50
+      
+         //.withRouter(RoundRobinRouter(noOfClients)))
         
-        for (n <- 1 to noOfClients)
+       def receive ={
+        case Begin =>{
+         for (n <- 1 to noOfClients) {
+          val client= context.actorOf(Props[Client])
           client ! Start
           }
+          }
+        }
+       
 
 }
 
@@ -108,66 +115,71 @@ object UserVariables {
 
 class Client extends Actor
 {
+
   import UserVariables._
   import MyJsonProtocol._
   import context._
   
-  val r = scala.util.Random
-  
-  implicit val timeout: Timeout = 3.seconds
+    val r = scala.util.Random
+  implicit val timeout: Timeout = 300.seconds
 
-  // User variables
-  
+  var baseIP = "http://192.168.0.21:"
+  var requestType = "getFriendList"
+
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
-  var email = name.substring(0, r.nextInt(3)) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
+  var email = name.substring(0, r.nextInt(2)+1) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
   var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
   
-  var baseIP = "http://192.168.0.14:"
-  var requestType = "getFriendList"
-
-  var jsonString = User(email, name, bday, city).toJson
-  
-  //User behaviour definitions
-  
-  var socialFactor = 1 + r.nextInt (70)
+  var socialFactor = 50 + r.nextInt (70)
   var loudFactor = 1 + r.nextInt (70)
   var lurkFactor = 1 + r.nextInt (70)
   var listOfFriends : Array[String] = new Array[String](1)
 
-  var active = true
+  var port =  (5000 + r.nextInt(50)).toString
   
-  //Create User
+    var jsonString = User(email, name, bday, city).toJson
+
+  var serverIP = ""
+   var dieRoller = 0
+   
+     import context.dispatcher
+
+   
+    def receive = {
+    
+  case Start =>
   
-  var port = "8087"// (5000 + r.nextInt(50)).toString
+  
+  
+    //User behaviour definitions
+  
+  
+  
+  
+  // Create user
   
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/" + "createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
    }
    yield {
    allEmails += email
-   }
+     val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue")
 
-  //Constant requesting:
+   }
+  
+  
+    println (name + " created.")
+
+    
+    
+    
    
-   var serverIP = ""
-   var dieRoller = 0
- 
- while (active) {
+case "Continue" =>
+
+ port =  (5000 + r.nextInt(50)).toString
  
   serverIP = baseIP + port + "/"
-  
- dieRoller = r.nextInt (100)
-  
-  /*if (dieRoller < loudFactor)
-    requestType = "wallWrite"
-  else*/
-  
-  if (dieRoller < socialFactor)
-    requestType = "addNewFriend" 
-  else if (dieRoller < 20)
-    requestType = "getFriendList"
-  else requestType = "doNothing"
   
   requestType match {
     
@@ -175,18 +187,21 @@ class Client extends Actor
   
   case "getFriendList" =>
   
+  
   // Update my friend list and add a random friend if I have none
   
   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/" + email + "/friends"))).mapTo[HttpResponse]  
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
   }
    yield {
    var myFriends = response.entity.asString
    listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
    
-   if (listOfFriends.length < 2) { 
+   var randEmail = allEmails(r.nextInt(allEmails.length))
+   
+   if (listOfFriends.length < 2 && randEmail != email && !(listOfFriends contains randEmail)) { 
    for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson.toString)))
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, randEmail).toJson.toString)))
    }
    yield {}
    }
@@ -197,24 +212,42 @@ class Client extends Actor
   // I want to add a random friend of friend
   
   val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
-  
+    
+  if (selectedFriend != null && !(listOfFriends contains selectedFriend)) {
+  println (name + "is adding as friend: " + selectedFriend)
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, selectedFriend).toJson.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
    }
    yield {
       var theirFriends = response.entity.asString
       var listOfTheirFriends = theirFriends.substring(11,theirFriends.length-1).split(",").map(_.trim)
       
       if (listOfTheirFriends.length > 1) {
+      var friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
       
+      while (listOfTheirFriends.length > 1 && friendToAdd == email)
+      friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
       
+      println (name + " is adding " + friendToAdd)
+      
+      if (friendToAdd != email && !(listOfFriends contains friendToAdd)) {
       for {
-      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,listOfTheirFriends(r.nextInt(listOfTheirFriends.length))).toJson.toString))).mapTo[HttpResponse]
+      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,friendToAdd).toJson.toString))).mapTo[HttpResponse]
    }
-   yield {}
+   yield {
+   for {
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
+  }
+   yield {
+   var myFriends = response.entity.asString
+   listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
+   }
+   
+   }
+   }
       
       }
-   
+   }
    }
    
    
@@ -258,20 +291,33 @@ class Client extends Actor
   
   
   // Model next behaviour here
+  dieRoller = r.nextInt (100)
+  
+  /*if (dieRoller < loudFactor)
+    requestType = "wallWrite"
+  else*/
+  
+  if (dieRoller < socialFactor)
+    requestType = "addNewFriend" 
+  else requestType = "doNothing"
+  
+  //self ! Continue
   
   
-  Thread.sleep (5+r.nextInt(500))
+  }
   
   }
   
   
   
   
-  def receive = {
-    
-  case Start => 
   
-  }
-   
-   
-}
+  
+  
+  
+  
+  
+  
+  
+  
+  
