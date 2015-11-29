@@ -1,13 +1,13 @@
 /**
  * Created by shinchan on 11/6/15.
  */
-import spray.json.DefaultJsonProtocol
+
+import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val personFormat = jsonFormat3(Person)
 
   case class Person(name: String, fistName: String, age: Long)
-
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String) {
     require(!Email.isEmpty, "Email must not be empty.")
@@ -18,6 +18,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
   object User extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
+  }
+
+  //createPage
+  case class Page(adminEmail: String,Title : String,pageID : String)
+  case class PageCreated(Title: String)
+  case object PageCreationFailed
+
+  object Page extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(Page.apply)
   }
 
   //sendFriendRequest
@@ -33,18 +42,35 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class Wallpost(fromEmail:String, toEmail:String, data:String)
+  case class fbPost(fromEmail:String, toEmail:String, data:String,postID:String = "defaultID")
   case object PostSuccess
   case object PostFail
-  
-    object FriendRequest extends DefaultJsonProtocol {
+
+  //page post
+  case class pagePost(fromEmail:String,postID:String,data:String)
+  case object PostFailNotFollowing
+  case object FollowSuccess
+  case object FollowFail
+  case object PageNotPresent
+  case object AlreadyFollowingPage
+
+  //upload
+  case class Photo(Email:String, Caption: String, Image: String)
+  object Photo extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(Photo.apply)
+  }
+
+  object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }
-  
-   
 
-    object Wallpost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(Wallpost.apply)
+  object fbPost extends DefaultJsonProtocol {
+    implicit val format = jsonFormat4(fbPost.apply)
   }
+
+  object pagePost extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(pagePost.apply)
+  }
+
 }
 
