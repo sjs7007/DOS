@@ -6,6 +6,8 @@ import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 import scala.collection.concurrent.Map
 import akka.actor._
+import spray.httpx.unmarshalling._
+import spray.httpx.unmarshalling.FromResponseUnmarshaller
 import java.util.concurrent.ConcurrentHashMap
 import java.io.BufferedInputStream
 import java.io.FileInputStream
@@ -25,6 +27,7 @@ import spray.http.HttpMethods._
 import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
+import scala.io.Source
 
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val personFormat = jsonFormat3(Person)
@@ -40,6 +43,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
   }
 
+   case class Photo(Email:String, Caption: String, Image: String)
+    object Photo extends DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(Photo.apply)
+  }
+  
+  
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
   case object AlreadyFriends
@@ -74,7 +83,7 @@ object StartHere extends App {
 
 class ClientStarter extends Actor {
         import context._
-        val noOfClients = 100000
+        val noOfClients = 100
 
               def receive = {
               case _ =>
@@ -86,61 +95,92 @@ class ClientStarter extends Actor {
 
 }
 
+object UserVariables {
+  var nameArray = Array("Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don Corleone", "Uther", "Arthas", "Billy")
+  var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
+  var emailArray = Array ("@gmail.com", "@hotmail.com", "@yahoo.com", "@aol.com", "@piratebay.se")
+}
+
 class Client extends Actor
 {
+  import UserVariables._
   import MyJsonProtocol._
   implicit val personFormat = jsonFormat3(Person)
   import context._
   
+  val r = scala.util.Random
+  
   implicit val timeout: Timeout = 3.seconds
 
-  var name = "pandu"
-  var email = self.toString
-  var bday = "tomallow"
-  var city = "loaftown"
+  // User variables
   
-  var serverIP = "http://192.168.0.14:"
+  var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
+  var email = name.substring(0, r.nextInt(5)) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
+  var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
+  var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
+  
+  var serverIP = "http://192.168.0.21:"
   var requestType = "createUser"
 
   var jsonString = User(email, name, bday, city).toJson
   
-  def receive = {
-    
-  case Start => requestType = "createUser"
+  //User behaviour definitions
   
-  }
+  var socialFactor = 10 + r.nextInt (90)
+  var loudFactor = 10 + r.nextInt (90)
+  var lurkFactor = 10 + r.nextInt (90)
+  var active = true
   
+  //Create User
   
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + port + "/" + "createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
+   }
+   yield {
+   }
+
+  //Constant requesting:
+   
+  while (active) {
+ 
+  var port = (5000 + r.nextInt(50)).toString
+  
+  serverIP = serverIP + port + "/"
   
   requestType match {
   
-  case "createUser" => jsonString = User(email, name, bday, city).toJson
-  val r = scala.util.Random
-  var port = (5000 + r.nextInt(50)).toString
+  case "createUser" => 
+  
+   case "users" =>
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + port + "/" + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
-   }
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + requestType))).mapTo[HttpResponse]
+  }
    yield {
-   println (response)
+   println (response.entity.asString.parseJson)
    }
   
   case "getFriendList" =>
   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/sjs7007/friends")))
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/sjs7007/friends"))).mapTo[HttpResponse]
   }
    yield {
-   println (response)
+   println (response.entity.asString)
    }
    
-   case "sendpics" =>
+   case "upload" =>
    
-   val bis = new BufferedInputStream(new FileInputStream("/var/tmp/modified-dog"))
+   val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
+  
   val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
+  println (bArray)
+  var z = new String (bArray)
+  
+  var photoStuff = Photo(email, "loleshwar", z).toJson
   bis.close();
  
- 
+ println (photoStuff.toString)
    for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType), entity = HttpEntity(`image/jpeg`, bArray)))
+   response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType), entity = HttpEntity(`application/json`, photoStuff.toString)))
 }
    yield {
    println (response)
@@ -165,6 +205,23 @@ class Client extends Actor
    }
   }
   
+  
+  // Model next behaviour here
+  
+  
+  
+  
+  }
+  
+  
+  
+  
+  
+  def receive = {
+    
+  case Start => 
+  
+  }
    
    
 }
