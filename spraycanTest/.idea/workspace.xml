@@ -3,6 +3,7 @@
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="86" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="332" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="270" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -29,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.6486487">
-              <caret line="206" column="21" selection-start-line="206" selection-start-column="17" selection-end-line="206" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.6694118">
+              <caret line="270" column="59" selection-start-line="270" selection-start-column="59" selection-end-line="270" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -69,10 +70,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Boot.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Boot.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.38556933">
+            <state vertical-scroll-proportion="0.0">
               <caret line="25" column="3" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
               <folding />
             </state>
@@ -996,14 +997,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.6486487">
-          <caret line="206" column="21" selection-start-line="206" selection-start-column="17" selection-end-line="206" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/References.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1022,8 +1015,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38556933">
+        <state vertical-scroll-proportion="0.0">
           <caret line="25" column="3" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6694118">
+          <caret line="270" column="59" selection-start-line="270" selection-start-column="59" selection-end-line="270" selection-end-column="59" />
           <folding />
         </state>
       </provider>

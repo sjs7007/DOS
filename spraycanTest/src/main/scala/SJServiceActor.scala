@@ -268,7 +268,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   get {
                     respondWithMediaType(`application/json`) {
                       complete {
-                        pageFollowers.toString()
+                        pageFollowers.get(pageID).toString()
                       }
                     }
                   }
