@@ -67,6 +67,9 @@ object commonVars {
   //var httpListenerBuffer = new ListBuffer[Option[ActorRef]]()
   var httpListenerBuffer = new ListBuffer[String]()
 
+  var portStats = new ConcurrentHashMap[Int,Stats]()
+
+  var summary = ""
 }
 
 // simple actor that handles the routes.
@@ -124,6 +127,26 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~ */
+    pathPrefix("clearAllStats") {
+      get {
+        respondWithMediaType(`application/json`) {
+          complete {
+            clearAllStats()
+            "Stats cleared."
+          }
+        }
+      }
+    }~
+    pathPrefix("summary") {
+      get {
+        respondWithMediaType(`application/json`) {
+          complete {
+            updateAllStats()
+            getSummary()
+          }
+        }
+      }
+    }~
     pathPrefix("resetStats") {
       get {
         respondWithMediaType(`application/json`) {
@@ -576,6 +599,49 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
   }
 
+  private def getSummary() : String = {
+    var sec : Long = 0
+    var totReq : Long = 0
+    for(port <-0 until httpListenerBuffer.length) {
+      totReq=portStats.get(port).totalRequests+totReq
+    }
+    sec = portStats.get(0).uptime.toSeconds.toLong
+    var summary = "Time : "+sec+"\n Total Requests : "+totReq
+    if(sec>0) {
+      summary = summary + "\nRequests per second : "+(totReq)/sec
+    }
+    summary
+  }
+
+  private  def clearAllStats() : Unit = {
+    for(port <-0 until httpListenerBuffer.length) {
+      httpListenerBuffer(port) ! Http.ClearStats
+    }
+  }
+
+  private def updateAllStats() : Unit = {
+    implicit val timeout : Timeout= Timeout(5 seconds)
+    //var stat = new Stats(0,0,0,0,0,0,0,0)
+    var sec : Long = 0
+    var totReq : Long= 0
+    for(port<- 0 until httpListenerBuffer.length) {
+      context.actorSelection(httpListenerBuffer(port)) ? Http.GetStats onSuccess {
+        case x: Stats =>
+          log.debug("idhar aa gaya yaaay")
+          log.debug(x.toString+"dsds")
+          /*tmp = x.toString
+          log.debug("this is tmps : "+tmp)
+          println(tmp)
+          tmp*/
+          portStats.put(port,x)
+        case _ =>
+          log.debug("future fail")
+          //tmp = "future
+      }
+     // log.debug("returning : "+tmp)
+    }
+  }
+
   private def getPortStats(port:Int) : String = {
     implicit val timeout : Timeout= Timeout(5 seconds)
     var tmp ="defau1"
@@ -598,7 +664,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   private def getServerStats(): String =
   {
-      implicit val timeout : Timeout= Timeout(5 seconds)
+      /*implicit val timeout : Timeout= Timeout(5 seconds)
       var tmp ="default2221"
     //Wcontext.actorS
       context.actorSelection("/user/IO-HTTP/listener-0") ? Http.GetStats onSuccess {
@@ -614,7 +680,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           tmp = "future fail"
       }
     log.debug("returning : "+tmp)
-      return tmp
+      return tmp*/
+    updateAllStats()
+    portStats.toString()
   }
 
   private def createResponder(requestContext: RequestContext) = {

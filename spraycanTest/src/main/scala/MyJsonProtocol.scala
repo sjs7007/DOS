@@ -4,6 +4,8 @@
 
 import spray.json._
 
+import scala.concurrent.duration.FiniteDuration
+
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val personFormat = jsonFormat3(Person)
 
@@ -84,6 +86,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   //object Comment extends DefaultJsonProtocol {
    // implicit  val format : JsonFormat[Comment] = lazyFormat(jsonFormat(Comment,"commentID","comment"))
   //}
+
 
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
