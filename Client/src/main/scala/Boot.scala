@@ -181,7 +181,7 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-   val tick = context.system.scheduler.schedule(50 millis, 50 millis, self, "Continue") //UNCOMMENT
+   val tick = context.system.scheduler.schedule(50 millis, 50 millis, self, "Continue")
 
    }
 
