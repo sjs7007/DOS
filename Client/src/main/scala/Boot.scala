@@ -28,6 +28,8 @@ import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scala.io.Source
+import java.io._
+
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 
@@ -86,13 +88,12 @@ case class Begin()
 
 class ClientStarter extends Actor {
         import context._
-        val noOfClients = 10
+        import UserVariables._
       
-         //.withRouter(RoundRobinRouter(noOfClients)))
         
        def receive ={
         case Begin =>{
-         for (n <- 1 to noOfClients) {
+         for (n <- 1 to worldSize) {
           val client= context.actorOf(Props[Client])
           client ! Start
           }
@@ -103,6 +104,9 @@ class ClientStarter extends Actor {
 }
 
 object UserVariables {
+
+  var worldSize = 10000
+
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
   var aggrandizementArray = Array ("best", ".godlike", "cool", "cutie", "lovely", ".coolguy", "saucepants", "thebest", "nice", "batman", "spoderman", "ossum", "secret", "", "", "", "", "")
@@ -142,10 +146,14 @@ class Client extends Actor
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
   
   var socialFactor = 1 + r.nextInt (30)
-  var loudFactor = 1 + r.nextInt (10)
-  var lurkFactor = 1 + r.nextInt (70)
+  var loudFactor = 1 + r.nextInt (20)
+  var lurkFactor = 1 + r.nextInt (50)
   var fluxRate = 1 + r.nextInt(5)
   
+  var friendCap = (200*socialFactor)/15
+
+  if (worldSize < 10000)
+    friendCap = (friendCap*worldSize)/10000 + 2
   
   var listOfFriends : Array[String] = new Array[String](1)
   var listOfPages = new ListBuffer[String]
@@ -164,12 +172,7 @@ class Client extends Actor
     
   case Start =>
   
-  
-  
     //User behaviour definitions
-  
-  
-  
   
   // Create user
   
@@ -178,18 +181,12 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-     val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue")
+   //val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
 
    }
-  
-  
-    println (name + " created.")
 
-    
-    
-    
    
-case "Continue" =>
+case "Continue" => 
 
  port =  (5000 + r.nextInt(50)).toString
  
@@ -233,7 +230,6 @@ case "Continue" =>
   val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
     
   if (selectedFriend != null && selectedFriend.length() > 2) {
-  println (name + " is adding as friend: " + selectedFriend)
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
    }
@@ -246,9 +242,7 @@ case "Continue" =>
       
       while (listOfTheirFriends.length > 1 && friendToAdd == email)
       friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
-      
-      println (name + " is adding " + friendToAdd)
-      
+            
       if (friendToAdd != email && !(listOfFriends contains friendToAdd)) {
       for {
       response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,friendToAdd).toJson.toString))).mapTo[HttpResponse]
@@ -270,25 +264,31 @@ case "Continue" =>
    }
    
    socialFactor -= fluxRate*fluxRate
-   
-   
+/*
    case "upload" =>
    
-   val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
+       val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
+      
+      val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
+      
+      bis.close();
   
-  val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
-  println (bArray)
-  var z = new String (bArray)
-  
-  var photoStuff = Photo(email, "loleshwar", z).toJson
-  bis.close();
- 
- println (photoStuff.toString)
-   for {
-   response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType), entity = HttpEntity(`application/json`, photoStuff.toString)))
-}
-   yield {
-   }
+    val httpData = HttpData(bArray)
+    val httpEntity = HttpEntity(ContentTypes.`image/png`, httpData).asInstanceOf[HttpEntity.NonEmpty]
+    val formFile = FormFile("my-image", httpEntity)
+    val bodyPart = BodyPart(formFile, "my-image")
+    val req = Post(url, MultipartFormData(Map("spray-file" -> bodyPart)))
+
+    val pipeline = (addHeader("Content-Type", "multipart/form-data")
+      ~> sendReceive
+    )
+
+    pipeline(req)
+
+*/
+
+
+
    
   case "sendFriendRequest" => jsonString = FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson
 
@@ -298,7 +298,22 @@ case "Continue" =>
    yield {
    }
   
+  case "lurk" =>
   
+  var viewPageOf = ""
+  
+  if (listOfFriends.length < 2 || r.nextInt(100) < 50)
+    viewPageOf = email
+  else viewPageOf = listOfFriends(r.nextInt(listOfFriends.length))
+  
+  for {
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]  
+  }
+   yield {}
+   
+   lurkFactor -= fluxRate*fluxRate
+   
+   
   case "wallWrite" => 
   
   // Special case: Write on a page, create a page if it hasn't been created
@@ -370,12 +385,14 @@ case "Continue" =>
   
   // Model next behaviour here
   
-  if (listOfFriends.length < 2 && socialFactor > 20)
+  if (listOfFriends.length < 2 && socialFactor > 10)
     requestType = "getFriendList"
   else if (r.nextInt(100) < loudFactor)
     requestType = "wallWrite"
-  else if (r.nextInt(100) < socialFactor)
+  else if (r.nextInt(100) < socialFactor && listOfFriends.length < friendCap && listOfFriends.length > 2)
     requestType = "addNewFriend"
+    else if (r.nextInt(100) < lurkFactor)
+    requestType = "lurk"
   else requestType = "doNothing"
   
   

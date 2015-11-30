@@ -20,6 +20,7 @@ import scala.collection.mutable.ListBuffer
 // simple actor that handles the routes.
 class SJServiceActor extends Actor with HttpService with ActorLogging {
 
+var count =0
 
   var httpListener : Option[ActorRef] = None
   // required as implicit value for the HttpService
@@ -87,6 +88,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    count = count +1
     /*pathPrefix("upload") {
       pathEnd {
         post {
@@ -104,7 +106,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              users.size().toString()
+              users.size().toString() + " Total Requests: " + count.toString()
             }
           }
         }
