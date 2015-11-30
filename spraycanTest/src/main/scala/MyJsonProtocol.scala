@@ -72,6 +72,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat1(ImageMetaData.apply)
   }
 
+
+  //comments
+  //case class Comment(commentID: String, comment: Comment)
+  //you need to wrap your format constructor with lazyFormat and supply an explicit type annotation:
+  //implicit val fooFormat: JsonFormat[Foo] = lazyFormat(jsonFormat(Foo, "i", "foo"))
+  //object Comment extends DefaultJsonProtocol {
+   // implicit  val format : JsonFormat[Comment] = lazyFormat(jsonFormat(Comment,"commentID","comment"))
+  //}
+
   object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }

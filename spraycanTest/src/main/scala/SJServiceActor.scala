@@ -83,6 +83,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //store list of followers for each pageID. only people following page can comment
   var pageFollowers = new ConcurrentHashMap[String,ListBuffer[String]]()
 
+  //map any id to list of comments
+ // var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
+
   def receive = handle orElse httpReceive
 
 
@@ -325,7 +328,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     entity(as[MultipartFormData]) {
                       formData => {
                         //val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
-
                         //var imageID = System.currentTimeMillis().toString
                         var imageID = (albumContent.get(albumID).size()+1).toString()
                         albumContent.get(albumID).put(imageID,"ds")
