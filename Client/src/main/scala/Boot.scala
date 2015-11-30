@@ -160,8 +160,8 @@ class Client extends Actor
   var listOfPages = new ListBuffer[String]
 
 
-  var port =  (5000 + r.nextInt(50)).toString
-  
+ // var port =  (5000 + r.nextInt(50)).toString
+  var port = 8087
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
@@ -189,8 +189,8 @@ class Client extends Actor
    
 case "Continue" => 
 
- port =  (5000 + r.nextInt(50)).toString
- 
+// port =  (5000 + r.nextInt(50)).toString
+ port = 8087
   serverIP = baseIP + port + "/"
   
   requestType match {

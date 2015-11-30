@@ -7,13 +7,17 @@ import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
 import akka.actor._
+import akka.pattern.ask
+import akka.util.Timeout
 import spray.can.Http
+import spray.can.server.Stats
 import spray.http.MediaTypes._
 import spray.http.{HttpData, MultipartFormData}
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration._
 //import java.util
 object commonVars {
   //list of all users : make it more efficient
@@ -61,6 +65,7 @@ object commonVars {
 class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   import commonVars._
+  import context.dispatcher // ExecutionContext for the futures and scheduler
 
   var httpListener : Option[ActorRef] = None
   // required as implicit value for the HttpService
@@ -88,6 +93,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     case Http.Unbound =>
       println("unbound")
       context.stop(self)
+
+   //case getStats => getServerStats()
   }
 
 
@@ -107,6 +114,28 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~ */
+    pathPrefix("stats") {
+      pathEnd {
+        get {
+          /*implicit val timeout : Timeout= Timeout(5 seconds)
+          var tmp ="default"
+          context.actorSelection("/user/IO-HTTP/listener-0") ? Http.GetStats onSuccess {
+            case x: Stats =>
+              log.debug("idhar aa gaya yaaay")
+              tmp = x.toString()
+            case _ =>
+              log.debug("future fail")
+              tmp = "future fail"
+          }*/
+          respondWithMediaType(`application/json`) {
+            complete {
+              //"d"
+              getServerStats()
+            }
+          }
+        }
+      }
+    }~
     pathPrefix("userStats") {
       pathEnd {
         get {
@@ -484,6 +513,25 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }
+  }
+
+  private def getServerStats(): String =
+  {
+      implicit val timeout : Timeout= Timeout(5 seconds)
+      var tmp ="default2221"
+      context.actorSelection("/user/IO-HTTP/listener-0") ? Http.GetStats onSuccess {
+        case x: Stats =>
+          log.debug("idhar aa gaya yaaay")
+          log.debug(x.toString+"dsds")
+          tmp = x.toString
+          log.debug("this is tmp : "+tmp)
+          tmp
+        case _ =>
+          log.debug("future fail")
+          tmp = "future fail"
+      }
+    log.debug("returning : "+tmp)
+      return tmp
   }
 
   private def createResponder(requestContext: RequestContext) = {
