@@ -137,7 +137,7 @@ class Client extends Actor
     val r = scala.util.Random
   implicit val timeout: Timeout = 300.seconds
 
-  var baseIP = "http://192.168.0.14:"
+  var baseIP = "http://192.168.0.21:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
@@ -181,7 +181,7 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-   val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
+   //val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
 
    }
 

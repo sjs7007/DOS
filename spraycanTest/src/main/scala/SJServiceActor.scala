@@ -52,8 +52,6 @@ object commonVars {
 
   //map any userpostid/fbpost to list of comments
   var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
-
-
 }
 
 // simple actor that handles the routes.
@@ -535,7 +533,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         return "cantAddSelf"
       }
     }
-    if(!friendLists.containsKey(req.toEmail)) {
+    if(!friendLists.containsKey(req.toEmail) || !friendLists.containsKey(req.fromEmail)) {
       return "userNotPresent"
     }
     else {
