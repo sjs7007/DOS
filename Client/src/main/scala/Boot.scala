@@ -280,7 +280,7 @@ class Client extends Actor
    }
    }
    
-   if (r.nextInt(100) > 90 && listOfPages.length <= friendCap) {
+   if (r.nextInt(100) > 90) {
    
    for {
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
@@ -355,7 +355,7 @@ class Client extends Actor
   
   if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(50) > loudFactor)) {
   
-  if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor && listOfPages.length < friendCap)) {
+  if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor)) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
   val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
   
