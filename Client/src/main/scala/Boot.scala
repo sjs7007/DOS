@@ -28,13 +28,13 @@ import akka.util.Timeout
 import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scala.io.Source
+import java.io._
+
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String)
-  case class UserCreated(Email:String)
-  case object UserAlreadyExists
 
   object User extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
@@ -45,62 +45,83 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
   }
   
-  case class UserMap (Email:String, Person:User)
-   object UserMap extends DefaultJsonProtocol {
-    implicit  val format = jsonFormat2(UserMap.apply)
-  }
-  
-  
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
-  case object AlreadyFriends
-  case object UserNotPresent
-  case object FriendRequestSent
   
-   //wallwrite
-  case class Wallpost(fromEmail:String, toEmail:String, data:String)
-  case object PostSuccess
-  case object PostFail
-  
-    object FriendRequest extends DefaultJsonProtocol {
+  object FriendRequest extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(FriendRequest.apply)
   }
   
-   
-
+   //wallwrite
+  case class Wallpost(fromEmail:String, toEmail:String, data:String)
+  
     object Wallpost extends DefaultJsonProtocol {
     implicit val format = jsonFormat3(Wallpost.apply)
   }
+  
+  case class CreatePage (adminEmail:String, Title:String, pageID:String)
+  
+  object CreatePage extends DefaultJsonProtocol {
+    implicit val format = jsonFormat3(CreatePage.apply)
+  }
+  
+    case class PagePost(fromEmail:String, data:String)
+  
+    object PagePost extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(PagePost.apply)
+  }
+  
 }
 
 case class Start()
+case class Continue()
 
 object StartHere extends App {
               val system = ActorSystem("Client")
 
   val client = system.actorOf(Props[ClientStarter], name = "ClientStarter")  // the local actor
-  client ! "start"
+  client ! Begin
   
 }
 
+case class Begin()
+
 class ClientStarter extends Actor {
         import context._
-        val noOfClients = 500
-
-              def receive = {
-              case _ =>
-        val client = context.actorOf(Props[Client].withRouter(RoundRobinRouter(noOfClients)))
+        import UserVariables._
+      
         
-        for (n <- 1 to noOfClients)
+       def receive ={
+        case Begin =>{
+         for (n <- 1 to worldSize) {
+          val client= context.actorOf(Props[Client])
           client ! Start
           }
+          }
+        }
+       
 
 }
 
 object UserVariables {
+
+  var worldSize = 10000
+
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
-  var emailArray = Array ("@gmail.com", "@hotmail.com", "@yahoo.com", "@aol.com", "@piratebay.se")
+  var aggrandizementArray = Array ("best", ".godlike", "cool", "cutie", "lovely", ".coolguy", "saucepants", "thebest", "nice", "batman", "spoderman", "ossum", "secret", "", "", "", "", "")
+  var emailArray = Array ("@gmail.com", "@hotmail.com", "@yahoo.com", "@aol.net", "@piratebay.se", "@orkut.in")
+  
+  var postPrefixArray = Array ("Hey!", "OMG!", "Dude!", "Yo.", "Sup.", "Ola coca cola!", "M8,")
+  var postBodyArray = Array ("Let's go to the movies!", "Did you read that article?", "Made up your mind yet?", "Not really.", "What's wrong with maroon?", "Where did the soda go?", "It's a trap!")
+  var postSuffixArray = Array ("Let me know soon!", "Like and subscribe!", "It was just clickbait, though.", "Would be pretty cool if Martians existed.", "See you!", "Later!", "Bye!", "TTYL!")
+  
+  var selfPostFirst = Array ("Excited about", "Feeling nervous about", "Worried about", "Happy about", "Content with", "Anxious about", "Very expensive", "At odds with")
+  var selfPostSecond = Array ("breakfast", "candy", "Wal-Mart", "pop culture", "soda", "activities planned", "falling rocks", "death by turtle")
+  var selfPostThird = Array ("this Halloween!", "today!", "tonight!", "on New Year's Eve!", "that day.", "that never happened.", "that doesn't exist.", "at Broadway", "with my husband.", "with my wife.")
+  
+  var pagePrefix = Array ("Society for the Protection of", "Down with", "Fans of", "Collector's Edition", "Pictures of", "Cookies and", "Gory Images of", "Sherlock Holmes and", "Still a better love story than", "Quiet admirers of", "News about")
+  var pageSuffix = Array ("Elfish Welfare", "Dungeons and Dragons", "The Milky Way", "John Snow", "John Watson's left thumb", "a spider", "various assorted implements", "a walk in the park", "a shark eating a dolphin", "facebook pages")
   
   var allEmails = new ListBuffer[String]()
 
@@ -108,134 +129,166 @@ object UserVariables {
 
 class Client extends Actor
 {
+
   import UserVariables._
   import MyJsonProtocol._
   import context._
   
-  val r = scala.util.Random
-  
-  implicit val timeout: Timeout = 3.seconds
+    val r = scala.util.Random
+  implicit val timeout: Timeout = 300.seconds
 
-  // User variables
-  
+  var baseIP = "http://192.168.0.21:"
+  var requestType = "getFriendList"
+
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
-  var email = name.substring(0, r.nextInt(3)) + r.nextInt(500).toString + nameArray(r.nextInt(nameArray.length)) + emailArray(r.nextInt(emailArray.length))
+  var email = name.substring(0, r.nextInt(5)+1).split(" ")(0) + aggrandizementArray(r.nextInt(aggrandizementArray.length)) + r.nextInt(3000).toString + emailArray(r.nextInt(emailArray.length))
   var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
   
-  var baseIP = "http://192.168.0.14:"
-  var requestType = "getFriendList"
+  var socialFactor = 1 + r.nextInt (30)
+  var loudFactor = 1 + r.nextInt (20)
+  var lurkFactor = 1 + r.nextInt (50)
+  var fluxRate = 1 + r.nextInt(5)
+  
+  var friendCap = (200*socialFactor)/15
 
-  var jsonString = User(email, name, bday, city).toJson
+  if (worldSize < 10000)
+    friendCap = (friendCap*worldSize)/10000 + 2
   
-  //User behaviour definitions
-  
-  var socialFactor = 1 + r.nextInt (70)
-  var loudFactor = 1 + r.nextInt (70)
-  var lurkFactor = 1 + r.nextInt (70)
   var listOfFriends : Array[String] = new Array[String](1)
+  var listOfPages = new ListBuffer[String]
 
-  var active = true
+
+  var port =  (5000 + r.nextInt(50)).toString
   
-  //Create User
+    var jsonString = User(email, name, bday, city).toJson
+
+  var serverIP = ""
+   
+     import context.dispatcher
+
+   
+    def receive = {
+    
+  case Start =>
   
-  var port = "8087"// (5000 + r.nextInt(50)).toString
+    //User behaviour definitions
+  
+  // Create user
   
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/" + "createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
    }
    yield {
    allEmails += email
+   //val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
+
    }
 
-  //Constant requesting:
    
-   var serverIP = ""
-   var dieRoller = 0
- 
- while (active) {
+case "Continue" => 
+
+ port =  (5000 + r.nextInt(50)).toString
  
   serverIP = baseIP + port + "/"
   
- dieRoller = r.nextInt (100)
-  
-  /*if (dieRoller < loudFactor)
-    requestType = "wallWrite"
-  else*/
-  
-  if (dieRoller < socialFactor)
-    requestType = "addNewFriend" 
-  else if (dieRoller < 20)
-    requestType = "getFriendList"
-  else requestType = "doNothing"
-  
   requestType match {
     
-   case "doNothing" =>
+   case "doNothing" => 
+   
+   socialFactor += fluxRate
+   loudFactor += fluxRate
+   lurkFactor += fluxRate
   
   case "getFriendList" =>
   
   // Update my friend list and add a random friend if I have none
   
   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "user/" + email + "/friends"))).mapTo[HttpResponse]  
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
   }
    yield {
    var myFriends = response.entity.asString
    listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
    
-   if (listOfFriends.length < 2) { 
+   var randEmail = allEmails(r.nextInt(allEmails.length))
+   
+   if (listOfFriends.length < 2 && randEmail != email && !(listOfFriends contains randEmail)) { 
    for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson.toString)))
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, randEmail).toJson.toString)))
    }
    yield {}
    }
   }
+  
+  lurkFactor -= fluxRate*fluxRate
   
   case "addNewFriend" => 
   
   // I want to add a random friend of friend
   
   val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
-  
+    
+  if (selectedFriend != null && selectedFriend.length() > 2) {
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, selectedFriend).toJson.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
    }
    yield {
       var theirFriends = response.entity.asString
       var listOfTheirFriends = theirFriends.substring(11,theirFriends.length-1).split(",").map(_.trim)
       
       if (listOfTheirFriends.length > 1) {
+      var friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
       
-      
+      while (listOfTheirFriends.length > 1 && friendToAdd == email)
+      friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
+            
+      if (friendToAdd != email && !(listOfFriends contains friendToAdd)) {
       for {
-      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,listOfTheirFriends(r.nextInt(listOfTheirFriends.length))).toJson.toString))).mapTo[HttpResponse]
+      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,friendToAdd).toJson.toString))).mapTo[HttpResponse]
    }
-   yield {}
+   yield {
+   for {
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
+  }
+   yield {
+   var myFriends = response.entity.asString
+   listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
+   }
+   
+   }
+   }
       
       }
-   
+   }
    }
    
-   
+   socialFactor -= fluxRate*fluxRate
+/*
    case "upload" =>
    
-   val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
+       val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
+      
+      val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
+      
+      bis.close();
   
-  val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
-  println (bArray)
-  var z = new String (bArray)
-  
-  var photoStuff = Photo(email, "loleshwar", z).toJson
-  bis.close();
- 
- println (photoStuff.toString)
-   for {
-   response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType), entity = HttpEntity(`application/json`, photoStuff.toString)))
-}
-   yield {
-   println (response)
-   }
+    val httpData = HttpData(bArray)
+    val httpEntity = HttpEntity(ContentTypes.`image/png`, httpData).asInstanceOf[HttpEntity.NonEmpty]
+    val formFile = FormFile("my-image", httpEntity)
+    val bodyPart = BodyPart(formFile, "my-image")
+    val req = Post(url, MultipartFormData(Map("spray-file" -> bodyPart)))
+
+    val pipeline = (addHeader("Content-Type", "multipart/form-data")
+      ~> sendReceive
+    )
+
+    pipeline(req)
+
+*/
+
+
+
    
   case "sendFriendRequest" => jsonString = FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson
 
@@ -243,35 +296,124 @@ class Client extends Actor
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
    }
    yield {
-   println (response)
    }
   
+  case "lurk" =>
   
-  case "wallWrite" => jsonString = Wallpost(email, "jaadugar", "i am gay").toJson
+  var viewPageOf = ""
+  
+  if (listOfFriends.length < 2 || r.nextInt(100) < 50)
+    viewPageOf = email
+  else viewPageOf = listOfFriends(r.nextInt(listOfFriends.length))
+  
   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]  
+  }
+   yield {}
+   
+   lurkFactor -= fluxRate*fluxRate
+   
+   
+  case "wallWrite" => 
+  
+  // Special case: Write on a page, create a page if it hasn't been created
+  
+  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(100) > loudFactor)) {
+  
+  if (listOfPages.length == 0 || r.nextInt(100) == loudFactor) {
+  val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
+  val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
+  
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createPage"),entity= HttpEntity(`application/json`, CreatePage(email, pageTitle, pageID).toJson.toString)))
    }
    yield {
-   println (response)
+   listOfPages += pageID
    }
+  
+  }
+  val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
+  val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
+  
+  
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
+   }
+   yield {
+   }
+  
+  }
+  
+  else {
+  
+  // Write on some walls
+  
+  var writeOnOwnWall = false
+  
+    if (socialFactor < loudFactor)
+    {
+      if (r.nextInt(100) < loudFactor || listOfFriends.length < 2)
+        writeOnOwnWall = true
+    }
+    else if (r.nextInt(100) < socialFactor  || listOfFriends.length < 2)
+      writeOnOwnWall = true
+    
+    var target = ""
+    
+    if (!writeOnOwnWall)
+      target = listOfFriends(r.nextInt(listOfFriends.length))
+    else target = email
+    
+    var textPost = ""
+    
+    if (writeOnOwnWall)
+      textPost = selfPostFirst(r.nextInt(selfPostFirst.length)) + " " + selfPostSecond(r.nextInt(selfPostSecond.length)) + " " + selfPostThird(r.nextInt(selfPostThird.length))
+    else textPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
+  
+  
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, Wallpost(email, target, textPost).toJson.toString)))
+   }
+   yield {
+   }
+   }
+   
+   loudFactor -= fluxRate*fluxRate
+   
   }
   
   
   // Model next behaviour here
   
+  if (listOfFriends.length < 2 && socialFactor > 10)
+    requestType = "getFriendList"
+  else if (r.nextInt(100) < loudFactor)
+    requestType = "wallWrite"
+  else if (r.nextInt(100) < socialFactor && listOfFriends.length < friendCap && listOfFriends.length > 2)
+    requestType = "addNewFriend"
+    else if (r.nextInt(100) < lurkFactor)
+    requestType = "lurk"
+  else requestType = "doNothing"
   
-  Thread.sleep (5+r.nextInt(500))
+  
   
   }
   
   
   
   
-  def receive = {
-    
-  case Start => 
-  
   }
-   
-   
-}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

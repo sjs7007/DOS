@@ -20,6 +20,7 @@ import scala.collection.mutable.ListBuffer
 // simple actor that handles the routes.
 class SJServiceActor extends Actor with HttpService with ActorLogging {
 
+var count =0
 
   var httpListener : Option[ActorRef] = None
   // required as implicit value for the HttpService
@@ -90,6 +91,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
+    count = count +1
     /*pathPrefix("upload") {
       pathEnd {
         post {
@@ -107,7 +109,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              users.size().toString()
+              users.size().toString() + " Total Requests: " + count.toString()
             }
           }
         }
@@ -513,6 +515,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       pageContent.put(page.pageID,new ConcurrentHashMap())
       pageDirectory.put(page.pageID,page)
       pageFollowers.put(page.pageID,new ListBuffer())
+      addFollower(page.adminEmail, page.pageID)
       return true
     }
     return false
@@ -520,6 +523,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   //sendFriendRequest
   private def sendFriendRequest(req : FriendRequest) : String = {
+  if (req != null) {
     if(friendLists.containsKey(req.fromEmail)) {
       if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
         return "alreadyFriends"
@@ -537,6 +541,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       //tmp
       return "requestSent"
     }
+    }
+    else return "userNotPresent"
 
   }
   
