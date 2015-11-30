@@ -34,8 +34,8 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.12588236">
-              <caret line="527" column="13" selection-start-line="527" selection-start-column="13" selection-end-line="527" selection-end-column="13" />
+            <state vertical-scroll-proportion="8.402353">
+              <caret line="671" column="3" selection-start-line="671" selection-start-column="3" selection-end-line="671" selection-end-column="3" />
               <folding>
                 <element signature="e#44#83#0" expanded="true" />
                 <element signature="e#2437#2456#0" expanded="true" />
@@ -88,7 +88,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="5" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
+              <caret line="22" column="2" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -111,8 +111,8 @@
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala" />
         <option value="$PROJECT_DIR$/src/main/resources/application.conf" />
-        <option value="$PROJECT_DIR$/src/main/scala/Boot.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/Boot.scala" />
       </list>
     </option>
   </component>
@@ -1070,15 +1070,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Boot.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="5" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
+          <caret line="22" column="2" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12588236">
-          <caret line="527" column="13" selection-start-line="527" selection-start-column="13" selection-end-line="527" selection-end-column="13" />
+        <state vertical-scroll-proportion="8.402353">
+          <caret line="671" column="3" selection-start-line="671" selection-start-column="3" selection-end-line="671" selection-end-column="3" />
           <folding>
             <element signature="e#44#83#0" expanded="true" />
             <element signature="e#2437#2456#0" expanded="true" />
