@@ -65,6 +65,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat3(CreatePage.apply)
   }
   
+  
+  case class FollowPage (Email:String)
+  
+  object FollowPage extends DefaultJsonProtocol {
+    implicit val format = jsonFormat1(FollowPage.apply)
+  }
+  
+  
+  
     case class PagePost(fromEmail:String, data:String)
   
     object PagePost extends DefaultJsonProtocol {
@@ -230,7 +239,7 @@ case "Continue" =>
   
   val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
     
-  if (selectedFriend != null && selectedFriend.length() > 2) {
+  if (selectedFriend != null && selectedFriend.length() > 2 && listOfFriends.length < friendCap) {
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
    }
@@ -264,16 +273,22 @@ case "Continue" =>
    }
    }
    
-   if (r.nextInt(100) == socialFactor || r.nextInt(100) == loudFactor) {
+   if (r.nextInt(100) > 90 && listOfPages.length <= friendCap) {
    
    for {
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
   }
    yield {
-   if (response.entity.asString != "noPagesExist" && !(listOfPages contains response.entity.asString))
-    listOfPages += response.entity.asString
+   if (response.entity.asString != "noPagesExist" && !(listOfPages contains response.entity.asString)) {
+    
+    for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + response.entity.asString + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
    }
-   
+   yield {
+    listOfPages += response.entity.asString
+    }
+    }
+   }
    }
    
    socialFactor -= fluxRate*fluxRate
@@ -324,7 +339,7 @@ case "Continue" =>
   
   if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(50) > loudFactor)) {
   
-  if (listOfPages.length == 0 || r.nextInt(100) == loudFactor) {
+  if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor && listOfPages.length < friendCap)) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
   val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
   
@@ -395,7 +410,7 @@ case "Continue" =>
     requestType = "getFriendList"
   else if (r.nextInt(100) < loudFactor)
     requestType = "wallWrite"
-  else if (r.nextInt(100) < socialFactor && listOfFriends.length < friendCap && listOfFriends.length > 2)
+  else if (r.nextInt(100) < socialFactor  && listOfFriends.length > 2)
     requestType = "addNewFriend"
     else if (r.nextInt(100) < lurkFactor)
     requestType = "lurk"
