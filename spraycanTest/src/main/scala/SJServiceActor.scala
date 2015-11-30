@@ -44,6 +44,9 @@ object commonVars {
   var pageDirectory = new ConcurrentHashMap[String,Page]()
   //var pageDirectory = new scala.util.HashMap[String,Page]()
 
+  //used to get random page
+  var pageIDs = new ListBuffer[String]
+
   //store content of each page : key pageID value : list of posts on the page
   var pageContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,pagePost]]()
 
@@ -182,7 +185,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       }
     } ~
     pathPrefix("pages") {
-      pathPrefix("ids") {
+      path("ids") {
         get {
           respondWithMediaType(`application/json`) {
             complete {
@@ -191,6 +194,23 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       } ~
+      path("random") {
+        var temp = pageDirectory.keySet()
+        var r = new scala.util.Random()
+        get {
+
+          respondWithMediaType(`application/json`) {
+            complete {
+              if(pageIDs.size ==0) {
+                "No pages created till now."
+              }
+              else {
+                pageIDs(r.nextInt(pageIDs.size))
+              }
+            }
+          }
+        }
+      }~
       pathPrefix(Segment) {
         pageID =>
           if(!doesPageExist(pageID)) {
@@ -518,6 +538,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       pageDirectory.put(page.pageID,page)
       pageFollowers.put(page.pageID,new ListBuffer())
       addFollower(page.adminEmail, page.pageID)
+      pageIDs += page.pageID
       return true
     }
     return false
