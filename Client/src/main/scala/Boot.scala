@@ -105,7 +105,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 10
+  var worldSize = 200
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -137,7 +137,7 @@ class Client extends Actor
     val r = scala.util.Random
   implicit val timeout: Timeout = 300.seconds
 
-  var baseIP = "http://192.168.0.14:"
+  var baseIP = "http://192.168.0.21:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
@@ -263,6 +263,18 @@ case "Continue" =>
    }
    }
    
+   if (r.nextInt(100) == socialFactor || r.nextInt(100) == loudFactor) {
+   
+   for {
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random").mapTo[HttpResponse]  
+  }
+   yield {
+   if (response.entity.asString != "noPagesExist" && !(listOfPagesresponse.entity.asString contains response.entity.asString))
+    listOfPages += response.entity.asString
+   }
+   
+   }
+   
    socialFactor -= fluxRate*fluxRate
 /*
    case "upload" =>
@@ -288,15 +300,6 @@ case "Continue" =>
 */
 
 
-
-   
-  case "sendFriendRequest" => jsonString = FriendRequest(email, allEmails(r.nextInt(allEmails.length))).toJson
-
-    for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, jsonString.toString)))
-   }
-   yield {
-   }
   
   case "lurk" =>
   
@@ -318,7 +321,7 @@ case "Continue" =>
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(100) > loudFactor)) {
+  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(50) > loudFactor)) {
   
   if (listOfPages.length == 0 || r.nextInt(100) == loudFactor) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
