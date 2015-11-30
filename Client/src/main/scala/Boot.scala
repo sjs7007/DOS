@@ -332,6 +332,7 @@ case "Continue" =>
    }
   
   }
+  if (listOfPages.length > 0) {
   val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
   val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
   
@@ -340,6 +341,7 @@ case "Continue" =>
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
    }
    yield {
+   }
    }
   
   }
