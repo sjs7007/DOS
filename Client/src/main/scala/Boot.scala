@@ -367,7 +367,7 @@ class Client extends Actor
    }
   
   }
-  if (listOfPages.length > 0) {
+  if (listOfPages.length > 0 && r.nextInt(100) > 70) {
   val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
   val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
   
@@ -426,7 +426,7 @@ class Client extends Actor
   if (listOfFriends.length < 2 && socialFactor > 10)
     requestType = "getFriendList"
   else if (r.nextInt(100) < loudFactor) {
-    if (r.nextInt(100) > 2)
+    if (r.nextInt(100) > 15)
     requestType = "wallWrite"
     else requestType = "upload"
     }
