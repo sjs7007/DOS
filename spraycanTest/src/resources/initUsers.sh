@@ -30,7 +30,7 @@ curl http://localhost:8087/users/sjs7007/albums
 echo
 
 #upload image to specific albumid
-curl -i -F filedata=@doge.jpg http://localhost:8087/users/sjs7007/albums/1/upload
+curl -i -F filedata=@doge.jpg http://localhost:8087/users/sjs7007/albums/1/uploadCurl
 
 #create page 
 curl -H "Content-Type: application/json" -X POST -d '{"adminEmail" : "sjs7007","Title" : "4chan the haxxxor","pageID":"tempPAGEID"}' http://localhost:8087/createPage

@@ -127,7 +127,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~ */
-    pathPrefix("clearAllStats") {
+    /*pathPrefix("clearAllStats") {
       get {
         respondWithMediaType(`application/json`) {
           complete {
@@ -136,7 +136,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       }
-    }~
+    }~*/
     pathPrefix("summary") {
       get {
         respondWithMediaType(`application/json`) {
@@ -169,7 +169,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~
-    /*pathPrefix("stats") {
+    pathPrefix("allStats") {
       pathEnd {
         get {
           /*implicit val timeout : Timeout= Timeout(5 seconds)
@@ -185,13 +185,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           respondWithMediaType(`application/json`) {
             complete {
               //"d"
-              stats=getServerStats()
-              stats
+              portStats.toString
             }
           }
         }
       }
-    }*/
+    }~
     pathPrefix("userStats") {
       pathEnd {
         get {
@@ -437,7 +436,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     respondWithMediaType(`application/json`) {
                       complete {
                         //count=count+1
-                        albumContent.get(albumID).toString()
+                        albumContent.get(userEmail+albumID).toString()
                       }
                     }
                   }
@@ -459,12 +458,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                       thisPhoto => requestContext =>
                        /* var imageID = "zz"//("z").toString()
                       //albumContent.get(Caption).put(imageID,"ds")
-                      var ftmp = new File("SEXYPIC.jpeg")
+                      var ftmp = new File("ff.jpeg")
                         val output = new FileOutputStream(ftmp)
                         output.write(thisPhoto.Image)
                         output.close()*/
-                        var imageID = (albumContent.get(albumID).size()+1).toString()
-                        albumContent.get(albumID).put(imageID,"ds")
+                        var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
+                        albumContent.get(userEmail+albumID).put(imageID,thisPhoto.Caption)
                         var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
                         val output = new FileOutputStream(ftmp)
                         //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
@@ -482,9 +481,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                       formData => {
                         //val ftmp = File.createTempFile("upload", ".tmp", new File("/tmp"))
                         //var imageID = System.currentTimeMillis().toString
-                        var imageID = (albumContent.get(albumID).size()+1).toString()
+                        var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
                         //var imageID = (albumContent.get(albumID).size()).toString()
-                        albumContent.get(albumID).put(imageID,"ds")
+                        albumContent.get(userEmail+albumID).put(imageID,"ds")
                         var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
                         val output = new FileOutputStream(ftmp)
                         formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
@@ -627,12 +626,14 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     var sec : Long = 0
     var totReq : Long = 0
     for(port <-0 until httpListenerBuffer.length) {
-      totReq=portStats.get(port).totalRequests+totReq
+      if(portStats.containsKey(port)) {
+        totReq=portStats.get(port).totalRequests+totReq
+      }
     }
     sec = portStats.get(0).uptime.toSeconds.toLong
     var summary = "Time : "+sec+"\n Total Requests : "+totReq
     if(sec>0) {
-      summary = summary + "\nRequests per second : "+(totReq)/sec
+      summary = summary + "\nRequests per second(Server uptime/number of Requests): "+(totReq.toDouble/sec)
     }
     summary
   }
@@ -720,7 +721,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
       //var albumID = System.currentTimeMillis().toString()
       var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
-      albumContent.put(albumID,new ConcurrentHashMap())
+      albumContent.put(albumMetaData.Email+albumID,new ConcurrentHashMap())
       albumDirectory.get(albumMetaData.Email).put(albumID,albumMetaData)
       //create a folder userid/albumid/ to store images
       var dir = new File("users/"+albumMetaData.Email+"/"+albumID)
