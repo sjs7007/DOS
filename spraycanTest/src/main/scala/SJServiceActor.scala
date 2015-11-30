@@ -202,7 +202,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           respondWithMediaType(`application/json`) {
             complete {
               if(pageIDs.size ==0) {
-                "No pages created till now."
+                //"No pages created till now."
+                log.debug("No pages created till now.")
+                "noPagesExist"
               }
               else {
                 pageIDs(r.nextInt(pageIDs.size))
