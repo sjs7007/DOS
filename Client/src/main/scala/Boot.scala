@@ -137,7 +137,8 @@ class Client extends Actor
     val r = scala.util.Random
   implicit val timeout: Timeout = 300.seconds
 
-  var baseIP = "http://192.168.0.21:"
+  //var baseIP = "http://192.168.0.21:"
+  var baseIP ="http://localhost:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
