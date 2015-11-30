@@ -105,7 +105,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 10000
+  var worldSize = 10
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -135,7 +135,7 @@ class Client extends Actor
   import context._
   
     val r = scala.util.Random
-  implicit val timeout: Timeout = 300.seconds
+  implicit val timeout: Timeout = 3.seconds
 
   var baseIP = "http://192.168.0.21:"
   var requestType = "getFriendList"
@@ -181,7 +181,7 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-   //val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
+   val tick = context.system.scheduler.schedule(50 millis, 50 millis, self, "Continue") //UNCOMMENT
 
    }
 
@@ -385,17 +385,15 @@ case "Continue" =>
   
   // Model next behaviour here
   
-  if (listOfFriends.length < 2 && socialFactor > 10)
+  if (listOfFriends.length < 2 && socialFactor > 2)
     requestType = "getFriendList"
-  else if (r.nextInt(100) < loudFactor)
-    requestType = "wallWrite"
-  else if (r.nextInt(100) < socialFactor && listOfFriends.length < friendCap && listOfFriends.length > 2)
+   else if (r.nextInt(100) < loudFactor)
+    requestType = "wallWrite" 
+  else  if (r.nextInt(100) < socialFactor && listOfFriends.length < friendCap && listOfFriends.length > 2)  
     requestType = "addNewFriend"
     else if (r.nextInt(100) < lurkFactor)
     requestType = "lurk"
   else requestType = "doNothing"
-  
-  
   
   }
   
