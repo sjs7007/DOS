@@ -266,10 +266,10 @@ case "Continue" =>
    if (r.nextInt(100) == socialFactor || r.nextInt(100) == loudFactor) {
    
    for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random").mapTo[HttpResponse]  
+  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
   }
    yield {
-   if (response.entity.asString != "noPagesExist" && !(listOfPagesresponse.entity.asString contains response.entity.asString))
+   if (response.entity.asString != "noPagesExist" && !(listOfPages contains response.entity.asString))
     listOfPages += response.entity.asString
    }
    
