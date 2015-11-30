@@ -15,10 +15,51 @@ import spray.routing._
 
 import scala.collection.mutable.ListBuffer
 //import java.util
+object commonVars {
+  //list of all users : make it more efficient
+  //var users = scala.collection.immutable.Vector[User]()
+  var users = new ConcurrentHashMap[String,User]()
+  //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
 
+  //concurrent to allow simultaneous access : stores friends of each email
+  var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
+
+  //store all friend requests in the buffer below.
+  var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
+
+  //store all posts in the buffer below
+  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
+
+  //store all album meta data
+  //map user email to a map of albums
+  var albumDirectory = new ConcurrentHashMap[String,ConcurrentHashMap[String,AlbumMetaData]]()
+
+  //store content image id of each image
+  //map album id to a map of post ids
+  // var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
+  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,String]]()
+
+  //directory of all pages
+  //key : pageID, value : page info(adminEmail,title,pageID)
+  var pageDirectory = new ConcurrentHashMap[String,Page]()
+  //var pageDirectory = new scala.util.HashMap[String,Page]()
+
+  //store content of each page : key pageID value : list of posts on the page
+  var pageContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,pagePost]]()
+
+  //store list of followers for each pageID. only people following page can comment
+  var pageFollowers = new ConcurrentHashMap[String,ListBuffer[String]]()
+
+  //map any userpostid/fbpost to list of comments
+  var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
+
+
+}
 
 // simple actor that handles the routes.
 class SJServiceActor extends Actor with HttpService with ActorLogging {
+
+  import commonVars._
 
   var httpListener : Option[ActorRef] = None
   // required as implicit value for the HttpService
@@ -48,42 +89,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       context.stop(self)
   }
 
-  //list of all users : make it more efficient
-  //var users = scala.collection.immutable.Vector[User]()
-  var users = new ConcurrentHashMap[String,User]()
-  //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
-
-  //concurrent to allow simultaneous access : stores friends of each email
-  var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
-  
-  //store all friend requests in the buffer below.
-  var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
-  
-  //store all posts in the buffer below
-  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
-
-  //store all album meta data
-  //map user email to a map of albums
-  var albumDirectory = new ConcurrentHashMap[String,ConcurrentHashMap[String,AlbumMetaData]]()
-
-  //store content image id of each image
-  //map album id to a map of post ids
- // var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,ImageMetaData]]()
-  var albumContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,String]]()
-
-  //directory of all pages
-  //key : pageID, value : page info(adminEmail,title,pageID)
-  var pageDirectory = new ConcurrentHashMap[String,Page]()
-  //var pageDirectory = new scala.util.HashMap[String,Page]()
-
-  //store content of each page : key pageID value : list of posts on the page
-  var pageContent = new ConcurrentHashMap[String,ConcurrentHashMap[String,pagePost]]()
-
-  //store list of followers for each pageID. only people following page can comment
-  var pageFollowers = new ConcurrentHashMap[String,ListBuffer[String]]()
-
-  //map any id to list of comments
- // var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
 
   def receive = handle orElse httpReceive
 
@@ -274,6 +279,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               case "userNotPresent" => responder ! UserNotPresent
 
               case "requestSent" => responder ! FriendRequestSent
+
+              case "cantAddSelf" => responder ! CantAddSelf
             }
           }
         }
@@ -524,6 +531,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
         return "alreadyFriends"
       }
+      else if(req.fromEmail==req.toEmail){
+        return "cantAddSelf"
+      }
     }
     if(!friendLists.containsKey(req.toEmail)) {
       return "userNotPresent"
@@ -685,6 +695,10 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
     case AlbumCreationFailed =>
      requestContext.complete("Album creation failed.")
+     killYourself
+
+    case CantAddSelf =>
+     requestContext.complete("Can't add self as friend.")
      killYourself
   }
 

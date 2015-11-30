@@ -10,7 +10,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class Person(name: String, fistName: String, age: Long)
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String) {
-    require(!Email.isEmpty, "Email must not be empty.")
+    require(!Email.isEmpty, "Emails must not be empty.")
     require(!Name.isEmpty,"Name must not be empty.")
   }
   case class UserCreated(Email:String)
@@ -34,6 +34,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object AlreadyFriends
   case object UserNotPresent
   case object FriendRequestSent
+  case object CantAddSelf
 
   //user idenitifier, add keys here later
   case class UserID(Email:String)
@@ -74,7 +75,10 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
 
   //comments
-  //case class Comment(commentID: String, comment: Comment)
+  case class Comment(fromEmail:String, data: String)
+  object Comment extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(Comment.apply)
+  }
   //you need to wrap your format constructor with lazyFormat and supply an explicit type annotation:
   //implicit val fooFormat: JsonFormat[Foo] = lazyFormat(jsonFormat(Foo, "i", "foo"))
   //object Comment extends DefaultJsonProtocol {

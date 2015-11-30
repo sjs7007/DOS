@@ -15,6 +15,8 @@ echo
 #send friend request
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "sigmoid"}' http://localhost:8087/sendFriendRequest
 echo 
+curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sigmoid","toEmail" : "sjs7007"}' http://localhost:8087/sendFriendRequest
+echo 
 curl -H "Content-Type: application/json" -X POST -d '{"fromEmail" : "sjs7007","toEmail" : "Do8Mufasa@gmail.com"}' http://localhost:8087/sendFriendRequest
 echo 
 
