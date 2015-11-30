@@ -4,8 +4,6 @@
 
 import spray.json._
 
-import scala.concurrent.duration.FiniteDuration
-
 object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val personFormat = jsonFormat3(Person)
 
@@ -57,11 +55,11 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object PageNotPresent
   case object AlreadyFollowingPage
 
-  /* //upload
-  case class Photo(Email:String, Caption: String, Image: String)
+  //upload
+  case class Photo(Email:String, Caption: String, Image: Array[Byte])
   object Photo extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
-  }*/
+  }
 
   //image upload
   case class AlbumMetaData(Email:String,Title: String)

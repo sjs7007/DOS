@@ -453,6 +453,29 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     }
                   }
                 }~
+                path("uploadBytes") {
+                  post {
+                    entity(as[Photo]) {
+                      thisPhoto => requestContext =>
+                       /* var imageID = "zz"//("z").toString()
+                      //albumContent.get(Caption).put(imageID,"ds")
+                      var ftmp = new File("SEXYPIC.jpeg")
+                        val output = new FileOutputStream(ftmp)
+                        output.write(thisPhoto.Image)
+                        output.close()*/
+                        var imageID = (albumContent.get(albumID).size()+1).toString()
+                        albumContent.get(albumID).put(imageID,"ds")
+                        var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
+                        val output = new FileOutputStream(ftmp)
+                        //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+                        output.write(thisPhoto.Image)
+                        output.close()
+                        count=count+1
+                        complete("done, file in: " + ftmp.getName())
+
+                    }
+                  }
+                }~
                 path("upload") {
                   post {
                     entity(as[MultipartFormData]) {
