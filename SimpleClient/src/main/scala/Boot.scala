@@ -120,7 +120,7 @@ class ClientStarter extends Actor {
 object UserVariables {
 
   var worldSize = 100
-
+/*
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
   var aggrandizementArray = Array ("best", ".godlike", "cool", "cutie", "lovely", ".coolguy", "saucepants", "thebest", "nice", "batman", "spoderman", "ossum", "secret", "", "", "", "", "")
@@ -139,6 +139,7 @@ object UserVariables {
   
   var albumTitles = Array ("Holiday in '07", "Random pics", "Me IRL", "Oscar Wilde")
   var imageBase = Array ("dog1.jpg", "dogeTiny.jpg", "serveriyanan.jpg")
+  */
   
   var allEmails = new ListBuffer[String]()
 
@@ -152,25 +153,18 @@ class Client extends Actor
   import context._
   
     val r = scala.util.Random
-  implicit val timeout: Timeout = 3.seconds
+  implicit val timeout: Timeout = 300.seconds
 
   var baseIP = "http://192.168.0.14:"
   var requestType = "getFriendList"
 
-  var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
-  var email = name.substring(0, r.nextInt(5)+1).split(" ")(0) + aggrandizementArray(r.nextInt(aggrandizementArray.length)) + r.nextInt(3000).toString + emailArray(r.nextInt(emailArray.length))
-  var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
-  var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
+  var name = "a"
+  var email = (r.nextInt(9999) + r.nextInt(9999) + r.nextInt(9999)).toString
+  var bday = "a"
+  var city = "a"
   
-  var socialFactor = 1 + r.nextInt (30)
-  var loudFactor = 1 + r.nextInt (20)
-  var lurkFactor = 1 + r.nextInt (50)
-  var fluxRate = 1 + r.nextInt(5)
-  
-  var friendCap = (200*socialFactor)/15
-
-  if (worldSize < 10000)
-    friendCap = (friendCap*worldSize)/10000 + 2
+  var doThis = 0
+ 
   
   var listOfFriends : Array[String] = new Array[String](1)
   var listOfPages = new ListBuffer[String]
@@ -201,23 +195,16 @@ class Client extends Actor
    yield {
    allEmails += email
    val tick = context.system.scheduler.schedule(100 millis, 2 millis, self, "Continue") //UNCOMMENT
-   //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
    }
 
    case "Continue" => 
 
-  port = (5000 + r.nextInt(50)).toString
   serverIP = baseIP + port + "/"
   
-  requestType match {
+  doThis match {
     
-   case "doNothing" => 
    
-   socialFactor += fluxRate
-   loudFactor += fluxRate
-   lurkFactor += fluxRate
-  
-  case "getFriendList" =>
+  case 0 =>
   
   // Update my friend list and add a random friend if I have none
   
@@ -238,15 +225,13 @@ class Client extends Actor
    }
   }
   
-  lurkFactor -= fluxRate*fluxRate
-  
-  case "addNewFriend" => 
+  case 1 => 
   
   // I want to add a random friend of friend
   
   val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
     
-  if (selectedFriend != null && selectedFriend.length() > 2 && listOfFriends.length < friendCap) {
+  if (selectedFriend != null && selectedFriend.length() > 2) {
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
    }
@@ -280,7 +265,6 @@ class Client extends Actor
    }
    }
    
-   if (r.nextInt(100) > 90 && listOfPages.length <= friendCap) {
    
    for {
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
@@ -297,31 +281,31 @@ class Client extends Actor
     }
     }
    }
-   }
    
-   socialFactor -= fluxRate*fluxRate
-
-   case "upload" =>
    
-       val bis = new BufferedInputStream(new FileInputStream(imageBase(r.nextInt(imageBase.length))))
+   case 2 =>
+   /*
+       val bis = new BufferedInputStream(new FileInputStream("dog1.jpg"))
       
       val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
       
       bis.close();
 
-      if (albumsCreated == 0 || r.nextInt(100) == loudFactor) {
+      if (albumsCreated == 0) {
       
       for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, albumTitles(r.nextInt(albumTitles.length))).toJson.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, "dsfsdf").toJson.toString))).mapTo[HttpResponse]
       }
    yield {
    albumsCreated = albumsCreated + 1
     }
       }
+      
+      
        
   if (albumsCreated > 0) {
-  var picsToUpload = 1 + r.nextInt(4)
-  var albumNumber = (r.nextInt(albumsCreated)+1).toString
+  var picsToUpload = 1
+  var albumNumber = 1
   for (i <- 1 to picsToUpload) {
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
@@ -331,32 +315,29 @@ class Client extends Actor
     
     }
     }
-
+*/
   
-  case "lurk" =>
+  case 3 =>
   
   var viewPageOf = ""
   
-  if (listOfFriends.length < 2 || r.nextInt(100) < 50)
+  if (listOfFriends.length < 2)
     viewPageOf = email
-  else viewPageOf = listOfFriends(r.nextInt(listOfFriends.length))
+  else viewPageOf = listOfFriends(0)
   
   for {
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]  
   }
    yield {}
    
-   lurkFactor -= fluxRate*fluxRate
-   
-   
-  case "wallWrite" => 
+  case 4 => 
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(50) > loudFactor)) {
+  if (r.nextInt(100) == 100 || (listOfPages.length > 0)) {
   
-  if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor && listOfPages.length < friendCap)) {
-  val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
+  if (listOfPages.length == 0) {
+  val pageTitle = "Title"
   val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
   
   for {
@@ -368,9 +349,8 @@ class Client extends Actor
   
   }
   if (listOfPages.length > 0) {
-  val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
-  val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
-  
+  val pageToWriteOn = listOfPages(0)
+  val myPost = "posting on epic thread"
   
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
@@ -387,13 +367,9 @@ class Client extends Actor
   
   var writeOnOwnWall = false
   
-    if (socialFactor < loudFactor)
-    {
-      if (r.nextInt(100) < loudFactor || listOfFriends.length < 2)
+      if (listOfFriends.length < 2)
         writeOnOwnWall = true
-    }
-    else if (r.nextInt(100) < socialFactor  || listOfFriends.length < 2)
-      writeOnOwnWall = true
+    
     
     var target = ""
     
@@ -403,10 +379,7 @@ class Client extends Actor
     
     var textPost = ""
     
-    if (writeOnOwnWall)
-      textPost = selfPostFirst(r.nextInt(selfPostFirst.length)) + " " + selfPostSecond(r.nextInt(selfPostSecond.length)) + " " + selfPostThird(r.nextInt(selfPostThird.length))
-    else textPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
-  
+      textPost = "hurrr durrr"
   
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, Wallpost(email, target, textPost).toJson.toString)))
@@ -415,27 +388,13 @@ class Client extends Actor
    }
    }
    
-   loudFactor -= fluxRate*fluxRate
    
   }
   
   
   // Model next behaviour here
-   
   
-  if (listOfFriends.length < 2 && socialFactor > 10)
-    requestType = "getFriendList"
-  else if (r.nextInt(100) < loudFactor) {
-    if (r.nextInt(100) > 2)
-    requestType = "wallWrite"
-    else requestType = "upload"
-    }
-  else if (r.nextInt(100) < socialFactor  && listOfFriends.length > 2)
-    requestType = "addNewFriend"
-    else if (r.nextInt(100) < lurkFactor)
-    requestType = "lurk"
-  else requestType = "doNothing"
-  
+ doThis = (doThis + 1) % 5
   
   
   

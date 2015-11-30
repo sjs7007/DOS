@@ -11,7 +11,6 @@ import spray.httpx.unmarshalling.FromResponseUnmarshaller
 import java.util.concurrent.ConcurrentHashMap
 import java.io.BufferedInputStream
 import java.io.FileInputStream
-import java.io.{File, FileOutputStream}
 import akka.routing.RoundRobinRouter
 import scala.collection.mutable.ListBuffer
 import akka.io.IO
@@ -31,6 +30,7 @@ import spray.httpx.SprayJsonSupport
 import scala.io.Source
 import java.io._
 
+
 object MyJsonProtocol extends DefaultJsonProtocol {
 
   //createUser
@@ -40,15 +40,10 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
   }
 
-   case class Photo(Email:String, Caption: String, Image: Array[Byte])
+   case class Photo(Email:String, Caption: String, Image: String)
     object Photo extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
   }
-  
-  case class CreateAlbum (Email:String, Title:String)
-    object CreateAlbum extends DefaultJsonProtocol {
-      implicit  val format = jsonFormat2(CreateAlbum.apply)
-    }
   
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
@@ -119,7 +114,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 100
+  var worldSize = 200
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -137,9 +132,6 @@ object UserVariables {
   var pagePrefix = Array ("Society for the Protection of", "Down with", "Fans of", "Collector's Edition", "Pictures of", "Cookies and", "Gory Images of", "Sherlock Holmes and", "Still a better love story than", "Quiet admirers of", "News about")
   var pageSuffix = Array ("Elfish Welfare", "Dungeons and Dragons", "The Milky Way", "John Snow", "John Watson's left thumb", "a spider", "various assorted implements", "a walk in the park", "a shark eating a dolphin", "facebook pages")
   
-  var albumTitles = Array ("Holiday in '07", "Random pics", "Me IRL", "Oscar Wilde")
-  var imageBase = Array ("dog1.jpg", "dogeTiny.jpg", "serveriyanan.jpg")
-  
   var allEmails = new ListBuffer[String]()
 
 }
@@ -152,9 +144,10 @@ class Client extends Actor
   import context._
   
     val r = scala.util.Random
-  implicit val timeout: Timeout = 3.seconds
+  implicit val timeout: Timeout = 300.seconds
 
-  var baseIP = "http://192.168.0.14:"
+  //var baseIP = "http://192.168.0.21:"
+  var baseIP ="http://localhost:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
@@ -174,10 +167,10 @@ class Client extends Actor
   
   var listOfFriends : Array[String] = new Array[String](1)
   var listOfPages = new ListBuffer[String]
-  var albumsCreated = 0
 
 
-  var port = (5000 + r.nextInt(50)).toString
+  var port =  (5000 + r.nextInt(50)).toString
+ // var port = 8087
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
@@ -193,20 +186,20 @@ class Client extends Actor
   
   // Create user
   
-  
-  
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
    }
    yield {
    allEmails += email
-   val tick = context.system.scheduler.schedule(100 millis, 2 millis, self, "Continue") //UNCOMMENT
-   //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
+   val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
+
    }
 
-   case "Continue" => 
+   
+case "Continue" => 
 
-  port = (5000 + r.nextInt(50)).toString
+  port =  (5000 + r.nextInt(50)).toString
+// port = 8087
   serverIP = baseIP + port + "/"
   
   requestType match {
@@ -286,51 +279,42 @@ class Client extends Actor
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
   }
    yield {
-    var thisPage = response.entity.asString
-   if (thisPage != "noPagesExist" && !(listOfPages contains thisPage)) {
+   if (response.entity.asString != "noPagesExist" && !(listOfPages contains response.entity.asString)) {
     
     for {
-      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + thisPage + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + response.entity.asString + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
    }
    yield {
-    listOfPages += thisPage
+    listOfPages += response.entity.asString
     }
     }
    }
    }
    
    socialFactor -= fluxRate*fluxRate
-
+/*
    case "upload" =>
    
-       val bis = new BufferedInputStream(new FileInputStream(imageBase(r.nextInt(imageBase.length))))
+       val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
       
       val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
       
       bis.close();
+  
+    val httpData = HttpData(bArray)
+    val httpEntity = HttpEntity(ContentTypes.`image/png`, httpData).asInstanceOf[HttpEntity.NonEmpty]
+    val formFile = FormFile("my-image", httpEntity)
+    val bodyPart = BodyPart(formFile, "my-image")
+    val req = Post(url, MultipartFormData(Map("spray-file" -> bodyPart)))
 
-      if (albumsCreated == 0 || r.nextInt(100) == loudFactor) {
-      
-      for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, albumTitles(r.nextInt(albumTitles.length))).toJson.toString))).mapTo[HttpResponse]
-      }
-   yield {
-   albumsCreated = albumsCreated + 1
-    }
-      }
-       
-  if (albumsCreated > 0) {
-  var picsToUpload = 1 + r.nextInt(4)
-  var albumNumber = (r.nextInt(albumsCreated)+1).toString
-  for (i <- 1 to picsToUpload) {
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
-   }
-   yield {
-    }
-    
-    }
-    }
+    val pipeline = (addHeader("Content-Type", "multipart/form-data")
+      ~> sendReceive
+    )
+
+    pipeline(req)
+
+*/
+
 
   
   case "lurk" =>
@@ -421,21 +405,16 @@ class Client extends Actor
   
   
   // Model next behaviour here
-   
   
   if (listOfFriends.length < 2 && socialFactor > 10)
     requestType = "getFriendList"
-  else if (r.nextInt(100) < loudFactor) {
-    if (r.nextInt(100) > 2)
+  else if (r.nextInt(100) < loudFactor)
     requestType = "wallWrite"
-    else requestType = "upload"
-    }
   else if (r.nextInt(100) < socialFactor  && listOfFriends.length > 2)
     requestType = "addNewFriend"
     else if (r.nextInt(100) < lurkFactor)
     requestType = "lurk"
   else requestType = "doNothing"
-  
   
   
   
