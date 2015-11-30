@@ -114,7 +114,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 200
+  var worldSize = 50000
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -191,8 +191,8 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-   val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
-
+  // val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
+   //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
    }
 
    
@@ -279,13 +279,14 @@ case "Continue" =>
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
   }
    yield {
-   if (response.entity.asString != "noPagesExist" && !(listOfPages contains response.entity.asString)) {
+    var thisPage = response.entity.asString
+   if (thisPage != "noPagesExist" && !(listOfPages contains thisPage)) {
     
     for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + response.entity.asString + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
+      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + thisPage + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
    }
    yield {
-    listOfPages += response.entity.asString
+    listOfPages += thisPage
     }
     }
    }

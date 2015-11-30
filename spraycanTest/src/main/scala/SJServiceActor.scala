@@ -59,6 +59,9 @@ object commonVars {
 
   //map any userpostid/fbpost to list of comments
   var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
+
+  var count =0
+
 }
 
 // simple actor that handles the routes.
@@ -114,6 +117,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     } ~ */
+    pathPrefix("resetStats") {
+      get {
+        respondWithMediaType(`application/json`) {
+          complete {
+            count=0
+            "Count set to : "+count
+          }
+        }
+      }
+    }~
     pathPrefix("stats") {
       pathEnd {
         get {
@@ -141,7 +154,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
-              users.size().toString()
+              count = count+1
+              users.size().toString()+" "+count.toString
             }
           }
         }
@@ -153,6 +167,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           respondWithMediaType(`application/json`) {
             complete {
               //var A = new Map[String,User]()
+              count=count+1
               users.toString()
             }
           }
@@ -164,6 +179,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
+              count=count+1
               pageDirectory.toString
             }
           }
@@ -177,6 +193,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           log.debug("inhere")
           entity(as[User]) { user => requestContext =>
             val responder = createResponder(requestContext)
+            count=count+1
             createUser(user) match {
               case true => responder ! UserCreated(user.Email)
               case _ => responder ! UserAlreadyExists
@@ -191,6 +208,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           entity(as[Page]) {
             page => requestContext =>
               val responder = createResponder(requestContext)
+              count=count+1
               createPage(page) match  {
                 case true => responder ! PageCreated(page.Title)
                 case _ => responder ! PageCreationFailed
@@ -205,6 +223,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           entity(as[AlbumMetaData]) {
             albumMetaData => requestContext =>
               val responder = createResponder(requestContext)
+              count=count+1
               createAlbum(albumMetaData) match {
                 case true => responder ! AlbumCreated(albumMetaData.Title)
                 case _ => responder ! AlbumCreationFailed
@@ -218,6 +237,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         get {
           respondWithMediaType(`application/json`) {
             complete {
+              count=count+1
               pageDirectory.keySet().toString
             }
           }
@@ -230,6 +250,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
           respondWithMediaType(`application/json`) {
             complete {
+              count=count+1
               if(pageIDs.size ==0) {
                 //"No pages created till now."
                 log.debug("No pages created till now.")
@@ -247,6 +268,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           if(!doesPageExist(pageID)) {
             respondWithMediaType(`application/json`) {
               complete {
+                count=count+1
                 "Page doesn't exist."
               }
             }
@@ -256,6 +278,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               get {
                 respondWithMediaType(`application/json`) {
                   complete {
+                    count=count+1
                     pageContent.get(pageID).toString()
                   }
                 }
@@ -267,6 +290,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     entity(as[pagePost]) {
                       postData => requestContext =>
                         val responder = createResponder(requestContext)
+                        count=count+1
                         createPagePost(postData, pageID) match {
                           case "posted" => responder ! PostSuccess
                           case "invalidPost" => responder ! PostFail
@@ -282,6 +306,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     entity(as[UserID]) {
                       user => requestContext =>
                         val responder = createResponder(requestContext)
+                        count=count+1
                         addFollower(user.Email, pageID) match {
                           case "invalidUser" => responder ! UserNotPresent
                           //case "invalidPage" => responder ! PageNotPresent
@@ -297,6 +322,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   get {
                     respondWithMediaType(`application/json`) {
                       complete {
+                        count=count+1
                         pageFollowers.get(pageID).toString()
                       }
                     }
@@ -308,6 +334,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   get {
                     respondWithMediaType(`application/json`) {
                       complete {
+                        count=count+1
                         pageContent.get(pageID).toString()
                       }
                     }
@@ -322,6 +349,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         post {
           entity(as[FriendRequest]) { friendRequest => requestContext =>
             val responder = createResponder(requestContext)
+            count=count+1
             sendFriendRequest(friendRequest) match {
               case "alreadyFriends" => responder ! AlreadyFriends
 
@@ -341,6 +369,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         log.debug("User doesn't exist.")
         respondWithMediaType(`application/json`) {
           complete {
+            count=count+1
             "User : "+userEmail+" doesn't exist."
           }
         }
@@ -351,6 +380,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             get {
               respondWithMediaType(`application/json`) {
                 complete {
+                  count=count+1
                   albumDirectory.get(userEmail).toString()
                 }
               }
@@ -363,6 +393,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   get {
                     respondWithMediaType(`application/json`) {
                       complete {
+                        count=count+1
                         albumContent.get(albumID).toString()
                       }
                     }
@@ -373,6 +404,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   get {
                     respondWithMediaType(`image/jpeg`) {
                       complete {
+                        count=count+1
                         HttpData(new File("users/"+userEmail+"/"+albumID+"/"+imageID))
                       }
                     }
@@ -390,6 +422,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         val output = new FileOutputStream(ftmp)
                         formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
                         output.close()
+                        count=count+1
                         complete("done, file in: " + ftmp.getName())
                       }
                     }
@@ -399,6 +432,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               else {
                 respondWithMediaType(`application/json`) {
                   complete {
+                    count=count+1
                     "Album with id : "+albumID+" doesn't exist."
                   }
                 }
@@ -409,6 +443,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           get {
             respondWithMediaType(`application/json`) {
               complete {
+                count=count+1
                 friendLists.get(userEmail).toString()
               }
             }
@@ -418,6 +453,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           get {
             respondWithMediaType(`application/json`) {
               complete {
+                count=count+1
                 users.get(userEmail)
               }
             }
@@ -430,6 +466,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 fromUser =>
                   respondWithMediaType(`application/json`) {
                     complete {
+                      count=count+1
                       if (areFriendsOrSame(fromUser, userEmail)) {
                         userPosts.get(userEmail).toString()
                         //"dss"
@@ -455,6 +492,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 fromUser =>
                   respondWithMediaType(`application/json`) {
                     complete {
+                      count=count+1
                       if (areFriendsOrSame(fromUser, userEmail)) {
                         userPosts.get(userEmail).keySet().toString()
                         //"dss"
@@ -472,6 +510,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
               if (!userPosts.get(userEmail).containsKey(postID)) {
                 respondWithMediaType(`application/json`) {
                   complete {
+                    count=count+1
                     "Post with : " + postID + " doesn't exist."
                   }
                 }
@@ -482,6 +521,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                       fromUser =>
                         respondWithMediaType(`application/json`) {
                           complete {
+                            count=count+1
                             if (areFriendsOrSame(fromUser, userEmail)) {
                               userPosts.get(userEmail).toString()
                             }
@@ -503,6 +543,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       post {
         entity(as[fbPost]) { wallpost => requestContext =>
           val responder = createResponder(requestContext)
+          count=count+1
           writePost(wallpost) match {
             case "posted" => responder ! PostSuccess
 
@@ -694,6 +735,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
      // requestContext.complete(StatusCodes.Created)
       requestContext.complete("User created.")
       log.debug("User Created with Email : "+email)
+      //count=count+1
       killYourself
 
     case UserAlreadyExists =>
