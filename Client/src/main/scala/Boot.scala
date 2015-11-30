@@ -169,8 +169,8 @@ class Client extends Actor
   var listOfPages = new ListBuffer[String]
 
 
-  var port =  (5000 + r.nextInt(50)).toString
- // var port = 8087
+ // var port =  (5000 + r.nextInt(50)).toString
+  var port = 8087
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
@@ -192,14 +192,14 @@ class Client extends Actor
    yield {
    allEmails += email
   // val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
-   //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
+     val tick = context.system.scheduler.schedule(25 millis, 200 millis, self, "Continue") //UNCOMMENT
    }
 
    
 case "Continue" => 
 
-  port =  (5000 + r.nextInt(50)).toString
-// port = 8087
+ // port =  (5000 + r.nextInt(50)).toString
+ port = 8087
   serverIP = baseIP + port + "/"
   
   requestType match {

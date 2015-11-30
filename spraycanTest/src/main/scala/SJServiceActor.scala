@@ -62,6 +62,11 @@ object commonVars {
 
   var count =0
 
+  var stats = "empty"
+
+  //var httpListenerBuffer = new ListBuffer[Option[ActorRef]]()
+  var httpListenerBuffer = new ListBuffer[String]()
+
 }
 
 // simple actor that handles the routes.
@@ -90,8 +95,10 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   def handle : Receive = {
     case Http.Bound(_) =>
       httpListener = Some(sender)
+      log.debug("dis listener : "+httpListener.get.path.toString())
       println("bound")
       log.debug("can kill when I want to now")
+      httpListenerBuffer += httpListener.get.path.toString()
       //sender ! Http.Unbind(10 seconds)
     case Http.Unbound =>
       println("unbound")
@@ -127,6 +134,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~
+    pathPrefix("portStats") {
+      get {
+        parameters('port.as[Int]) {
+          port =>
+          respondWithMediaType(`application/json`) {
+            complete {
+              getPortStats(port)
+            }
+          }
+        }
+      }
+    }~
     pathPrefix("stats") {
       pathEnd {
         get {
@@ -143,7 +162,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           respondWithMediaType(`application/json`) {
             complete {
               //"d"
-              getServerStats()
+              stats=getServerStats()
+              stats
             }
           }
         }
@@ -556,16 +576,38 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
   }
 
+  private def getPortStats(port:Int) : String = {
+    implicit val timeout : Timeout= Timeout(5 seconds)
+    var tmp ="defau1"
+    log.debug("acotr : "+httpListenerBuffer(port))
+    context.actorSelection(httpListenerBuffer(port)) ? Http.GetStats onSuccess {
+      case x: Stats =>
+        log.debug("idhar aa gaya yaaay")
+        log.debug(x.toString+"dsds")
+        tmp = x.toString
+        log.debug("this is tmps : "+tmp)
+        println(tmp)
+        tmp
+      case _ =>
+        log.debug("future fail")
+        tmp = "future fail"
+    }
+    log.debug("returning : "+tmp)
+    return tmp
+  }
+
   private def getServerStats(): String =
   {
       implicit val timeout : Timeout= Timeout(5 seconds)
       var tmp ="default2221"
+    //Wcontext.actorS
       context.actorSelection("/user/IO-HTTP/listener-0") ? Http.GetStats onSuccess {
         case x: Stats =>
           log.debug("idhar aa gaya yaaay")
           log.debug(x.toString+"dsds")
           tmp = x.toString
-          log.debug("this is tmp : "+tmp)
+          log.debug("this is tmps : "+tmp)
+          println(tmp)
           tmp
         case _ =>
           log.debug("future fail")

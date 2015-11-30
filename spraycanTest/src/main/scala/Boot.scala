@@ -21,7 +21,7 @@ object Boot extends App {
   //IO(Http) ? Http.Bind(service, interface = "localhost", port = 8082)
 
   IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port =8087), sender = service)
-  for(i <- 0 to 51) {
+  for(i <- 0 to 0) {
     IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port = 5000+i), sender = service)
   }
 
