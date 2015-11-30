@@ -11,6 +11,7 @@ import spray.httpx.unmarshalling.FromResponseUnmarshaller
 import java.util.concurrent.ConcurrentHashMap
 import java.io.BufferedInputStream
 import java.io.FileInputStream
+import java.io.{File, FileOutputStream}
 import akka.routing.RoundRobinRouter
 import scala.collection.mutable.ListBuffer
 import akka.io.IO
@@ -30,7 +31,6 @@ import spray.httpx.SprayJsonSupport
 import scala.io.Source
 import java.io._
 
-
 object MyJsonProtocol extends DefaultJsonProtocol {
 
   //createUser
@@ -40,10 +40,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat4(User.apply)
   }
 
-   case class Photo(Email:String, Caption: String, Image: String)
+   case class Photo(Email:String, Caption: String, Image: Array[Byte])
     object Photo extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(Photo.apply)
   }
+  
+  case class CreateAlbum (Email:String, Title:String)
+    object CreateAlbum extends DefaultJsonProtocol {
+      implicit  val format = jsonFormat2(CreateAlbum.apply)
+    }
   
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
@@ -114,7 +119,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 50000
+  var worldSize = 200
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -132,6 +137,8 @@ object UserVariables {
   var pagePrefix = Array ("Society for the Protection of", "Down with", "Fans of", "Collector's Edition", "Pictures of", "Cookies and", "Gory Images of", "Sherlock Holmes and", "Still a better love story than", "Quiet admirers of", "News about")
   var pageSuffix = Array ("Elfish Welfare", "Dungeons and Dragons", "The Milky Way", "John Snow", "John Watson's left thumb", "a spider", "various assorted implements", "a walk in the park", "a shark eating a dolphin", "facebook pages")
   
+  var albumTitles = Array ("Holiday in '07", "Random pics", "Me IRL", "Oscar Wilde")
+  
   var allEmails = new ListBuffer[String]()
 
 }
@@ -144,10 +151,9 @@ class Client extends Actor
   import context._
   
     val r = scala.util.Random
-  implicit val timeout: Timeout = 300.seconds
+  implicit val timeout: Timeout = 3.seconds
 
-  //var baseIP = "http://192.168.0.21:"
-  var baseIP ="http://localhost:"
+  var baseIP = "http://192.168.0.14:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
@@ -167,10 +173,10 @@ class Client extends Actor
   
   var listOfFriends : Array[String] = new Array[String](1)
   var listOfPages = new ListBuffer[String]
+  var albumsCreated = 0
 
 
-  var port =  (5000 + r.nextInt(50)).toString
- // var port = 8087
+  var port = (5000 + r.nextInt(50)).toString
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
@@ -186,20 +192,22 @@ class Client extends Actor
   
   // Create user
   
+  
+  
   for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
    }
    yield {
    allEmails += email
-  // val tick = context.system.scheduler.schedule(100 millis, 200 millis, self, "Continue") //UNCOMMENT
-     val tick = context.system.scheduler.schedule(25 millis, 200 millis, self, "Continue") //UNCOMMENT
+   val tick = context.system.scheduler.schedule(100 millis, 2000 millis, self, "Continue") //UNCOMMENT
+   //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
    }
 
    
+   
 case "Continue" => 
 
-  port =  (5000 + r.nextInt(50)).toString
- //port = 8087
+  port = (5000 + r.nextInt(50)).toString
   serverIP = baseIP + port + "/"
   
   requestType match {
@@ -293,7 +301,7 @@ case "Continue" =>
    }
    
    socialFactor -= fluxRate*fluxRate
-/*
+
    case "upload" =>
    
        val bis = new BufferedInputStream(new FileInputStream("dog.jpeg"))
@@ -301,21 +309,24 @@ case "Continue" =>
       val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
       
       bis.close();
-  
-    val httpData = HttpData(bArray)
-    val httpEntity = HttpEntity(ContentTypes.`image/png`, httpData).asInstanceOf[HttpEntity.NonEmpty]
-    val formFile = FormFile("my-image", httpEntity)
-    val bodyPart = BodyPart(formFile, "my-image")
-    val req = Post(url, MultipartFormData(Map("spray-file" -> bodyPart)))
 
-    val pipeline = (addHeader("Content-Type", "multipart/form-data")
-      ~> sendReceive
-    )
-
-    pipeline(req)
-
-*/
-
+      if (albumsCreated == 0 || r.nextInt(100) == loudFactor) {
+      
+      for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, albumTitles(r.nextInt(albumTitles.length))).toJson.toString))).mapTo[HttpResponse]
+      }
+   yield {
+   albumsCreated = albumsCreated + 1
+    }
+      }
+       
+  if (albumsCreated > 0) {
+  for {
+      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+(r.nextInt(albumsCreated)+1).toString+"/upload"),entity= HttpEntity(`application/json`, Photo(email, r.nextInt(100).toString, bArray).toJson.toString))).mapTo[HttpResponse]
+   }
+   yield {
+    }
+    }
 
   
   case "lurk" =>
@@ -407,15 +418,22 @@ case "Continue" =>
   
   // Model next behaviour here
   
+  //requestType = "upload"
+  
+  
   if (listOfFriends.length < 2 && socialFactor > 10)
     requestType = "getFriendList"
-  else if (r.nextInt(100) < loudFactor)
+  else if (r.nextInt(100) < loudFactor) {
+    if (r.nextInt(100) > 2)
     requestType = "wallWrite"
+    else requestType = "upload"
+    }
   else if (r.nextInt(100) < socialFactor  && listOfFriends.length > 2)
     requestType = "addNewFriend"
     else if (r.nextInt(100) < lurkFactor)
     requestType = "lurk"
   else requestType = "doNothing"
+  
   
   
   
