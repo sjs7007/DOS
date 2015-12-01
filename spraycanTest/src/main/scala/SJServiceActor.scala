@@ -2,7 +2,7 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.{File, FileOutputStream}
+import java.io.{BufferedWriter, File, FileOutputStream, FileWriter}
 import java.util.concurrent.ConcurrentHashMap
 
 import MyJsonProtocol._
@@ -19,6 +19,9 @@ import spray.routing._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
 //import java.util
+
+import au.com.bytecode.opencsv.CSVWriter
+
 object commonVars {
   //list of all users : make it more efficient
   //var users = scala.collection.immutable.Vector[User]()
@@ -645,6 +648,28 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     var other = "\nNumber of users : "+users.size()+"\nNumber of Pages : "+pageDirectory.size()+"\nNumber of Page Posts : "+nPagePosts+"\nNumber of wall posts : "+nUserPosts
     other = other + "\nNumber of albums : "+nAlbums+"\nNumber of Image Uploads : "+nImageUploads
     summary = summary + other
+
+
+      val out = new BufferedWriter(new FileWriter("test.csv",true));
+      val writer = new CSVWriter(out);
+      val employeeSchema=Array("Time","Requests","Requests/Sec","nUsers","nPages","nPagePosts","nUserPosts","nAlbums","nImageUploads")
+
+      //val employee1= Array("piyush","23","computerscience")
+
+    //  val employee2= Array("neel","24","computerscience")
+
+//      val employee3= Array("aayush","27","computerscience")
+        val employee1 = Array(sec.toString,totReq.toString,(totReq.toDouble/sec).toString,users.size().toString,pageDirectory.size().toString,nPagePosts.toString,nUserPosts.toString,nAlbums.toString,nImageUploads.toString)
+        /*for (i<- 0 until employee1.length) {
+          employee1(i)=employee1(i).toString()
+        }*/
+
+    var listOfRecords= List(employee1)
+
+      writer.writeNext(employee1)
+   // writer.
+      out.close()
+
     summary
   }
 
