@@ -70,6 +70,11 @@ object commonVars {
   var portStats = new ConcurrentHashMap[Int,Stats]()
 
   var summary = ""
+
+  var nPagePosts = 0
+  var nUserPosts = 0
+  var nImageUploads = 0
+  var nAlbums = 0
 }
 
 // simple actor that handles the routes.
@@ -470,6 +475,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         output.write(thisPhoto.Image)
                         output.close()
                         //count=count+1
+                        nImageUploads = nImageUploads+1
                         complete("done, file in: " + ftmp.getName())
 
                     }
@@ -489,6 +495,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
                         output.close()
                         //count=count+1
+                        nImageUploads = nImageUploads+1
                         complete("done, file in: " + ftmp.getName())
                       }
                     }
@@ -635,6 +642,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     if(sec>0) {
       summary = summary + "\nRequests per second(Server uptime/number of Requests): "+(totReq.toDouble/sec)
     }
+    var other = "\nNumber of users : "+users.size()+"\nNumber of Pages : "+pageDirectory.size()+"\nNumber of Page Posts : "+nPagePosts+"\nNumber of wall posts : "+nUserPosts
+    other = other + "\nNumber of albums : "+nAlbums+"\nNumber of Image Uploads : "+nImageUploads
+    summary = summary + other
     summary
   }
 
@@ -727,6 +737,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       var dir = new File("users/"+albumMetaData.Email+"/"+albumID)
       var ret = dir.mkdirs()
      // log.debug(dir.mkdir().toString)
+      nAlbums=nAlbums+1
 
       return ret
     }
@@ -807,6 +818,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
   if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
       userPosts.get(p.toEmail).put(System.currentTimeMillis().toString(),p)
+      nUserPosts = nUserPosts+1
     return "posted"
   }
     log.debug("Can't post because not friends.")
@@ -822,6 +834,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       log.debug("Can't post because not following page.")
       return "notFollowing"
     }
+    nPagePosts = nPagePosts+1
     pageContent.get(pageID).put(System.currentTimeMillis().toString(),post)
     return "posted"
   }
