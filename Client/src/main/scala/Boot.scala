@@ -119,7 +119,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 8000
+  var worldSize = 2000
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
