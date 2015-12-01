@@ -150,7 +150,7 @@ class Client extends Actor
   import UserVariables._
   import MyJsonProtocol._
   import context._
-  
+
     val r = scala.util.Random
   implicit val timeout: Timeout = 3.seconds
 
@@ -353,7 +353,7 @@ class Client extends Actor
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(50) > loudFactor)) {
+  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(100) < loudFactor)) {
   
   if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor)) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
@@ -367,7 +367,7 @@ class Client extends Actor
    }
   
   }
-  if (listOfPages.length > 0 && r.nextInt(100) > 70) {
+  if (listOfPages.length > 0) {
   val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
   val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
   
