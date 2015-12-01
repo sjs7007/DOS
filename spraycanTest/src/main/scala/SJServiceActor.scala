@@ -78,6 +78,7 @@ object commonVars {
   var nUserPosts = 0
   var nImageUploads = 0
   var nAlbums = 0
+  var nFriendRequests = 0
 }
 
 // simple actor that handles the routes.
@@ -653,27 +654,30 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       summary = summary + "\nRequests per second(Server uptime/number of Requests): "+(totReq.toDouble/sec)
     }
     var other = "\nNumber of users : "+users.size()+"\nNumber of Pages : "+pageDirectory.size()+"\nNumber of Page Posts : "+nPagePosts+"\nNumber of wall posts : "+nUserPosts
-    other = other + "\nNumber of albums : "+nAlbums+"\nNumber of Image Uploads : "+nImageUploads
+    other = other + "\nNumber of albums : "+nAlbums+"\nNumber of Image Uploads : "+nImageUploads+"\nFriend Requests"+nFriendRequests
     summary = summary + other
 
 
       val out = new BufferedWriter(new FileWriter("test.csv",true));
       val writer = new CSVWriter(out);
-      val employeeSchema=Array("Time","Requests","Requests/Sec","nUsers","nPages","nPagePosts","nUserPosts","nAlbums","nImageUploads")
+      val CSVSchema=Array("Time","Requests","Requests/Sec","nUsers","nPages","nPagePosts","nUserPosts","nAlbums","nImageUploads")
 
       //val employee1= Array("piyush","23","computerscience")
 
     //  val employee2= Array("neel","24","computerscience")
+        if(sec<10) {
+          writer.writeNext(CSVSchema)
+        }
 
 //      val employee3= Array("aayush","27","computerscience")
-        val employee1 = Array(sec.toString,totReq.toString,(totReq.toDouble/sec).toString,users.size().toString,pageDirectory.size().toString,nPagePosts.toString,nUserPosts.toString,nAlbums.toString,nImageUploads.toString)
+        val csv1 = Array(sec.toString,totReq.toString,(totReq.toDouble/sec).toString,users.size().toString,pageDirectory.size().toString,nPagePosts.toString,nUserPosts.toString,nAlbums.toString,nImageUploads.toString)
         /*for (i<- 0 until employee1.length) {
           employee1(i)=employee1(i).toString()
         }*/
 
-    var listOfRecords= List(employee1)
+    //var listOfRecords= List(employee1)
 
-      writer.writeNext(employee1)
+      writer.writeNext(csv1)
    // writer.
       out.close()
 
@@ -816,6 +820,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   //sendFriendRequest
   private def sendFriendRequest(req : FriendRequest) : String = {
+    nFriendRequests = nFriendRequests+1
     if(friendLists.containsKey(req.fromEmail)) {
       if(friendLists.get(req.fromEmail).contains(req.toEmail)) {
         return "alreadyFriends"

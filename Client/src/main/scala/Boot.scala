@@ -119,7 +119,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 100
+  var worldSize = 8000
 
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -163,7 +163,7 @@ class Client extends Actor
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
   
   var socialFactor = 1 + r.nextInt (30)
-  var loudFactor = 1 + r.nextInt (20)
+  var loudFactor = 1 + r.nextInt (60)
   var lurkFactor = 1 + r.nextInt (50)
   var fluxRate = 1 + r.nextInt(5)
   
@@ -200,7 +200,8 @@ class Client extends Actor
    }
    yield {
    allEmails += email
-   val tick = context.system.scheduler.schedule(2 millis, 2 millis, self, "Continue") //UNCOMMENT
+   var tickTime = (worldSize/50).toInt
+   val tick = context.system.scheduler.schedule(2 millis, tickTime millis, self, "Continue") //UNCOMMENT
    //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
    }
 
@@ -213,11 +214,10 @@ class Client extends Actor
     
    case "doNothing" => 
    
-   if (r.nextInt(100) > 67)
+   
    socialFactor += 5*fluxRate
-   else if (r.nextInt(100) > 50)
    loudFactor += 5*fluxRate
-   else lurkFactor += 5*fluxRate
+   lurkFactor += 3*fluxRate
   
   case "getFriendList" =>
   
@@ -295,8 +295,9 @@ class Client extends Actor
       response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + thisPage + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
    }
    yield {
-    listOfPages += thisPage
+    
     }
+    listOfPages += thisPage
     }
    }
    }
@@ -311,15 +312,17 @@ class Client extends Actor
       
       bis.close();
 
-      if (albumsCreated == 0 || r.nextInt(100) == loudFactor) {
+      if (albumsCreated == 0 || (r.nextInt(100) == loudFactor)) {
       
       for {
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, albumTitles(r.nextInt(albumTitles.length))).toJson.toString))).mapTo[HttpResponse]
       }
    yield {
-   albumsCreated = albumsCreated + 1
     }
+
+   albumsCreated = albumsCreated + 1
       }
+
        
   if (albumsCreated > 0) {
   var picsToUpload = 1 + r.nextInt(4)
@@ -355,9 +358,9 @@ class Client extends Actor
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == loudFactor || r.nextInt(100) == socialFactor || (listOfPages.length > 0 && r.nextInt(100) < loudFactor)) {
+  if (r.nextInt(100) > 95) {
   
-  if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor)) {
+  if (listOfPages.length < 3) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
   val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
   
@@ -365,8 +368,9 @@ class Client extends Actor
       response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createPage"),entity= HttpEntity(`application/json`, CreatePage(email, pageTitle, pageID).toJson.toString)))
    }
    yield {
-   listOfPages += pageID
    }
+
+   listOfPages += pageID
   
   }
   if (listOfPages.length > 0) {
@@ -425,7 +429,7 @@ class Client extends Actor
   // Model next behaviour here
    
   
-  if (listOfFriends.length < 2 && socialFactor > 10)
+  if (listOfFriends.length < 2)
     requestType = "getFriendList"
   else if (r.nextInt(100) < loudFactor) {
     if (r.nextInt(100) > 15)
