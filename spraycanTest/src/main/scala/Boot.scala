@@ -25,6 +25,9 @@ object Boot extends App {
     IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port = 5000+i), sender = service)
   }
 
+ // system.scheduler.schedule(5 seconds,5 seconds,ser,"getStats")
+
+
 }
 
 /*object Boot extends  App {

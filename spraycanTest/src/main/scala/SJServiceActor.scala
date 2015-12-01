@@ -83,8 +83,7 @@ object commonVars {
 // simple actor that handles the routes.
 class SJServiceActor extends Actor with HttpService with ActorLogging {
 
-  import commonVars._
-  import context.dispatcher // ExecutionContext for the futures and scheduler
+  import commonVars._ // ExecutionContext for the futures and scheduler
 
   var httpListener : Option[ActorRef] = None
   // required as implicit value for the HttpService
@@ -92,11 +91,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   log.debug("Actor started")
   def actorRefFactory = context
 
+  import context.dispatcher
 
-/*  def httpReceive: Receive = runRoute(...)
-  def handle: Receive = ...
+  context.system.scheduler.schedule(10 seconds,5 seconds,self,"getStats")
 
-  def receive = handle orElse httpReceive */
+
+
+  /*  def httpReceive: Receive = runRoute(...)
+    def handle: Receive = ...
+
+    def receive = handle orElse httpReceive */
 
   // we don't create a receive function ourselve, but use
   // the runRoute function from the HttpService to create
@@ -116,6 +120,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       context.stop(self)
 
    //case getStats => getServerStats()
+    case "getStats" =>
+      updateAllStats()
+      println(getSummary())
   }
 
 
