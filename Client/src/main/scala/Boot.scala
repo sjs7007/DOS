@@ -213,9 +213,11 @@ class Client extends Actor
     
    case "doNothing" => 
    
-   socialFactor += fluxRate
-   loudFactor += fluxRate
-   lurkFactor += fluxRate
+   if (r.nextInt(100) > 67)
+   socialFactor += 5*fluxRate
+   else if (r.nextInt(100) > 50)
+   loudFactor += 5*fluxRate
+   else lurkFactor += 5*fluxRate
   
   case "getFriendList" =>
   
@@ -280,7 +282,7 @@ class Client extends Actor
    }
    }
    
-   if (r.nextInt(100) > 90) {
+   if (r.nextInt(100) > 50) {
    
    for {
   response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
@@ -299,7 +301,7 @@ class Client extends Actor
    }
    }
    
-   socialFactor -= fluxRate*fluxRate
+   socialFactor -= fluxRate
 
    case "upload" =>
    
@@ -353,7 +355,7 @@ class Client extends Actor
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == loudFactor || (listOfPages.length > 0 && r.nextInt(100) < loudFactor)) {
+  if (r.nextInt(100) == loudFactor || r.nextInt(100) == socialFactor || (listOfPages.length > 0 && r.nextInt(100) < loudFactor)) {
   
   if (listOfPages.length == 0 || (r.nextInt(100) == loudFactor)) {
   val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
