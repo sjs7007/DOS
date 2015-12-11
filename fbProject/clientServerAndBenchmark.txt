@@ -1,0 +1,38 @@
+Server Software:        spray-can/1.3.2
+Server Hostname:        localhost
+Server Port:            5027
+
+Document Path:          /pages/random
+Document Length:        8 bytes
+
+Concurrency Level:      100
+Time taken for tests:   38.319 seconds
+Complete requests:      1000000
+Failed requests:        180915
+   (Connect: 0, Receive: 0, Length: 180915, Exceptions: 0)
+Keep-Alive requests:    1000000
+Total transferred:      178819085 bytes
+HTML transferred:       7819085 bytes
+Requests per second:    26096.54 [#/sec] (mean)
+Time per request:       3.832 [ms] (mean)
+Time per request:       0.038 [ms] (mean, across all concurrent requests)
+Transfer rate:          4557.19 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       3
+Processing:     0    4   3.9      3     231
+Waiting:        0    4   3.9      3     231
+Total:          0    4   3.9      3     232
+
+Percentage of the requests served within a certain time (ms)
+  50%      3
+  66%      4
+  75%      4
+  80%      5
+  90%      6
+  95%      8
+  98%     12
+  99%     17
+ 100%    232 (longest request)
+
