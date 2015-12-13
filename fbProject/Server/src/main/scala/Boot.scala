@@ -15,7 +15,7 @@ object Boot extends App {
   implicit val system = ActorSystem("smartjava")
   val service = system.actorOf(Props[SJServiceActor], "sj-rest-service")
 
-  // IO requires an implicit ActorSystem, and ? requires an implicit timeout
+  // IO requires an implicit ActorSystem, and ? requires an implicit timeout1
   // Bind HTTP to the specified service.
   implicit val timeout = Timeout(5.seconds)
   //IO(Http) ? Http.Bind(service, interface = "localhost", port = 8082)

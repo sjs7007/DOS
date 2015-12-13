@@ -23,7 +23,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object CantTrustMessage
 
   object User extends DefaultJsonProtocol {
-    implicit val format = jsonFormat4(User.apply)
+    implicit val format = jsonFormat5(User.apply)
   }
 
   //createPage
