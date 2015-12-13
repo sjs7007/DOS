@@ -235,7 +235,7 @@ class Client extends Actor
   var port = (5000 + r.nextInt(50)).toString
   var userObj = User(email, name, bday, city, pubBytes)
   
-  var encUser = EncryptedUser(userObj, encryptPrivateRSA(md5(serialize(userObj)), priBytes), pubBytes)
+  var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
 
   var serverIP = ""
 
@@ -477,7 +477,7 @@ class Client extends Actor
               
               var addresses : Addresses = Addresses (email, target)
             
-            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes), encryptRSA(AESbytes, pubBytes), encryptPrivateRSA(md5(encryptAES(serialize(post), AESbytes)), priBytes), encryptPrivateRSA(serialize(addresses), priBytes))
+            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes), encryptRSA(AESbytes, pubBytes), encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes)), priBytes), encryptPrivateRSA(serialize(addresses), priBytes))
 
             for {
               response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
@@ -583,18 +583,17 @@ class Client extends Actor
     return (r)
   }
   
-  def md5(s: String) : Array[Byte] = {
-    val a = MessageDigest.getInstance("MD5").digest(s.getBytes)
+  def sha256(s: String) : Array[Byte] = {
+    val a = MessageDigest.getInstance("SHA-256").digest(s.getBytes)
     return (a)
 }
 
-  def md5(s: Array[Byte]) : Array[Byte] = {
-    val a = MessageDigest.getInstance("MD5").digest(s)
+  def sha256(s: Array[Byte]) : Array[Byte] = {
+    val a = MessageDigest.getInstance("SHA-256").digest(s)
     return (a)
 }
 
 }
-  
   
   
   
