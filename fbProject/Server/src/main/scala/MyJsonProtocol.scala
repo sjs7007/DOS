@@ -2,8 +2,6 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.security.PublicKey
-
 import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
@@ -11,19 +9,23 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
   case class Person(name: String, fistName: String, age: Long)
   //createUser
-  case class User(Email:String, Name: String,Birthday: String,CurrentCity : String,pubKey : PublicKey) {
+  case class User(Email:String, Name: String,Birthday: String,CurrentCity : String,pubKey : Array[Byte]) {
     require(!Email.isEmpty, "Emails must not be empty.")
     require(!Name.isEmpty,"Name must not be empty.")
   }
 
-  case class EncryptedUser(user: User,sign: String,pubkey: PublicKey)
+  case class EncryptedUser(user: User,sign: String,pubkey: Array[Byte])
 
   case class UserCreated(Email:String)
   case object UserAlreadyExists
   case object CantTrustMessage
 
   object User extends DefaultJsonProtocol {
-    implicit val format = jsonFormat4(User.apply)
+    implicit val format = jsonFormat5(User.apply)
+  }
+
+  object EncryptedUser extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat3(EncryptedUser.apply)
   }
 
   //createPage
