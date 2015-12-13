@@ -1,7 +1,3 @@
-import java.security.{MessageDigest, KeyPairGenerator, KeyFactory, PublicKey, PrivateKey}
-import javax.crypto.Cipher
-import java.security.spec.{X509EncodedKeySpec, PKCS8EncodedKeySpec}
-
 
 import spray.httpx.SprayJsonSupport
 import spray.json.DefaultJsonProtocol
@@ -34,27 +30,19 @@ import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scala.io.Source
 import java.io._
-//import scala.util.Marshal
+import java.security.KeyPairGenerator
+import javax.crypto.Cipher
+import scala.util.Marshal
 
 
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 
   //createUser
-case class User(Email:String, Name: String,Birthday: String,CurrentCity : String,pubKey : Array[Byte]) {
-    require(!Email.isEmpty, "Emails must not be empty.")
-    require(!Name.isEmpty,"Name must not be empty.")
-  }
+  case class User(Email:String, Name: String,Birthday: String,CurrentCity : String)
+
   object User extends DefaultJsonProtocol {
-    implicit val format = jsonFormat5(User.apply)
-  }
-
-  
-  
-  case class EncryptedUser(user: User,sign: String,pubkey: Array[Byte])
-
-  object EncryptedUser extends DefaultJsonProtocol {
-    implicit val format = jsonFormat3(EncryptedUser.apply)
+    implicit val format = jsonFormat4(User.apply)
   }
 
    case class Photo(Email:String, Caption: String, Image: Array[Byte])
@@ -104,6 +92,14 @@ case class User(Email:String, Name: String,Birthday: String,CurrentCity : String
   
 }
 
+private def encryptRSA(a: Array[Byte], b: PublicKey) : Byte[Array] = {
+
+
+
+      val cipher: Cipher = Cipher.getInstance("RSA")
+      cipher.init(Cipher.ENCRYPT_MODE, b)
+      val cipherData: Array[Byte] = cipher.doFinal(a)        
+    }
 
 case class Start()
 case class Continue()
@@ -207,7 +203,7 @@ class Client extends Actor
   
 
   var port = (5000 + r.nextInt(50)).toString
-    var jsonString = User(email, name, bday, city, Array(192, 168, 1, 1).map(_.toByte)).toJson
+    var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
    
@@ -476,28 +472,9 @@ class Client extends Actor
   
   }
   
-   def encryptRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
-      
-      var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
-
-      
-      val cipher: Cipher = Cipher.getInstance("RSA")
-      cipher.init(Cipher.ENCRYPT_MODE, pKey)
-      val cipherData: Array[Byte] = cipher.doFinal(a)  
-
-         return (cipherData)
-    }
-    
-    def decryptRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
-    
-    var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
-
-          val cipher: Cipher = Cipher.getInstance("RSA")
-       Cipher.getInstance("RSA").init(Cipher.DECRYPT_MODE, pKey)
-      val decryptedData: Array[Byte] = cipher.doFinal(a)
-
-        return (decryptedData)
-    }  
+  
+  
+  
   }
   
   
