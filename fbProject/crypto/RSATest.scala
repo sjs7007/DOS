@@ -6,8 +6,12 @@ object RSATest extends App {
       val kpg = KeyPairGenerator.getInstance("RSA")
       kpg.initialize(1024)
       val kp = kpg.genKeyPair
+
       val publicKey = kp.getPublic
       val privateKey = kp.getPrivate
+
+
+
       val cipher: Cipher = Cipher.getInstance("RSA")
       cipher.init(Cipher.ENCRYPT_MODE, publicKey)
       val input: Array[Byte] = "test".getBytes
