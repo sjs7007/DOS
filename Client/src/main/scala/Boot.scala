@@ -30,6 +30,11 @@ import spray.json.DefaultJsonProtocol
 import spray.httpx.SprayJsonSupport
 import scala.io.Source
 import java.io._
+import java.security.KeyPairGenerator
+import javax.crypto.Cipher
+import scala.util.Marshal
+
+
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 
@@ -86,6 +91,15 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
 }
+
+private def encryptRSA(a: Array[Byte], b: PublicKey) : Byte[Array] = {
+
+
+
+      val cipher: Cipher = Cipher.getInstance("RSA")
+      cipher.init(Cipher.ENCRYPT_MODE, b)
+      val cipherData: Array[Byte] = cipher.doFinal(a)        
+    }
 
 case class Start()
 case class Continue()
@@ -176,6 +190,17 @@ class Client extends Actor
   var listOfPages = new ListBuffer[String]
   var albumsCreated = 0
 
+  // KEYS
+  
+        val kpg = KeyPairGenerator.getInstance("RSA")
+      kpg.initialize(1024)
+      val kp = kpg.genKeyPair
+      val publicKey = kp.getPublic
+      val privateKey = kp.getPrivate
+
+  
+  
+  
 
   var port = (5000 + r.nextInt(50)).toString
     var jsonString = User(email, name, bday, city).toJson

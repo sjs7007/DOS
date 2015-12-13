@@ -16,7 +16,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     require(!Name.isEmpty,"Name must not be empty.")
   }
 
-  case class EncryptedUser(user: User,digitalSignature: String,pubkey: PublicKey)
+  case class EncryptedUser(user: User,sign: String,pubkey: PublicKey)
 
   case class UserCreated(Email:String)
   case object UserAlreadyExists
