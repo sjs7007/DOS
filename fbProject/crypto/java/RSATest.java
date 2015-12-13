@@ -24,10 +24,10 @@ class RSATest {
 
             byte[] input = "test".getBytes();
             byte [] cipherData = cipher.doFinal(input);
-            String temp = new String(input,"UTF-8");
-            System.out.println("Input : "+temp);
-            temp = new String(cipherData,"UTF-8");
-            System.out.println("Encrypted Data : " + temp);
+            //String temp = new String(input,"UTF-8");
+           // System.out.println("Input : "+temp);
+           // temp = new String(cipherData,"UTF-8");
+           // System.out.println("Encrypted Data : " + temp);
 
             cipher.init(Cipher.DECRYPT_MODE,privateKey);
             byte [] decryptedData = cipher.doFinal(cipherData);
