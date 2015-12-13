@@ -119,7 +119,7 @@ class ClientStarter extends Actor {
 
 object UserVariables {
 
-  var worldSize = 100
+  var worldSize = 10000
 /*
   var nameArray = Array("Junior", "Clooney", "Brigadier", "Zara", "Nuha", "Ayan", "Pandu", "John", "Bobby", "Maya", "Krillin", "Picasso", "Goku", "Tyrael", "Mufasa", "Don-Corleone", "Uther", "Arthas", "Billy")
   var townArray = Array ("sville", " Town", " Republic", " City", "pur", "derabad")
@@ -153,9 +153,9 @@ class Client extends Actor
   import context._
   
     val r = scala.util.Random
-  implicit val timeout: Timeout = 300.seconds
+  implicit val timeout: Timeout = 3.seconds
 
-  var baseIP = "http://192.168.0.14:"
+  var baseIP = "http://192.168.0.12:"
   var requestType = "getFriendList"
 
   var name = "a"
@@ -166,12 +166,12 @@ class Client extends Actor
   var doThis = 0
  
   
-  var listOfFriends : Array[String] = new Array[String](1)
+  var listOfFriends = new ListBuffer[String] // = new Array[String](1)
   var listOfPages = new ListBuffer[String]
   var albumsCreated = 0
 
 
-  var port = (5000 + r.nextInt(50)).toString
+  var port = (6000 + r.nextInt(50)).toString
     var jsonString = User(email, name, bday, city).toJson
 
   var serverIP = ""
@@ -189,13 +189,10 @@ class Client extends Actor
   
   
   
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
-   }
-   yield {
+      IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, jsonString.toString))).mapTo[HttpResponse]
+   
    allEmails += email
-   val tick = context.system.scheduler.schedule(100 millis, 2 millis, self, "Continue") //UNCOMMENT
-   }
+   val tick = context.system.scheduler.schedule(100 millis, (worldSize/5) millis, self, "Continue") //UNCOMMENT
 
    case "Continue" => 
 
@@ -206,85 +203,19 @@ class Client extends Actor
    
   case 0 =>
   
-  // Update my friend list and add a random friend if I have none
-  
-  for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
-  }
-   yield {
-   var myFriends = response.entity.asString
-   listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
-   
+  // Add a random friend
+
    var randEmail = allEmails(r.nextInt(allEmails.length))
    
-   if (listOfFriends.length < 2 && randEmail != email && !(listOfFriends contains randEmail)) { 
-   for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, randEmail).toJson.toString)))
-   }
-   yield {}
-   }
-  }
-  
-  case 1 => 
-  
-  // I want to add a random friend of friend
-  
-  val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
-    
-  if (selectedFriend != null && selectedFriend.length() > 2) {
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
-   }
-   yield {
-      var theirFriends = response.entity.asString
-      var listOfTheirFriends = theirFriends.substring(11,theirFriends.length-1).split(",").map(_.trim)
-      
-      if (listOfTheirFriends.length > 1) {
-      var friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
-      
-      while (listOfTheirFriends.length > 1 && friendToAdd == email)
-      friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
-            
-      if (friendToAdd != email && !(listOfFriends contains friendToAdd)) {
-      for {
-      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,friendToAdd).toJson.toString))).mapTo[HttpResponse]
-   }
-   yield {
-   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]  
-  }
-   yield {
-   var myFriends = response.entity.asString
-   listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
-   }
+      IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, randEmail).toJson.toString)))
    
-   }
-   }
-      
-      }
-   }
-   }
+   listOfFriends += randEmail
    
    
-   for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]  
-  }
-   yield {
-    var thisPage = response.entity.asString
-   if (thisPage != "noPagesExist" && !(listOfPages contains thisPage)) {
-    
-    for {
-      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + thisPage + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
-   }
-   yield {
-    listOfPages += thisPage
-    }
-    }
-   }
-   
+  /*
    
    case 2 =>
-   /*
+   
        val bis = new BufferedInputStream(new FileInputStream("dog1.jpg"))
       
       val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
@@ -307,17 +238,13 @@ class Client extends Actor
   var picsToUpload = 1
   var albumNumber = 1
   for (i <- 1 to picsToUpload) {
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
-   }
-   yield {
-    }
+     IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
     
     }
     }
 */
   
-  case 3 =>
+  case 1 =>
   
   var viewPageOf = ""
   
@@ -325,41 +252,33 @@ class Client extends Actor
     viewPageOf = email
   else viewPageOf = listOfFriends(0)
   
-  for {
-  response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]  
-  }
-   yield {}
+  IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]  
+  
    
-  case 4 => 
+  case 2 => 
   
   // Special case: Write on a page, create a page if it hasn't been created
   
-  if (r.nextInt(100) == 100 || (listOfPages.length > 0)) {
   
   if (listOfPages.length == 0) {
   val pageTitle = "Title"
   val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
   
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createPage"),entity= HttpEntity(`application/json`, CreatePage(email, pageTitle, pageID).toJson.toString)))
-   }
-   yield {
+  IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createPage"),entity= HttpEntity(`application/json`, CreatePage(email, pageTitle, pageID).toJson.toString)))
+   
    listOfPages += pageID
-   }
+   
   
   }
   if (listOfPages.length > 0) {
   val pageToWriteOn = listOfPages(0)
   val myPost = "posting on epic thread"
   
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
-   }
-   yield {
-   }
+      IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
+   
    }
   
-  }
+  
   
   else {
   
@@ -374,18 +293,16 @@ class Client extends Actor
     var target = ""
     
     if (!writeOnOwnWall)
-      target = listOfFriends(r.nextInt(listOfFriends.length))
+      target = listOfFriends(0)
     else target = email
     
     var textPost = ""
     
       textPost = "hurrr durrr"
   
-  for {
-      response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, Wallpost(email, target, textPost).toJson.toString)))
-   }
-   yield {
-   }
+      IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, Wallpost(email, target, textPost).toJson.toString)))
+   
+
    }
    
    
@@ -394,7 +311,7 @@ class Client extends Actor
   
   // Model next behaviour here
   
- doThis = (doThis + 1) % 5
+ doThis = (doThis + 1) % 3
   
   
   
