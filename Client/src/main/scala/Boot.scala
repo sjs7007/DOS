@@ -237,12 +237,11 @@ class Client extends Actor
   var port = "8087"//(5000 + r.nextInt(50)).toString
   var userObj = User(email, name, bday, city, pubBytes)
   
-  var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
+  //var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
   
-  var x = new String (sha256(serialize(userObj)), "UTF-8")
+  var encUser = EncryptedUser(userObj, encryptRSA(sha256(serialize(userObj)), pubBytes), pubBytes)
   
-  println (x)
-
+  
   var serverIP = ""
 
   import context.dispatcher
@@ -256,15 +255,6 @@ class Client extends Actor
 
       // Create user
 
-      /*
-      var encArray = encryptRSA(serialize("abc"), pubBytes)
-      
-      println (" \n\n\n" + encArray + "\n\n\n")
-      
-      var str = decryptRSA(encArray, priBytes)
-      
-      println ("\n\n" +str)
-*/
 
       for {
         response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, encUser.toJson.toString))).mapTo[HttpResponse]
@@ -527,18 +517,42 @@ class Client extends Actor
 
   def encryptRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
 
-  
+  try {
     var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
 
     val cipher: Cipher = Cipher.getInstance("RSA")
     cipher.init(Cipher.ENCRYPT_MODE, pKey)
     val cipherData: Array[Byte] = cipher.doFinal(a)
     return (cipherData)
+    }
+    
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    
+    return null
   }
   
     def encryptPrivateRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
 
-  
+  try {
     var pKey: PrivateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
 
     val cipher: Cipher = Cipher.getInstance("RSA")
@@ -546,9 +560,33 @@ class Client extends Actor
     val cipherData: Array[Byte] = cipher.doFinal(a)
 
     return (cipherData)
+    }
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
   }
 
   def decryptRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
+  
+  try {
   
     var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
 
@@ -558,6 +596,63 @@ class Client extends Actor
     val decryptedData: Array[Byte] = cipher.doFinal(a)
 
     return (decryptedData)
+  }
+  catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
+  }
+  
+  def decryptPublicRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
+  
+  try {
+      var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
+
+        val cipher: Cipher = Cipher.getInstance("RSA")
+
+    cipher.init(Cipher.DECRYPT_MODE, pKey)
+    val decryptedData: Array[Byte] = cipher.doFinal(a)
+
+    return (decryptedData)
+  }
+  catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
   }
   
   
