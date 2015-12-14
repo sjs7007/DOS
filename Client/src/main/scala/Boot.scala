@@ -1,7 +1,8 @@
-import java.security.{MessageDigest, KeyPairGenerator, KeyFactory, PublicKey, PrivateKey}
+import java.security.{SecureRandom, MessageDigest, KeyPairGenerator, KeyFactory, PublicKey, PrivateKey, NoSuchAlgorithmException, InvalidKeyException}
 import com.sun.org.apache.xml.internal.security.utils.Base64
 
 import javax.crypto._
+import javax.crypto.{IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException}
 import javax.crypto.spec.SecretKeySpec
 
 import java.security.spec.{X509EncodedKeySpec, PKCS8EncodedKeySpec}
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.crypto.spec.IvParameterSpec
 
 import spray.httpx.SprayJsonSupport
 import spray.json.DefaultJsonProtocol
@@ -90,19 +92,23 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat3(Wallpost.apply)
   }
   
-  case class Addresses (from: String, to: String)
-  
-      object Addresses extends DefaultJsonProtocol {
-    implicit val format = jsonFormat2(Addresses.apply)
+  case class encryptedAddress (address: String)
+        object Addresses extends DefaultJsonProtocol {
+    implicit val format = jsonFormat1(encryptedAddress.apply)
   }
+  case class EncryptedSecretKey (AESKeyBytes: Array[Byte], initializationVectorBytes: Array[Byte])
+  object EncryptedSecretKey extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(EncryptedSecretKey.apply)
+  }
+
   
-  
-    case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte], encryptedAddresses: Array[Byte])
+    case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: EncryptedSecretKey, signedHashedEncryptedPostData: Array[Byte], fromEmail: String, encryptedToEmail: Array[Byte])
 
       object EncryptedPost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat4(EncryptedPost.apply)
+    implicit val format = jsonFormat5(EncryptedPost.apply)
   }
-
+  
+  
   case class CreatePage (adminEmail:String, Title:String, pageID:String)
 
   object CreatePage extends DefaultJsonProtocol {
@@ -199,6 +205,7 @@ class Client extends Actor
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
+  
   var email = name.substring(0, r.nextInt(5)+1).split(" ")(0) + aggrandizementArray(r.nextInt(aggrandizementArray.length)) + r.nextInt(3000).toString + emailArray(r.nextInt(emailArray.length))
   var bday = (r.nextInt(30)+1).toString + "/" + (r.nextInt(11)+1).toString + "/" + (r.nextInt(100) + 1915).toString
   var city = nameArray(r.nextInt(nameArray.length)) + townArray(r.nextInt(townArray.length))
@@ -228,18 +235,16 @@ class Client extends Actor
   val pubBytes = publicKey.getEncoded()
   val priBytes = privateKey.getEncoded()
   
-  val KeyGen = KeyGenerator.getInstance("AES")
-  KeyGen.init(128)
-
-
-  
+    val KeyGen = KeyGenerator.getInstance("AES")
+    KeyGen.init(128)
+ 
 
   var port = "8087"//(5000 + r.nextInt(50)).toString
   var userObj = User(email, name, bday, city, pubBytes)
   
-  //var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
+  var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
   
-  var encUser = EncryptedUser(userObj, encryptRSA(sha256(serialize(userObj)), pubBytes), pubBytes)
+  //var encUser = EncryptedUser(userObj, encryptRSA(sha256(serialize(userObj)), pubBytes), pubBytes)
   
   
   var serverIP = ""
@@ -263,6 +268,48 @@ class Client extends Actor
           allEmails += email
           var tickTime = (worldSize/50).toInt
           //val tick = context.system.scheduler.schedule(2 millis, tickTime millis, self, "Continue") //UNCOMMENT
+          
+          // POST IN EPIC BREAD
+          
+          
+              var textPost = selfPostFirst(r.nextInt(selfPostFirst.length)) + " " + selfPostSecond(r.nextInt(selfPostSecond.length)) + " " + selfPostThird(r.nextInt(selfPostThird.length))
+
+              var target = email
+              
+            var post = Wallpost(email, target, textPost)
+            
+            // Create AES Key
+            
+              val AESKey = KeyGen.generateKey
+              val AesCipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+              val randomNumberGenerator: SecureRandom = new SecureRandom
+              val bytes: Array[Byte] = new Array[Byte](16)
+              randomNumberGenerator.nextBytes(bytes)    
+              val initializationVector: IvParameterSpec = new IvParameterSpec(bytes)
+              // get bytes with initializationVector.getIV()
+
+
+            val AESbytes = AESKey.getEncoded()
+              
+              //var addresses : Addresses = Addresses (email, target)
+              
+              var encTo :  encryptedAddress = encryptedAddress (target)
+              
+              var esk : EncryptedSecretKey =  EncryptedSecretKey(encryptRSA(AESbytes, pubBytes), encryptRSA(initializationVector.getIV(), pubBytes))
+            
+            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes, initializationVector.getIV()), esk, encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector.getIV())), priBytes), email, encryptPrivateRSA(serialize(encTo), priBytes))
+
+            for {
+              response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/wallWrite"),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
+            }
+              yield {
+              }
+
+          
+          
+          // END POST
+          
+          
         }
 
     case "Continue" =>
@@ -475,12 +522,24 @@ class Client extends Actor
 
             var post = Wallpost(email, target, textPost)
             
-              val AESKey = KeyGen.generateKey
+              
+                            val AESKey = KeyGen.generateKey
+              val AesCipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+              val randomNumberGenerator: SecureRandom = new SecureRandom
+              val bytes: Array[Byte] = new Array[Byte](16)
+              randomNumberGenerator.nextBytes(bytes)    
+              val initializationVector: IvParameterSpec = new IvParameterSpec(bytes)
+              // get bytes with initializationVector.getIV()
+              
+              
               val AESbytes = AESKey.getEncoded()
               
-              var addresses : Addresses = Addresses (email, target)
+              //var addresses : Addresses = Addresses (email, target)
+              
+              var encTo :  encryptedAddress = encryptedAddress (target)
+
             
-            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes), encryptRSA(AESbytes, pubBytes), encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes)), priBytes), encryptPrivateRSA(serialize(addresses), priBytes))
+            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes, initializationVector.getIV()), encryptRSA(AESbytes, pubBytes), encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector.getIV())), priBytes), email, encryptPrivateRSA(serialize(encTo), priBytes))
 
             for {
               response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
@@ -509,9 +568,6 @@ class Client extends Actor
       else if (r.nextInt(100) < lurkFactor)
         requestType = "lurk"
       else requestType = "doNothing"
-
-
-
 
   }
 
@@ -656,27 +712,35 @@ class Client extends Actor
   }
   
   
-  def encryptAES(a: Array[Byte], AESbytes: Array[Byte]) : Array[Byte] = {
+  def encryptAES(a: Array[Byte], AESbytes: Array[Byte], initializationVector: Array[Byte]) : Array[Byte] = {
   
     val AESKey : SecretKeySpec  = new SecretKeySpec(AESbytes, "AES");
 
-    val AesCipher = Cipher.getInstance("AES")
+    val AesCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
 
-    AesCipher.init(Cipher.ENCRYPT_MODE, AESKey)
+    AesCipher.init(Cipher.ENCRYPT_MODE, AESKey, initializationVector)
     val encryptedData: Array[Byte] = AesCipher.doFinal(a)
 
     return (encryptedData)
+    
+    
+    
+    
+    
   }
   
-    def decryptAES(a: Array[Byte], AESbytes: Array[Byte]) : Array[Byte] = {
+    def decryptAES(a: Array[Byte], AESbytes: Array[Byte], initializationVector: Array[Byte]) : Array[Byte] = {
     
         val AESKey : SecretKeySpec  = new SecretKeySpec(AESbytes, "AES");
 
     
-    val AesCipher = Cipher.getInstance("AES")
+    val AesCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
 
-  AesCipher.init(Cipher.DECRYPT_MODE, AESKey)
-  val decryptedData: Array[Byte] = AesCipher.doFinal(a)
+  
+  
+      AesCipher.init(Cipher.DECRYPT_MODE, AESKey, initializationVector)
+    val decryptedData: Array[Byte] = AesCipher.doFinal(a)
+
 
     return (decryptedData)
   }
