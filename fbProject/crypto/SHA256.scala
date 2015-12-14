@@ -6,6 +6,8 @@ import java.util._
 
 import com.sun.org.apache.xml.internal.security.utils.Base64
 
+
+
 object SHA256 extends App {
  // def main(args: Nothing) {
     val md: MessageDigest = MessageDigest.getInstance("SHA-256")

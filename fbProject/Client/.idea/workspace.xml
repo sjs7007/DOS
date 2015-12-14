@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a5e467c-011f-40af-9bc3-e28f3c8df282" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../crypto/java/AESTest.java" afterPath="$PROJECT_DIR$/../crypto/java/AESTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../crypto/AESTest.scala" afterPath="$PROJECT_DIR$/../crypto/AESTest.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../crypto/SHA256.scala" afterPath="$PROJECT_DIR$/../crypto/SHA256.scala" />
     </list>
     <ignored path="Client.iws" />
     <ignored path=".idea/workspace.xml" />
