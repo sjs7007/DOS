@@ -1,4 +1,5 @@
 import java.security.{MessageDigest, KeyPairGenerator, KeyFactory, PublicKey, PrivateKey}
+import com.sun.org.apache.xml.internal.security.utils.Base64
 
 import javax.crypto._
 import javax.crypto.spec.SecretKeySpec
@@ -130,6 +131,7 @@ case class Start()
 case class Continue()
 
 object StartHere extends App {
+
   val system = ActorSystem("Client")
 
   val client = system.actorOf(Props[ClientStarter], name = "ClientStarter")  // the local actor
@@ -193,7 +195,7 @@ class Client extends Actor
   val r = scala.util.Random
   implicit val timeout: Timeout = 3.seconds
 
-  var baseIP = "http://localhost:"
+  var baseIP = "http://192.168.0.28:"
   var requestType = "getFriendList"
 
   var name = nameArray(r.nextInt(nameArray.length)) + " " + nameArray(r.nextInt(nameArray.length))
@@ -232,10 +234,14 @@ class Client extends Actor
 
   
 
-  var port = (5000 + r.nextInt(50)).toString
+  var port = "8087"//(5000 + r.nextInt(50)).toString
   var userObj = User(email, name, bday, city, pubBytes)
   
   var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
+  
+  var x = new String (sha256(serialize(userObj)), "UTF-8")
+  
+  println (x)
 
   var serverIP = ""
 
@@ -250,21 +256,28 @@ class Client extends Actor
 
       // Create user
 
-
+      /*
+      var encArray = encryptRSA(serialize("abc"), pubBytes)
+      
+      println (" \n\n\n" + encArray + "\n\n\n")
+      
+      var str = decryptRSA(encArray, priBytes)
+      
+      println ("\n\n" +str)
+*/
 
       for {
-        response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, encUser.toString))).mapTo[HttpResponse]
+        response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, encUser.toJson.toString))).mapTo[HttpResponse]
       }
         yield {
           allEmails += email
           var tickTime = (worldSize/50).toInt
-          val tick = context.system.scheduler.schedule(2 millis, tickTime millis, self, "Continue") //UNCOMMENT
-          //  val tick = context.system.scheduler.schedule(25 millis, 25 millis, self, "Continue") //UNCOMMENT
+          //val tick = context.system.scheduler.schedule(2 millis, tickTime millis, self, "Continue") //UNCOMMENT
         }
 
     case "Continue" =>
 
-      port = (5000 + r.nextInt(50)).toString
+      port = "8087"//(5000 + r.nextInt(50)).toString
       serverIP = baseIP + port + "/"
 
       requestType match {
@@ -520,7 +533,6 @@ class Client extends Actor
     val cipher: Cipher = Cipher.getInstance("RSA")
     cipher.init(Cipher.ENCRYPT_MODE, pKey)
     val cipherData: Array[Byte] = cipher.doFinal(a)
-
     return (cipherData)
   }
   
@@ -537,7 +549,7 @@ class Client extends Actor
   }
 
   def decryptRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
-
+  
     var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
 
         val cipher: Cipher = Cipher.getInstance("RSA")
@@ -580,17 +592,21 @@ class Client extends Actor
     val o = new ObjectOutputStream(b)
     o.writeObject(obj)
     val r = b.toByteArray()
+    
     return (r)
   }
   
+  
   def sha256(s: String) : Array[Byte] = {
-    val a = MessageDigest.getInstance("SHA-256").digest(s.getBytes)
-    return (a)
+    val a = MessageDigest.getInstance("SHA-256")
+    a.update(s.getBytes)
+    return (a.digest)
 }
 
   def sha256(s: Array[Byte]) : Array[Byte] = {
-    val a = MessageDigest.getInstance("SHA-256").digest(s)
-    return (a)
+    val a = MessageDigest.getInstance("SHA-256")
+    a.update(s)
+    return (a.digest)
 }
 
 }
