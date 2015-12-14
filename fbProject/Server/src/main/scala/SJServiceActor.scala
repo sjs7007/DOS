@@ -2,8 +2,11 @@
  * Created by shinchan on 11/6/15.
  */
 
-import java.io.{BufferedWriter, File, FileOutputStream, FileWriter}
+import java.io._
+import java.security.spec.X509EncodedKeySpec
+import java.security.{KeyFactory, MessageDigest, PublicKey}
 import java.util.concurrent.ConcurrentHashMap
+import javax.crypto.Cipher
 
 import MyJsonProtocol._
 import akka.actor._
@@ -25,8 +28,10 @@ import au.com.bytecode.opencsv.CSVWriter
 object commonVars {
   //list of all users : make it more efficient
   //var users = scala.collection.immutable.Vector[User]()
-  var users = new ConcurrentHashMap[String,User]()
+ // var users = new ConcurrentHashMap[String,User]()
+    var users = new ConcurrentHashMap[String,EncryptedUser]()
   //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
+
 
   //concurrent to allow simultaneous access : stores friends of each email
   var friendLists = new ConcurrentHashMap[String,ListBuffer[String]]()
@@ -35,7 +40,8 @@ object commonVars {
   var friendRequests = new ConcurrentHashMap[String,ListBuffer[String]]()
 
   //store all posts in the buffer below
-  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
+  //var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
+  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,EncryptedPost]]()
 
   //store all album meta data
   //map user email to a map of albums
@@ -123,7 +129,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
    //case getStats => getServerStats()
     case "getStats" =>
       updateAllStats()
-      println(getSummary())
+     // println(getSummary())
   }
 
 
@@ -249,11 +255,12 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       pathEnd {
         post {
           log.debug("inhere")
-          entity(as[User]) { user => requestContext =>
+          //entity(as[User]) { user => requestContext =>
+          entity (as[EncryptedUser]) { encUser => requestContext =>
             val responder = createResponder(requestContext)
             //count=count+1
-            createUser(user) match {
-              case true => responder ! UserCreated(user.Email)
+            createUser(encUser) match {
+              case true => responder ! UserCreated(encUser.user.Email)
               case _ => responder ! UserAlreadyExists
             }
           }
@@ -625,7 +632,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       } ~
     path("wallWrite") {
       post {
-        entity(as[fbPost]) { wallpost => requestContext =>
+        //entity(as[fbPost]) { wallpost => requestContext =>
+        entity(as[EncryptedPost]) { wallpost => requestContext =>
           val responder = createResponder(requestContext)
           //count=count+1
           writePost(wallpost) match {
@@ -785,20 +793,64 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     return albumDirectory.get(userEmail).containsKey(albumID)
   }
 
+
+  def serialize(obj: AnyRef): Array[Byte] = {
+    val b = new ByteArrayOutputStream()
+    val o = new ObjectOutputStream(b)
+    o.writeObject(obj)
+    val r = b.toByteArray()
+    return (r)
+  }
+
   //create User
-  private def createUser(user: User) : Boolean = {
+  //private def createUser(user: User) : Boolean = {
+  private def createUser(encUser: EncryptedUser) : Boolean = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
-    val doesNotExist = !doesUserExist(user.Email)
-    log.debug("Users : "+doesNotExist)
-    if(doesNotExist) {
-      //users = users :+ ufser
-      users.put(user.Email,user)
-      friendLists.put(user.Email,new ListBuffer())
-      friendRequests.put(user.Email,new ListBuffer())
-      userPosts.put(user.Email,new ConcurrentHashMap())
-      albumDirectory.put(user.Email,new ConcurrentHashMap())
+    log.debug("User creation request received on server.")
+    var publicKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encUser.pubkey))
+
+    //check if sign matches with hash of encUser.user
+
+    //get hash
+    val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+    md.update(serialize(encUser.user))
+    val hashEncUser: Array[Byte] = md.digest
+
+
+    //decrypt hash
+
+    val cipher : Cipher = Cipher.getInstance("RSA");
+    cipher.init(Cipher.DECRYPT_MODE,publicKey);
+    val decryptedSign: Array[Byte] = cipher.doFinal(encUser.sign)
+
+   // if(Array.equals(hashEncUser,decryptedSign)) {
+     if(java.util.Arrays.equals(hashEncUser,decryptedSign)) {
+      log.debug("User has the public key/private key pair.")
+      val doesNotExist = !doesUserExist(encUser.user.Email)
+      log.debug("Users : "+doesNotExist)
+      if(doesNotExist) {
+        //users = users :+ ufser
+        users.put(encUser.user.Email,encUser)
+        log.debug("Created User : "+encUser.user.Email)
+        friendLists.put(encUser.user.Email,new ListBuffer())
+        friendRequests.put(encUser.user.Email,new ListBuffer())
+        userPosts.put(encUser.user.Email,new ConcurrentHashMap())
+        albumDirectory.put(encUser.user.Email,new ConcurrentHashMap())
+      }
+      doesNotExist
     }
-    doesNotExist
+    else {
+      val x : String = new String(decryptedSign,"UTF-8")
+      val y : String = new String(hashEncUser,"UTF-8")
+      val z : String = new String(decryptedSign,"UTF-8")
+      /*log.debug("User : "+x)
+      log.debug(">>"+y+"<< >>"+z+"<<")
+      log.debug("true or not : "+(y.equals(z)))
+      log.debug("true or not2 : "+Array.equals(hashEncUser,decryptedSign))*/
+      log.debug("Hashes didn't match. User dont have correct public/private pair.")
+      false
+    }
+
   }
 
   //create Page
@@ -844,22 +896,25 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
   
   
-  private def writePost(p : fbPost) : String = {
-  if(!doesUserExist(p.fromEmail)) {
-    log.debug("From email doesn't exist. Can't post.")
-    return "invalidPost"
-  }
-  else if(!doesUserExist(p.toEmail)) {
-    log.debug("To email doesn't exist. Can't post")
-    return "invalidPost"
-  }
-  if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
-      userPosts.get(p.toEmail).put(System.currentTimeMillis().toString(),p)
-      nUserPosts = nUserPosts+1
-    return "posted"
-  }
-    log.debug("Can't post because not friends.")
-   return "notFriends"
+  //private def writePost(p : fbPost) : String = {
+  private def writePost(p : EncryptedPost) : String = {
+   // p.encryptedAddresses
+
+  /*  if(!doesUserExist(p.fromEmail)) {
+      log.debug("From email doesn't exist. Can't post.")
+      return "invalidPost"
+    }
+    else if(!doesUserExist(p.toEmail)) {
+      log.debug("To email doesn't exist. Can't post")
+      return "invalidPost"
+    }
+    if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
+        userPosts.get(p.toEmail).put(System.currentTimeMillis().toString(),p)
+        nUserPosts = nUserPosts+1
+      return "posted"
+    }*/
+      log.debug("Can't post because not friends.")
+     return "notFriends"
   }
 
   private def createPagePost(post: pagePost,pageID : String) : String = {

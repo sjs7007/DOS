@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: com.sun.xml.security:xml-security-impl:1.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.sun.xml.security/xml-security-impl/jars/xml-security-impl-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

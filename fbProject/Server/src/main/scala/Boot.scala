@@ -21,9 +21,9 @@ object Boot extends App {
   //IO(Http) ? Http.Bind(service, interface = "localhost", port = 8082)
 
   IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port =8087), sender = service)
-  for(i <- 0 to 50) {
+ /* for(i <- 0 to 50) {
     IO(Http).tell(Http.Bind(service, interface = "0.0.0.0", port = 5000+i), sender = service)
-  }
+  }*/
 
  // system.scheduler.schedule(5 seconds,5 seconds,ser,"getStats")
 

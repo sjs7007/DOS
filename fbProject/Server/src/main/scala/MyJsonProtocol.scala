@@ -14,7 +14,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     require(!Name.isEmpty,"Name must not be empty.")
   }
 
-  case class EncryptedUser(user: User,sign: String,pubkey: Array[Byte])
+  case class EncryptedUser(user: User,sign: Array[Byte],pubkey: Array[Byte])
 
   case class UserCreated(Email:String)
   case object UserAlreadyExists
@@ -54,6 +54,18 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class fbPost(fromEmail:String, toEmail:String, data:String)
   case object PostSuccess
   case object PostFail
+
+  case class Addresses (from: String, to: String)
+
+  object Addresses extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(Addresses.apply)
+  }
+
+  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte], encryptedAddresses: Array[Byte])
+
+  object EncryptedPost extends DefaultJsonProtocol {
+    implicit val format = jsonFormat4(EncryptedPost.apply)
+  }
 
   //page post
   case class pagePost(fromEmail:String,data:String)

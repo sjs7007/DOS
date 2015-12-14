@@ -68,5 +68,6 @@
     <orderEntry type="library" scope="TEST" name="SBT: org.specs2:specs2-core_2.11:2.3.11:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.specs2:specs2-matcher_2.11:2.3.11:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="SBT: org.specs2:specs2_2.11:2.3.13:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.sun.xml.security:xml-security-impl:1.0:jar" level="project" />
   </component>
 </module>
