@@ -4,9 +4,9 @@
 
 import java.io._
 import java.security.spec.{PKCS8EncodedKeySpec, X509EncodedKeySpec}
-import java.security.{PrivateKey, KeyFactory, MessageDigest, PublicKey}
+import java.security._
 import java.util.concurrent.ConcurrentHashMap
-import javax.crypto.Cipher
+import javax.crypto.{IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, Cipher}
 
 import MyJsonProtocol._
 import akka.actor._
@@ -260,8 +260,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             val responder = createResponder(requestContext)
             //count=count+1
             createUser(encUser) match {
-              case true => responder ! UserCreated(encUser.user.Email)
-              case _ => responder ! UserAlreadyExists
+              case "doesNotExist" => responder ! UserCreated(encUser.user.Email)
+              case "alreadyExists" => responder ! UserAlreadyExists
+              case "DigitalSignFailed" => responder ! DigitalSignFailed
             }
           }
         }
@@ -642,6 +643,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             case "invalidPost" => responder ! PostFail
 
             case "notFriends" => responder ! PostFail
+
+            case "toEmailDecryptFailed" => responder ! PostFail
           }
         }
       }
@@ -805,33 +808,150 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
   def encryptRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
 
-    var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
+    try {
+      var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
 
+      val cipher: Cipher = Cipher.getInstance("RSA")
+      cipher.init(Cipher.ENCRYPT_MODE, pKey)
+      val cipherData: Array[Byte] = cipher.doFinal(a)
+      return (cipherData)
+    }
 
-    val cipher: Cipher = Cipher.getInstance("RSA")
-    cipher.init(Cipher.ENCRYPT_MODE, pKey)
-    val cipherData: Array[Byte] = cipher.doFinal(a)
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
 
-    return (cipherData)
+    return null
+  }
+
+  def encryptPrivateRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
+
+    try {
+      var pKey: PrivateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
+
+      val cipher: Cipher = Cipher.getInstance("RSA")
+      cipher.init(Cipher.ENCRYPT_MODE, pKey)
+      val cipherData: Array[Byte] = cipher.doFinal(a)
+
+      return (cipherData)
+    }
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
   }
 
   def decryptRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
 
-    var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
+    try {
 
-    val cipher: Cipher = Cipher.getInstance("RSA")
-    Cipher.getInstance("RSA").init(Cipher.DECRYPT_MODE, pKey)
-    val decryptedData: Array[Byte] = cipher.doFinal(a)
+      var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
 
-    return (decryptedData)
+      val cipher: Cipher = Cipher.getInstance("RSA")
+
+      cipher.init(Cipher.DECRYPT_MODE, pKey)
+      val decryptedData: Array[Byte] = cipher.doFinal(a)
+
+      return (decryptedData)
+    }
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
+  }
+
+  def decryptPublicRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
+
+    try {
+      var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
+
+      val cipher: Cipher = Cipher.getInstance("RSA")
+
+      cipher.init(Cipher.DECRYPT_MODE, pKey)
+      val decryptedData: Array[Byte] = cipher.doFinal(a)
+
+      return (decryptedData)
+    }
+    catch {
+      case x: UnsupportedEncodingException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchAlgorithmException => {
+        System.out.println(x.toString)
+      }
+      case x: NoSuchPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: BadPaddingException => {
+        System.out.println(x.toString)
+      }
+      case x: InvalidKeyException => {
+        System.out.println(x.toString)
+      }
+      case x: IllegalBlockSizeException => {
+        System.out.println(x.toString)
+      }
+    }
+    return null
   }
 
   //create User
   //private def createUser(user: User) : Boolean = {
-  private def createUser(encUser: EncryptedUser) : Boolean = {
+  private def createUser(encUser: EncryptedUser) : String = {
     //val doesNotExist = !users.exists(_.Email == user.Email)
     log.debug("User creation request received on server.")
-    var publicKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encUser.pubkey))
+    //var publicKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encUser.pubkey))
 
     //check if sign matches with hash of encUser.user
 
@@ -844,35 +964,33 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     //decrypt hash
 
     val cipher : Cipher = Cipher.getInstance("RSA");
-    cipher.init(Cipher.DECRYPT_MODE,publicKey);
-    val decryptedSign: Array[Byte] = cipher.doFinal(encUser.sign)
+    //cipher.init(Cipher.DECRYPT_MODE,publicKey);
+    //val decryptedSign: Array[Byte] = cipher.doFinal(encUser.sign)
+    val decryptedSign : Array[Byte] = decryptPublicRSA(encUser.sign,encUser.pubkey)
 
    // if(Array.equals(hashEncUser,decryptedSign)) {
-     if(java.util.Arrays.equals(hashEncUser,decryptedSign)) {
-      log.debug("User has the public key/private key pair.")
+     if(!(decryptedSign==null) && (java.util.Arrays.equals(hashEncUser,decryptedSign))) {
+      log.debug("Digital Signature Succesful.")
       val doesNotExist = !doesUserExist(encUser.user.Email)
-      log.debug("Users : "+doesNotExist)
+      //log.debug("Users : "+doesNotExist)
       if(doesNotExist) {
         //users = users :+ ufser
         users.put(encUser.user.Email,encUser)
-        log.debug("Created User : "+encUser.user.Email)
+       // log.debug("Created User : "+encUser.user.Email)
         friendLists.put(encUser.user.Email,new ListBuffer())
         friendRequests.put(encUser.user.Email,new ListBuffer())
         userPosts.put(encUser.user.Email,new ConcurrentHashMap())
         albumDirectory.put(encUser.user.Email,new ConcurrentHashMap())
+        return "doesNotExist"
       }
-      doesNotExist
+      else {
+        return "alreadyExists"
+      }
+
     }
     else {
-     /* val x : String = new String(decryptedSign,"UTF-8")
-      val y : String = new String(hashEncUser,"UTF-8")
-      val z : String = new String(decryptedSign,"UTF-8")
-      /*log.debug("User : "+x)
-      log.debug(">>"+y+"<< >>"+z+"<<")
-      log.debug("true or not : "+(y.equals(z)))
-      log.debug("true or not2 : "+Array.equals(hashEncUser,decryptedSign))*/ */
-      log.debug("Hashes didn't match. User dont have correct public/private pair.")
-      false
+      log.debug("Digital Signature failed. User dont have correct public/private pair.")
+      return "DigitalSignFailed"
     }
 
   }
@@ -918,27 +1036,48 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       return "requestSent"
     }
   }
-  
+
+  def deserialize(bytes: Array[Byte]): AnyRef = {
+    val b = new ByteArrayInputStream(bytes)
+    val o = new ObjectInputStream(b)
+    o.readObject()
+  }
   
   //private def writePost(p : fbPost) : String = {
   private def writePost(p : EncryptedPost) : String = {
-   // p.encryptedAddresses
+    //first decrypt the addresses using public key
+    log.debug("Wall write post request received from : "+p.fromEmail)
 
-  /*  if(!doesUserExist(p.fromEmail)) {
+    //get public key of user p.fromEmail if exists
+    if(!doesUserExist(p.fromEmail)) {
       log.debug("From email doesn't exist. Can't post.")
       return "invalidPost"
     }
-    else if(!doesUserExist(p.toEmail)) {
-      log.debug("To email doesn't exist. Can't post")
-      return "invalidPost"
+    val publicKey : Array[Byte] = users.get(p.fromEmail).pubkey
+    val toEmailBytes : Array[Byte] = decryptPublicRSA(p.encryptedToEmail,publicKey)
+    if(toEmailBytes==null) {
+      log.debug("toEmail decryption failed.")
+      return "toEmailDecryptFailed"
     }
-    if(areFriendsOrSame(p.fromEmail,p.toEmail)) {
-        userPosts.get(p.toEmail).put(System.currentTimeMillis().toString(),p)
+    else {
+      //val toEmail : String = new String(toEmailBytes,"UTF-8")
+      val toEmailCase: encryptedAddress = deserialize(toEmailBytes).asInstanceOf[encryptedAddress]
+      val toEmail : String = toEmailCase.address
+
+      log.debug("decrypted to email : "+toEmail)
+
+      if(!doesUserExist(toEmail)) {
+        log.debug("To email doesn't exist. Can't post")
+        return "invalidPost"
+      }
+      if(areFriendsOrSame(p.fromEmail,toEmail)) {
+        userPosts.get(toEmail).put(System.currentTimeMillis().toString(),p)
         nUserPosts = nUserPosts+1
-      return "posted"
-    }*/
+        return "posted"
+      }
       log.debug("Can't post because not friends.")
-     return "notFriends"
+      return "notFriends"
+    }
   }
 
   private def createPagePost(post: pagePost,pageID : String) : String = {
@@ -1007,6 +1146,11 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       //requestContext.complete(StatusCodes.Conflict)
       requestContext.complete("User with email id already exists.")
       log.debug("User already created with same email.")
+      killYourself
+
+    case DigitalSignFailed =>
+      requestContext.complete("Digital Signature Failed.")
+      log.debug("Digital Signature Failed.")
       killYourself
 
     case AlreadyFriends =>

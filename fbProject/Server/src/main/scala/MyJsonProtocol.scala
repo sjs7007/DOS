@@ -19,6 +19,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class UserCreated(Email:String)
   case object UserAlreadyExists
   case object CantTrustMessage
+  case object DigitalSignFailed
 
   object User extends DefaultJsonProtocol {
     implicit val format = jsonFormat5(User.apply)
@@ -55,16 +56,16 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object PostSuccess
   case object PostFail
 
-  case class Addresses (from: String, to: String)
+  case class encryptedAddress (address: String)
 
-  object Addresses extends DefaultJsonProtocol {
-    implicit val format = jsonFormat2(Addresses.apply)
+  object encryptedAddress extends DefaultJsonProtocol {
+    implicit val format = jsonFormat1(encryptedAddress.apply)
   }
 
-  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte], encryptedAddresses: Array[Byte])
+  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat4(EncryptedPost.apply)
+    implicit val format = jsonFormat5(EncryptedPost.apply)
   }
 
   //page post

@@ -9,4 +9,6 @@ class SHA256 {
         md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
         byte[] digest = md.digest();
     }
+
+
 }
