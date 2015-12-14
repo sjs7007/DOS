@@ -1,8 +1,9 @@
-import java.security.KeyPairGenerator
-import javax.crypto.Cipher
+import java.io.UnsupportedEncodingException
+import java.security.{NoSuchAlgorithmException, KeyPairGenerator,InvalidKeyException}
+import javax.crypto.{IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, Cipher}
 
 object RSATest extends App {
-   // try {
+    try {
       val kpg = KeyPairGenerator.getInstance("RSA")
       kpg.initialize(1024)
       val kp = kpg.genKeyPair
@@ -20,12 +21,12 @@ object RSATest extends App {
       //System.out.println("Input : " + temp)
       //temp = new String(cipherData, "UTF-8")
       //System.out.println("Encrypted Data : " + temp)
-      cipher.init(Cipher.DECRYPT_MODE, privateKey)
+      cipher.init(Cipher.DECRYPT_MODE,publicKey)
       val decryptedData: Array[Byte] = cipher.doFinal(cipherData)
       temp = new String(decryptedData, "UTF-8")
       System.out.println("Decrytped Data : " + temp)
-  //  }
-   /* catch {
+    }
+    catch {
       case x: UnsupportedEncodingException => {
         System.out.println(x.toString)
       }
@@ -44,6 +45,6 @@ object RSATest extends App {
       case x: IllegalBlockSizeException => {
         System.out.println(x.toString)
       }
-    }*/
+    }
 }
 

@@ -3,8 +3,8 @@
  */
 
 import java.io._
-import java.security.spec.X509EncodedKeySpec
-import java.security.{KeyFactory, MessageDigest, PublicKey}
+import java.security.spec.{PKCS8EncodedKeySpec, X509EncodedKeySpec}
+import java.security.{PrivateKey, KeyFactory, MessageDigest, PublicKey}
 import java.util.concurrent.ConcurrentHashMap
 import javax.crypto.Cipher
 
@@ -117,9 +117,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   def handle : Receive = {
     case Http.Bound(_) =>
       httpListener = Some(sender)
-      log.debug("dis listener : "+httpListener.get.path.toString())
+    //  log.debug("dis listener : "+httpListener.get.path.toString())
       println("bound")
-      log.debug("can kill when I want to now")
+   //   log.debug("can kill when I want to now")
       httpListenerBuffer += httpListener.get.path.toString()
       //sender ! Http.Unbind(10 seconds)
     case Http.Unbound =>
@@ -706,8 +706,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     for(port<- 0 until httpListenerBuffer.length) {
       context.actorSelection(httpListenerBuffer(port)) ? Http.GetStats onSuccess {
         case x: Stats =>
-          log.debug("idhar aa gaya yaaay")
-          log.debug(x.toString+"dsds")
+         // log.debug("idhar aa gaya yaaay")
+         // log.debug(x.toString+"dsds")
           /*tmp = x.toString
           log.debug("this is tmps : "+tmp)
           println(tmp)
@@ -802,6 +802,30 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     return (r)
   }
 
+
+  def encryptRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
+
+    var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
+
+
+    val cipher: Cipher = Cipher.getInstance("RSA")
+    cipher.init(Cipher.ENCRYPT_MODE, pKey)
+    val cipherData: Array[Byte] = cipher.doFinal(a)
+
+    return (cipherData)
+  }
+
+  def decryptRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
+
+    var pKey:PrivateKey  = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(priKey));
+
+    val cipher: Cipher = Cipher.getInstance("RSA")
+    Cipher.getInstance("RSA").init(Cipher.DECRYPT_MODE, pKey)
+    val decryptedData: Array[Byte] = cipher.doFinal(a)
+
+    return (decryptedData)
+  }
+
   //create User
   //private def createUser(user: User) : Boolean = {
   private def createUser(encUser: EncryptedUser) : Boolean = {
@@ -840,13 +864,13 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       doesNotExist
     }
     else {
-      val x : String = new String(decryptedSign,"UTF-8")
+     /* val x : String = new String(decryptedSign,"UTF-8")
       val y : String = new String(hashEncUser,"UTF-8")
       val z : String = new String(decryptedSign,"UTF-8")
       /*log.debug("User : "+x)
       log.debug(">>"+y+"<< >>"+z+"<<")
       log.debug("true or not : "+(y.equals(z)))
-      log.debug("true or not2 : "+Array.equals(hashEncUser,decryptedSign))*/
+      log.debug("true or not2 : "+Array.equals(hashEncUser,decryptedSign))*/ */
       log.debug("Hashes didn't match. User dont have correct public/private pair.")
       false
     }

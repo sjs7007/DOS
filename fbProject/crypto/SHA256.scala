@@ -13,7 +13,7 @@ object SHA256 extends App {
     md.update(text.getBytes("UTF-8"))
     val digest: Array[Byte] = md.digest
 
-        println(java.util.Arrays.equals("hell".getBytes,"hell".getBytes))
+        /*println(java.util.Arrays.equals("hell".getBytes,"hell".getBytes))
 
 
     println(java.util.Arrays.equals("hell".getBytes,"no".getBytes))
@@ -21,7 +21,7 @@ object SHA256 extends App {
       println(Array.equals("hell".getBytes,"hell".getBytes))
 
 
-    println(Array.equals("hell".getBytes,"no".getBytes))
+    println(Array.equals("hell".getBytes,"no".getBytes))*/
 
 
   //}
