@@ -6,6 +6,18 @@ import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 
+  case class userPublicKey(Email:String,PublicKey : Array[Byte])
+  object userPublicKey extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat2(userPublicKey.apply)
+  }
+
+
+  case class keyClass(publicKeyList : Array[userPublicKey],encryptedSignedHash : Array[Byte])
+  object keyClass extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(keyClass.apply)
+  }
+
+
   case class InitDH(Email:String,KeyBytes:Array[Byte])
   implicit val format = jsonFormat2(InitDH.apply)
 
@@ -63,7 +75,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat1(encryptedAddress.apply)
   }
 
-  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyList : Array[Byte])
+  case class EncryptedSecretKey (AESKeyBytes: Array[Byte], initializationVectorBytes: Array[Byte])
+  object EncryptedSecretKey extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(EncryptedSecretKey.apply)
+  }
+
+  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: EncryptedSecretKey, signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyList : Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
     implicit val format = jsonFormat6(EncryptedPost.apply)

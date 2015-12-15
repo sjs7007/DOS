@@ -4,12 +4,12 @@
 
 import java.io._
 import java.math.BigInteger
-import java.security.spec.{PKCS8EncodedKeySpec, X509EncodedKeySpec}
 import java.security._
+import java.security.spec.{PKCS8EncodedKeySpec, X509EncodedKeySpec}
 import java.util.concurrent.ConcurrentHashMap
 import javax.crypto._
 import javax.crypto.interfaces.DHPublicKey
-import javax.crypto.spec.DHParameterSpec
+import javax.crypto.spec.{DHParameterSpec, IvParameterSpec}
 
 import MyJsonProtocol._
 import akka.actor._
@@ -32,6 +32,44 @@ object commonVars {
   //list of all users : make it more efficient
   //var users = scala.collection.immutable.Vector[User]()
  // var users = new ConcurrentHashMap[String,User]()
+
+  var serverPublicKey : PublicKey = null
+  var serverPrivateKey : PrivateKey = null
+
+  try {
+    val kpg = KeyPairGenerator.getInstance("RSA")
+    kpg.initialize(1024)
+    val kp = kpg.genKeyPair
+    println("RSA Key Pairs generated for server.")
+    serverPublicKey = kp.getPublic
+    serverPrivateKey = kp.getPrivate
+  }
+  catch {
+    case x: UnsupportedEncodingException => {
+      System.out.println(x.toString)
+    }
+    case x: NoSuchAlgorithmException => {
+      System.out.println(x.toString)
+    }
+    case x: NoSuchPaddingException => {
+      System.out.println(x.toString)
+    }
+    case x: BadPaddingException => {
+      System.out.println(x.toString)
+    }
+    case x: InvalidKeyException => {
+      System.out.println(x.toString)
+    }
+    case x: IllegalBlockSizeException => {
+      System.out.println(x.toString)
+    }
+  }
+
+
+
+    var userSymmetricKey = new ConcurrentHashMap[String,SecretKey]()
+    var userPublicKey = new ConcurrentHashMap[String,Array[Byte]]()
+
     var users = new ConcurrentHashMap[String,EncryptedUser]()
   //var friendLists = new HashMap[String,Set[String]] with MultiMap[String,String]
 
@@ -162,6 +200,41 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~*/
+    //will return an encrypted map converted to arraybytes of friendName -> publicKey
+    //the entire thing is encrypted using public key of requesting person
+    pathPrefix("getFriendsPublicKey") {
+      get {
+        parameters('fromEmail.as[String]) {
+          fromEmail =>
+            respondWithMediaType(`application/json`) {
+              complete {
+                //find friends of user
+                //  val mapPublicKeysBytes = new ConcurrentHashMap[String,Array[Byte]]()
+                val friendList = friendLists.get(fromEmail)
+                val listPublicKeysBytes = new Array[userPublicKey](friendList.length)
+
+                for (i <- 0 until friendList.length) {
+                  //listPublicKeysBytes(i) = encryptRSA(userPublicKey.get(friendList(i)), )
+                  val temp = new userPublicKey(friendList(i),userPublicKey.get(friendList(i)))
+                  listPublicKeysBytes(i)= temp
+                }
+                //now calculate hash, digitally sign with server's private key so
+                //as to ensure no tampering is occuring
+
+                val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+                md.update(serialize(listPublicKeysBytes))
+                val hash = md.digest()
+                val signedHash = encryptPrivateRSA(hash,serverPrivateKey.getEncoded)
+                val encryptedSignedHash = encryptRSA(signedHash,userPublicKey.get(fromEmail))
+
+                val returnData = new keyClass(listPublicKeysBytes,encryptedSignedHash)
+                //byteToString(serialize(keyClass))
+                keyClass
+              }
+            }
+        }
+      }
+    }~
     pathPrefix("createSymmetricKey") {
       post {
         //respondWithMediaType(`application/json`) {
@@ -213,12 +286,45 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
               val bobSharedSecret: Array[Byte] = bobKeyAgree.generateSecret()
               log.debug("Hex form : "+toHexString(bobSharedSecret))
+              //userSharedSecret.put(publicKeyBytes.Email,bobSharedSecret)
+
+              bobKeyAgree.doPhase(alicePublicKey, true)
+              val bobAesKey: SecretKey = bobKeyAgree.generateSecret("AES")
+              userSymmetricKey.put(publicKeyBytes.Email,bobAesKey)
 
               //requestContext.complete(bobPublicKeyBytes)
-                requestContext.complete(byteToString(bobPublicKeyBytes))
+              requestContext.complete(byteToString(bobPublicKeyBytes))
              // }
           }
        // }
+      }
+    }~
+    pathPrefix("getPublicKey") {
+      post {
+        entity(as[InitDH]) {
+          initVectorBytes => requestContext =>
+            val responder = createResponder(requestContext)
+            //generate symmetric key based on shared secret corresponding to username in shared secret
+            val AESCipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+            if(userSymmetricKey.containsKey(initVectorBytes.Email)) {
+              //AESCipher.init(Cipher.ENCRYPT_MODE, bobAesKey, initVector)
+              val AESKey : SecretKey = userSymmetricKey.get(initVectorBytes.Email)
+              if(initVectorBytes.KeyBytes==null) {
+                log.debug("null hai init")
+              }
+              if(serverPublicKey==null) {
+                log.debug("Server public key is null.")
+              }
+              AESCipher.init(Cipher.ENCRYPT_MODE,AESKey,new IvParameterSpec(initVectorBytes.KeyBytes))
+              val encryptedServerPublicKey: Array[Byte] = AESCipher.doFinal(serverPublicKey.getEncoded)
+              log.debug("Hex form of public key sent : "+toHexString(serverPublicKey.getEncoded))
+              requestContext.complete(byteToString(encryptedServerPublicKey))
+              //requestContext.complete(byteToString(serverPublicKey.getEncoded))
+            }
+            else {
+              requestContext.complete("null")
+            }
+        }
       }
     }~
     pathPrefix("summary") {
@@ -632,7 +738,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                   }
                 }
               }
-            } ~
+            }
           path("ids") {
             /*get {
               respondWithMediaType(`application/json`) {
@@ -648,11 +754,28 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     complete {
                       //count=count+1
                       if (areFriendsOrSame(fromUser, userEmail)) {
-                        userPosts.get(userEmail).keySet().toString()
-                        //"dss"
+                        //userPosts.get(userEmail).keySet().toString()
+                        //fetch only those post ids which this user has access to
+
+                        //for username userEmail, get the list of postids first
+                        val postIdsList= userPosts.get(userEmail).keySet().toArray()
+                        val postIdsReturn : ListBuffer[String] = new ListBuffer()
+
+                        //for each post id, get the encrypted post,get the list of people who have access to it
+                        //the list itself is encrypted using server's public key
+                        //decrypt it and then check if fromUser is there in the list or not
+                        //if present, add the post id to list of postids to be returned
+                        for(i<- 0 until postIdsList.length) {
+                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyList
+                          //now decrypt this using server's private key
+                          val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                          //now create a list from this bytes and
+                        }
+
+                        "dss"
                       }
                       else {
-                        "Don't have rights to view posts."
+                        "Don't have rights to view post list."
                       }
                     }
                   }
@@ -1056,13 +1179,18 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
    // if(Array.equals(hashEncUser,decryptedSign)) {
      if(!(decryptedSign==null) && (java.util.Arrays.equals(hashEncUser,decryptedSign))) {
-      log.debug("Digital Signature Succesful.")
+      log.debug("Digital Signature Successful.")
       val doesNotExist = !doesUserExist(encUser.user.Email)
       //log.debug("Users : "+doesNotExist)
       if(doesNotExist) {
         //users = users :+ ufser
         users.put(encUser.user.Email,encUser)
        // log.debug("Created User : "+encUser.user.Email)
+
+        //decrypt user's public key and store
+        userPublicKey.put(encUser.user.Email,encUser.pubkey)
+
+
         friendLists.put(encUser.user.Email,new ListBuffer())
         friendRequests.put(encUser.user.Email,new ListBuffer())
         userPosts.put(encUser.user.Email,new ConcurrentHashMap())
@@ -1075,7 +1203,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
     }
     else {
-      log.debug("Digital Signature failed. User dont have correct public/private pair.")
+      log.debug("Digital Signature failed. User doesnt have correct public/private pair.")
       return "DigitalSignFailed"
     }
 
@@ -1140,7 +1268,8 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       return "invalidPost"
     }
     val publicKey : Array[Byte] = users.get(p.fromEmail).pubkey
-    val toEmailBytes : Array[Byte] = decryptPublicRSA(p.encryptedToEmail,publicKey)
+    //val toEmailBytes : Array[Byte] = decryptPublicRSA(p.encryptedToEmail,publicKey)
+    val toEmailBytes : Array[Byte] = decryptRSA(p.encryptedToEmail,serverPrivateKey.getEncoded())
     if(toEmailBytes==null) {
       log.debug("toEmail decryption failed.")
       return "toEmailDecryptFailed"
