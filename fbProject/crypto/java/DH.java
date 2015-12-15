@@ -1,15 +1,22 @@
 //http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html#DH2Ex
 import sun.security.util.BigInt;
+
+import javax.crypto.Cipher;
 import javax.crypto.KeyAgreement;
+import javax.crypto.SecretKey;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
 import java.lang.Exception;
+import java.lang.String;
 import java.lang.System;
 import java.math.BigInteger;
+import java.security.*;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 
 class DH {
@@ -133,10 +140,42 @@ class DH {
 
         System.out.println("Alice secret: " + toHexString(aliceSharedSecret));
         System.out.println("Bob secret: " + toHexString(bobSharedSecret));
-        
+
         if (!java.util.Arrays.equals(aliceSharedSecret, bobSharedSecret))
             throw new Exception("Shared secrets differ");
         System.out.println("Shared secrets are the same");
+
+        //Use the shared secret keys to create AES keys on each end
+        //Remember to use initialization vector also
+        System.out.println("Return shared secret as SecretKey object ...");
+        // Bob
+        // NOTE: The call to bobKeyAgree.generateSecret above reset the key
+        // agreement object, so we call doPhase again prior to another
+        // generateSecret call
+        bobKeyAgree.doPhase(alicePublicKey, true);
+        SecretKey bobAesKey = bobKeyAgree.generateSecret("AES");
+
+        java.security.SecureRandom randomNumberGenerator = new SecureRandom();
+        byte bytes[] = new byte[16];
+        randomNumberGenerator.nextBytes(bytes);
+
+        byte[] byteText = "dis dah plain text".getBytes();
+        IvParameterSpec initVector = new IvParameterSpec(bytes);
+
+        Cipher AESCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        AESCipher.init(Cipher.ENCRYPT_MODE,bobAesKey,initVector);
+        byte[] encryptedData = AESCipher.doFinal(byteText);
+        // Alice
+        // NOTE: The call to aliceKeyAgree.generateSecret above reset the key
+        // agreement object, so we call doPhase again prior to another
+        // generateSecret call
+        aliceKeyAgree.doPhase(bobPublicKey, true);
+        SecretKey aliceAesKey = aliceKeyAgree.generateSecret("AES");
+
+        AESCipher.init(Cipher.DECRYPT_MODE,aliceAesKey,initVector);
+        byte[] decryptedData = AESCipher.doFinal(encryptedData);
+        String temp = new String(decryptedData,"UTF-8");
+        System.out.println("Decrypted data : " + temp);
     }
 
     /*
