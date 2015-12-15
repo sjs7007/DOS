@@ -2,13 +2,13 @@
  * Created by shinchan on 11/6/15.
  */
 
-import spray.http.HttpData.Bytes
 import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
-  implicit val personFormat = jsonFormat3(Person)
 
-  case class Person(name: String, fistName: String, age: Long)
+  case class InitDH(Email:String,KeyBytes:Array[Byte])
+  implicit val format = jsonFormat2(InitDH.apply)
+
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String,pubKey : Array[Byte]) {
     require(!Email.isEmpty, "Emails must not be empty.")
@@ -53,7 +53,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class fbPost(fromEmail:String, toEmail:String, data:String,postType: String) //postType=selectedFriends/allFriends
+  case class fbPost(fromEmail:String, toEmail:String, data:String) //postType=selectedFriends/allFriends
   case object PostSuccess
   case object PostFail
 
@@ -97,10 +97,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
 
   //comments
+  /*
   case class Comment(fromEmail:String, data: String)
   object Comment extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(Comment.apply)
   }
+  */
   //you need to wrap your format constructor with lazyFormat and supply an explicit type annotation:
   //implicit val fooFormat: JsonFormat[Foo] = lazyFormat(jsonFormat(Foo, "i", "foo"))
   //object Comment extends DefaultJsonProtocol {

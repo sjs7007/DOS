@@ -3,10 +3,13 @@
  */
 
 import java.io._
+import java.math.BigInteger
 import java.security.spec.{PKCS8EncodedKeySpec, X509EncodedKeySpec}
 import java.security._
 import java.util.concurrent.ConcurrentHashMap
-import javax.crypto.{IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, Cipher}
+import javax.crypto._
+import javax.crypto.interfaces.DHPublicKey
+import javax.crypto.spec.DHParameterSpec
 
 import MyJsonProtocol._
 import akka.actor._
@@ -67,7 +70,7 @@ object commonVars {
   var pageFollowers = new ConcurrentHashMap[String,ListBuffer[String]]()
 
   //map any userpostid/fbpost to list of comments
-  var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
+  //var comments = new ConcurrentHashMap[String,ListBuffer[Comment]]()
 
  // var count =0
 
@@ -159,6 +162,65 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~*/
+    pathPrefix("createSymmetricKey") {
+      post {
+        //respondWithMediaType(`application/json`) {
+          entity (as[InitDH]) {
+            publicKeyBytes => requestContext =>
+              val responder = createResponder(requestContext)
+              //complete {
+                log.debug("Received request for symmetric key generation from : "+publicKeyBytes.Email)
+                val skip1024ModulusBytes = Array(0xF4.toByte, 0x88.toByte, 0xFD.toByte, 0x58.toByte, 0x4E.toByte, 0x49.toByte, 0xDB.toByte, 0xCD.toByte, 0x20.toByte, 0xB4.toByte, 0x9D.toByte, 0xE4.toByte, 0x91.toByte, 0x07.toByte, 0x36.toByte, 0x6B.toByte, 0x33.toByte, 0x6C.toByte, 0x38.toByte, 0x0D.toByte, 0x45.toByte, 0x1D.toByte, 0x0F.toByte, 0x7C.toByte, 0x88.toByte, 0xB3.toByte, 0x1C.toByte, 0x7C.toByte, 0x5B.toByte, 0x2D.toByte, 0x8E.toByte, 0xF6.toByte, 0xF3.toByte, 0xC9.toByte, 0x23.toByte, 0xC0.toByte, 0x43.toByte, 0xF0.toByte, 0xA5.toByte, 0x5B.toByte, 0x18.toByte, 0x8D.toByte, 0x8E.toByte, 0xBB.toByte, 0x55.toByte, 0x8C.toByte, 0xB8.toByte, 0x5D.toByte, 0x38.toByte, 0xD3.toByte, 0x34.toByte, 0xFD.toByte, 0x7C.toByte, 0x17.toByte, 0x57.toByte, 0x43.toByte, 0xA3.toByte, 0x1D.toByte, 0x18.toByte, 0x6C.toByte, 0xDE.toByte, 0x33.toByte, 0x21.toByte, 0x2C.toByte, 0xB5.toByte, 0x2A.toByte, 0xFF.toByte, 0x3C.toByte, 0xE1.toByte, 0xB1.toByte, 0x29.toByte, 0x40.toByte, 0x18.toByte, 0x11.toByte, 0x8D.toByte, 0x7C.toByte, 0x84.toByte, 0xA7.toByte, 0x0A.toByte, 0x72.toByte, 0xD6.toByte, 0x86.toByte, 0xC4.toByte, 0x03.toByte, 0x19.toByte, 0xC8.toByte, 0x07.toByte, 0x29.toByte, 0x7A.toByte, 0xCA.toByte, 0x95.toByte, 0x0C.toByte, 0xD9.toByte, 0x96.toByte, 0x9F.toByte, 0xAB.toByte, 0xD0.toByte, 0x0A.toByte, 0x50.toByte, 0x9B.toByte, 0x02.toByte, 0x46.toByte, 0xD3.toByte, 0x08.toByte, 0x3D.toByte, 0x66.toByte, 0xA4.toByte, 0x5D.toByte, 0x41.toByte, 0x9F.toByte, 0x9C.toByte, 0x7C.toByte, 0xBD.toByte, 0x89.toByte, 0x4B.toByte, 0x22.toByte, 0x19.toByte, 0x26.toByte, 0xBA.toByte, 0xAB.toByte, 0xA2.toByte, 0x5E.toByte, 0xC3.toByte, 0x55.toByte, 0xE9.toByte, 0x2F.toByte, 0x78.toByte, 0xC7.toByte)
+                val skip1024Modulus = new BigInteger(1, skip1024ModulusBytes)
+                val skip1024Base = BigInteger.valueOf(2)
+
+                val alicePublicKeyBytes = publicKeyBytes.KeyBytes
+                //This portion of code should be on other end : bob or server in algo
+                //Bob will get the public key in bytes
+                //convert to public key formate now
+                val bobKeyFactory: KeyFactory = KeyFactory.getInstance("DH")
+                var x509KeySpec: X509EncodedKeySpec = new X509EncodedKeySpec((alicePublicKeyBytes))
+                val alicePublicKey: PublicKey = bobKeyFactory.generatePublic(x509KeySpec)
+
+                /*
+                * Bob gets the DH parameters associated with Alice's public key.
+                * He must use the same parameters when he generates his own key
+                * pair.
+                */
+                val dhParameterSpec: DHParameterSpec = (alicePublicKey.asInstanceOf[DHPublicKey]).getParams
+
+                //Bob will use this above info to create his own DH key pair
+                System.out.println("Bob : Generate DH Keypair....")
+                val bobKeyPairGen: KeyPairGenerator = KeyPairGenerator.getInstance("DH")
+                bobKeyPairGen.initialize(dhParameterSpec)
+                val bobKeyPair: KeyPair = bobKeyPairGen.generateKeyPair
+
+                // Bob creates and initializes his DH KeyAgreement object
+                System.out.println("BOB: Initialization ...")
+                val bobKeyAgree: KeyAgreement = KeyAgreement.getInstance("DH")
+                bobKeyAgree.init(bobKeyPair.getPrivate)
+
+                //Bob encodes his public key and sends to Alice
+                val bobPublicKeyBytes: Array[Byte] = bobKeyPair.getPublic.getEncoded
+
+               /*
+               * Bob uses Alice's public key for the first (and only) phase
+               * of his version of the DH
+               * protocol.
+               */
+              System.out.println("BOB: Execute PHASE1 ...")
+              bobKeyAgree.doPhase(alicePublicKey, true)
+
+              val bobSharedSecret: Array[Byte] = bobKeyAgree.generateSecret()
+              log.debug("Hex form : "+toHexString(bobSharedSecret))
+
+              //requestContext.complete(bobPublicKeyBytes)
+                requestContext.complete(byteToString(bobPublicKeyBytes))
+             // }
+          }
+       // }
+      }
+    }~
     pathPrefix("summary") {
       get {
         respondWithMediaType(`application/json`) {
@@ -651,6 +713,10 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
   }
 
+  def byteToString(byteArr: Array[Byte]):String = {
+    BigInt(byteArr).toString(16)
+  }
+
   private def getSummary() : String = {
     var sec : Long = 0
     var totReq : Long = 0
@@ -839,6 +905,26 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
 
     return null
+  }
+
+  def toHexString(block: Array[Byte]): String = {
+    val buf = new StringBuffer()
+    val len = block.length
+    for (i <- 0 until len) {
+      byte2hex(block(i), buf)
+      if (i < len - 1) {
+        buf.append(":")
+      }
+    }
+    buf.toString
+  }
+
+  def byte2hex(b: Byte, buf: StringBuffer) {
+    val hexChars = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+    val high = ((b & 0xf0) >> 4)
+    val low = (b & 0x0f)
+    buf.append(hexChars(high))
+    buf.append(hexChars(low))
   }
 
   def encryptPrivateRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {

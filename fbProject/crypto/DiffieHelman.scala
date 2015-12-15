@@ -1,0 +1,95 @@
+import java.math.BigInteger
+import java.security.{KeyFactory, KeyPairGenerator, SecureRandom}
+import java.security.spec.X509EncodedKeySpec
+import javax.crypto.{Cipher, KeyAgreement}
+import javax.crypto.interfaces.DHPublicKey
+import javax.crypto.spec.{DHParameterSpec, IvParameterSpec}
+//remove if not needed
+
+object DiffieHelman {
+
+  def main(args: Array[String]) {
+    val skip1024ModulusBytes = Array(0xF4.toByte, 0x88.toByte, 0xFD.toByte, 0x58.toByte, 0x4E.toByte, 0x49.toByte, 0xDB.toByte, 0xCD.toByte, 0x20.toByte, 0xB4.toByte, 0x9D.toByte, 0xE4.toByte, 0x91.toByte, 0x07.toByte, 0x36.toByte, 0x6B.toByte, 0x33.toByte, 0x6C.toByte, 0x38.toByte, 0x0D.toByte, 0x45.toByte, 0x1D.toByte, 0x0F.toByte, 0x7C.toByte, 0x88.toByte, 0xB3.toByte, 0x1C.toByte, 0x7C.toByte, 0x5B.toByte, 0x2D.toByte, 0x8E.toByte, 0xF6.toByte, 0xF3.toByte, 0xC9.toByte, 0x23.toByte, 0xC0.toByte, 0x43.toByte, 0xF0.toByte, 0xA5.toByte, 0x5B.toByte, 0x18.toByte, 0x8D.toByte, 0x8E.toByte, 0xBB.toByte, 0x55.toByte, 0x8C.toByte, 0xB8.toByte, 0x5D.toByte, 0x38.toByte, 0xD3.toByte, 0x34.toByte, 0xFD.toByte, 0x7C.toByte, 0x17.toByte, 0x57.toByte, 0x43.toByte, 0xA3.toByte, 0x1D.toByte, 0x18.toByte, 0x6C.toByte, 0xDE.toByte, 0x33.toByte, 0x21.toByte, 0x2C.toByte, 0xB5.toByte, 0x2A.toByte, 0xFF.toByte, 0x3C.toByte, 0xE1.toByte, 0xB1.toByte, 0x29.toByte, 0x40.toByte, 0x18.toByte, 0x11.toByte, 0x8D.toByte, 0x7C.toByte, 0x84.toByte, 0xA7.toByte, 0x0A.toByte, 0x72.toByte, 0xD6.toByte, 0x86.toByte, 0xC4.toByte, 0x03.toByte, 0x19.toByte, 0xC8.toByte, 0x07.toByte, 0x29.toByte, 0x7A.toByte, 0xCA.toByte, 0x95.toByte, 0x0C.toByte, 0xD9.toByte, 0x96.toByte, 0x9F.toByte, 0xAB.toByte, 0xD0.toByte, 0x0A.toByte, 0x50.toByte, 0x9B.toByte, 0x02.toByte, 0x46.toByte, 0xD3.toByte, 0x08.toByte, 0x3D.toByte, 0x66.toByte, 0xA4.toByte, 0x5D.toByte, 0x41.toByte, 0x9F.toByte, 0x9C.toByte, 0x7C.toByte, 0xBD.toByte, 0x89.toByte, 0x4B.toByte, 0x22.toByte, 0x19.toByte, 0x26.toByte, 0xBA.toByte, 0xAB.toByte, 0xA2.toByte, 0x5E.toByte, 0xC3.toByte, 0x55.toByte, 0xE9.toByte, 0x2F.toByte, 0x78.toByte, 0xC7.toByte)
+    val skip1024Modulus = new BigInteger(1, skip1024ModulusBytes)
+    val skip1024Base = BigInteger.valueOf(2)
+    val dhSkipParamSpec = new DHParameterSpec(skip1024Modulus, skip1024Base)
+    println("ALICE: Generate DH keypair ...")
+    val aliceKeyPairGen = KeyPairGenerator.getInstance("DH")
+    aliceKeyPairGen.initialize(dhSkipParamSpec)
+    val aliceKeyPair = aliceKeyPairGen.generateKeyPair()
+    println("ALICE: Initialization ...")
+    val aliceKeyAgree = KeyAgreement.getInstance("DH")
+    aliceKeyAgree.init(aliceKeyPair.getPrivate)
+    val alicePublicKeyBytes = aliceKeyPair.getPublic.getEncoded
+    val bobKeyFactory = KeyFactory.getInstance("DH")
+    var x509KeySpec = new X509EncodedKeySpec((alicePublicKeyBytes))
+    val alicePublicKey = bobKeyFactory.generatePublic(x509KeySpec)
+    val dhParameterSpec = alicePublicKey.asInstanceOf[DHPublicKey].getParams
+    println("Bob : Generate DH Keypair....")
+    val bobKeyPairGen = KeyPairGenerator.getInstance("DH")
+    bobKeyPairGen.initialize(dhParameterSpec)
+    val bobKeyPair = bobKeyPairGen.generateKeyPair()
+    println("BOB: Initialization ...")
+    val bobKeyAgree = KeyAgreement.getInstance("DH")
+    bobKeyAgree.init(bobKeyPair.getPrivate)
+    val bobPublicKeyBytes = bobKeyPair.getPublic.getEncoded
+    val aliceKeyFactory = KeyFactory.getInstance("DH")
+    x509KeySpec = new X509EncodedKeySpec(bobPublicKeyBytes)
+    val bobPublicKey = aliceKeyFactory.generatePublic(x509KeySpec)
+    println("ALICE: Execcute PHASE1 ...")
+    aliceKeyAgree.doPhase(bobPublicKey, true)
+    println("BOB: Execute PHASE1 ...")
+    bobKeyAgree.doPhase(alicePublicKey, true)
+    val aliceSharedSecret = aliceKeyAgree.generateSecret()
+    val aliceLen = aliceSharedSecret.length
+    val bobSharedSecret = Array.ofDim[Byte](aliceLen)
+    val bobLen = bobKeyAgree.generateSecret(bobSharedSecret, 0)
+    println("Alice secret: " + toHexString(aliceSharedSecret))
+    println("Bob secret: " + toHexString(bobSharedSecret))
+    if (!java.util.Arrays.equals(aliceSharedSecret, bobSharedSecret)) throw new Exception("Shared secrets differ")
+    println("Shared secrets are the same")
+    println("Return shared secret as SecretKey object ...")
+    bobKeyAgree.doPhase(alicePublicKey, true)
+    val bobAesKey = bobKeyAgree.generateSecret("AES")
+    val randomNumberGenerator = new SecureRandom()
+    val bytes = Array.ofDim[Byte](16)
+    randomNumberGenerator.nextBytes(bytes)
+    val byteText = "dis dah plain text".getBytes
+    val initVector = new IvParameterSpec(bytes)
+    val AESCipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+    AESCipher.init(Cipher.ENCRYPT_MODE, bobAesKey, initVector)
+    val encryptedData = AESCipher.doFinal(byteText)
+    aliceKeyAgree.doPhase(bobPublicKey, true)
+    val aliceAesKey = aliceKeyAgree.generateSecret("AES")
+    AESCipher.init(Cipher.DECRYPT_MODE, aliceAesKey, initVector)
+    val decryptedData = AESCipher.doFinal(encryptedData)
+    val temp = new String(decryptedData, "UTF-8")
+    println("Decrypted data : " + temp)
+
+    val temp1 = new String(bobPublicKeyBytes)
+    val temp2 = temp1.getBytes()
+    println(java.util.Arrays.equals(temp2,bobPublicKeyBytes))
+    println(java.util.Arrays.equals(bobPublicKeyBytes,bobPublicKeyBytes))
+
+  }
+
+  def toHexString(block: Array[Byte]): String = {
+    val buf = new StringBuffer()
+    val len = block.length
+    for (i <- 0 until len) {
+      byte2hex(block(i), buf)
+      if (i < len - 1) {
+        buf.append(":")
+      }
+    }
+    buf.toString
+  }
+
+  def byte2hex(b: Byte, buf: StringBuffer) {
+    val hexChars = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+    val high = ((b & 0xf0) >> 4)
+    val low = (b & 0x0f)
+    buf.append(hexChars(high))
+    buf.append(hexChars(low))
+  }
+}
