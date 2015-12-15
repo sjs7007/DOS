@@ -39,11 +39,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.30235294">
-              <caret line="464" column="21" selection-start-line="464" selection-start-column="21" selection-end-line="464" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="470" column="47" selection-start-line="470" selection-start-column="47" selection-end-line="470" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -89,12 +89,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MyJsonProtocol.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MyJsonProtocol.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="0.7271702">
+              <caret line="69" column="3" selection-start-line="65" selection-start-column="0" selection-end-line="69" selection-end-column="3" />
+              <folding>
+                <element signature="e#44#76#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -126,8 +128,8 @@
         <option value="$PROJECT_DIR$/src/main/scala/Boot.scala" />
         <option value="$PROJECT_DIR$/src/main/resources/application.conf" />
         <option value="$PROJECT_DIR$/build.sbt" />
-        <option value="$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala" />
       </list>
     </option>
   </component>
@@ -142,9 +144,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="-1" />
     <option name="y" value="38" />
-    <option name="width" value="1920" />
-    <option name="height" value="1042" />
+    <option name="width" value="1922" />
+    <option name="height" value="1043" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -169,6 +172,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -253,7 +257,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="Scratches" />
     </panes>
@@ -571,7 +574,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="38" width="1920" height="1042" extended-state="6" />
+    <frame x="-1" y="38" width="1922" height="1043" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -657,7 +660,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="62" selection-start-line="11" selection-start-column="62" selection-end-line="11" selection-end-column="62" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -704,7 +709,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -751,7 +758,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -805,7 +814,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -859,7 +870,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -913,7 +926,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -945,7 +960,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1003,19 +1020,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+          <caret line="470" column="47" selection-start-line="470" selection-start-column="47" selection-end-line="470" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.30235294">
-          <caret line="464" column="21" selection-start-line="464" selection-start-column="21" selection-end-line="464" selection-end-column="21" />
-          <folding />
+        <state vertical-scroll-proportion="0.7271702">
+          <caret line="69" column="3" selection-start-line="65" selection-start-column="0" selection-end-line="69" selection-end-column="3" />
+          <folding>
+            <element signature="e#44#76#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

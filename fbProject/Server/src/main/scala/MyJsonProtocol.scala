@@ -2,6 +2,7 @@
  * Created by shinchan on 11/6/15.
  */
 
+import spray.http.HttpData.Bytes
 import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
@@ -52,7 +53,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class fbPost(fromEmail:String, toEmail:String, data:String)
+  case class fbPost(fromEmail:String, toEmail:String, data:String,postType: String) //postType=selectedFriends/allFriends
   case object PostSuccess
   case object PostFail
 
@@ -62,10 +63,10 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat1(encryptedAddress.apply)
   }
 
-  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte])
+  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyList : Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
-    implicit val format = jsonFormat5(EncryptedPost.apply)
+    implicit val format = jsonFormat6(EncryptedPost.apply)
   }
 
   //page post
