@@ -11,7 +11,7 @@ import javax.crypto._
 import javax.crypto.interfaces.DHPublicKey
 import javax.crypto.spec.{DHParameterSpec, IvParameterSpec}
 
-import MyJsonProtocol._
+import _root_.MyJsonProtocol._
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
@@ -202,7 +202,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }~*/
     //will return an encrypted map converted to arraybytes of friendName -> publicKey
     //the entire thing is encrypted using public key of requesting person
-    pathPrefix("getFriendsPublicKey") {
+    /*pathPrefix("getFriendsPublicKey") {
       get {
         parameters('fromEmail.as[String]) {
           fromEmail =>
@@ -232,6 +232,22 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 keyClass
               }
             }
+        }
+      }
+    }~ */
+    pathPrefix("getArray") {
+      get {
+        val fruits = new Array[String](3)
+         
+        // somewhere later in the code ...
+         
+        fruits(0) = "Apple"
+        fruits(1) = "Banana"
+        fruits(2) = "Orange"
+        respondWithMediaType(`application/json`) {
+          complete {
+            fruits
+          }
         }
       }
     }~
@@ -1248,6 +1264,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       friendLists.get(req.fromEmail) += req.toEmail
       //tmp
       return "requestSent"
+
     }
   }
 
@@ -1387,10 +1404,11 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       requestContext.complete("Already following the page.")
       killYourself
 
-    case FriendRequestSent =>
+    case FriendRequestSent(fromFriend,toFriend) =>
      //requestContext.complete(StatusCodes.Accepted)
       requestContext.complete("Friend request was successfully sent.")
-     log.debug("Friend request was successfully sent.")
+      requestContext.complete()
+      log.debug("Friend request was successfully sent.")
      killYourself
 
     case PostSuccess =>
