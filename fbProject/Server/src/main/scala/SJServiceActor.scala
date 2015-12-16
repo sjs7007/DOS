@@ -82,7 +82,7 @@ object commonVars {
 
   //store all posts in the buffer below
   //var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
-  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,fbPost]]()
+  var userPosts = new ConcurrentHashMap[String,ConcurrentHashMap[String,EncryptedPost]]()
 
   //store all album meta data
   //map user email to a map of albums
@@ -695,9 +695,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         //decrypt it and then check if fromUser is there in the list or not
                         //if present, add the post id to list of postids to be returned
                         for(i<- 0 until postIdsList.length) {
-                          val tempfbPostKeyList = null
+                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
                           //now decrypt this using server's private key
-                          val tempPostKeyListBytes = decryptRSA(tempfbPostKeyList,serverPrivateKey.getEncoded())
+                          val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
                           //now create a list from this bytes and return
                           val tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
                           if(tempPostKeyList.containsKey(fromUser)) {
@@ -753,7 +753,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     path("wallWrite") {
       post {
         //entity(as[fbPost]) { wallpost => requestContext =>
-        entity(as[fbPost]) { wallpost => requestContext =>
+        entity(as[EncryptedPost]) { wallpost => requestContext =>
           val responder = createResponder(requestContext)
           //count=count+1
           writePost(wallpost) match {
@@ -1194,7 +1194,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   }
   
   //private def writePost(p : fbPost) : String = {
-  private def writePost(p : fbPost) : String = {
+  private def writePost(p : EncryptedPost) : String = {
     //first decrypt the addresses using public key
     log.debug("\n\nWall write post request received from : "+p.fromEmail)
 
@@ -1205,7 +1205,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     }
     val publicKey : Array[Byte] = users.get(p.fromEmail).pubkey
     //val toEmailBytes : Array[Byte] = decryptPublicRSA(p.encryptedToEmail,publicKey)
-    val toEmailBytes : Array[Byte] = null
+    val toEmailBytes : Array[Byte] = decryptRSA(p.encryptedToEmail,serverPrivateKey.getEncoded())
     if(toEmailBytes==null) {
       log.debug("toEmail decryption failed.")
       return "toEmailDecryptFailed"
