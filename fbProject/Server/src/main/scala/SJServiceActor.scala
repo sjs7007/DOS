@@ -11,7 +11,7 @@ import javax.crypto._
 import javax.crypto.interfaces.DHPublicKey
 import javax.crypto.spec.{DHParameterSpec, IvParameterSpec}
 
-import _root_.MyJsonProtocol._
+import MyJsonProtocol._
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
@@ -235,12 +235,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~ */
-    pathPrefix("getArray") {
+    /*pathPrefix("getArray") {
       get {
         val fruits = new Array[String](3)
-         
-        // somewhere later in the code ...
-         
         fruits(0) = "Apple"
         fruits(1) = "Banana"
         fruits(2) = "Orange"
@@ -250,7 +247,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
           }
         }
       }
-    }~
+    }~*/
     pathPrefix("createSymmetricKey") {
       post {
         //respondWithMediaType(`application/json`) {
@@ -605,7 +602,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
               case "userNotPresent" => responder ! UserNotPresent
 
-              case "requestSent" => responder ! FriendRequestSent
+              case "requestSent" =>
+                val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(publicKeybytes)
 
               case "cantAddSelf" => responder ! CantAddSelf
             }
@@ -752,9 +751,9 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                       }
                     }
                   }
-                }
+                //}
               }
-            }
+            }~
           path("ids") {
             /*get {
               respondWithMediaType(`application/json`) {
@@ -774,7 +773,11 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         //fetch only those post ids which this user has access to
 
                         //for username userEmail, get the list of postids first
-                        val postIdsList= userPosts.get(userEmail).keySet().toArray()
+                       // String[] strings = map.keySet().toArray(new String[map.size()]);
+
+                        //var strings: Array[Nothing] = map.keySet.toArray(new Array[Nothing](map.size))
+
+                        val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
                         val postIdsReturn : ListBuffer[String] = new ListBuffer()
 
                         //for each post id, get the encrypted post,get the list of people who have access to it
@@ -782,17 +785,22 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         //decrypt it and then check if fromUser is there in the list or not
                         //if present, add the post id to list of postids to be returned
                         for(i<- 0 until postIdsList.length) {
-                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyList
+                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
                           //now decrypt this using server's private key
                           val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
-                          //now create a list from this bytes and
+                          //now create a list from this bytes and return
+                          val tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                          if(tempPostKeyList.containsKey(fromUser)) {
+                            postIdsReturn += postIdsList(i)
+                          }
                         }
+                        postIdsReturn.toString()
+                        }
+                        else {
+                          "Don't have rights to view post list."
+                        }
+                      }
 
-                        "dss"
-                      }
-                      else {
-                        "Don't have rights to view post list."
-                      }
                     }
                   }
               }
@@ -1263,6 +1271,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       friendLists.get(req.toEmail) += req.fromEmail
       friendLists.get(req.fromEmail) += req.toEmail
       //tmp
+      //return public key in string form
       return "requestSent"
 
     }
@@ -1277,7 +1286,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //private def writePost(p : fbPost) : String = {
   private def writePost(p : EncryptedPost) : String = {
     //first decrypt the addresses using public key
-    log.debug("Wall write post request received from : "+p.fromEmail)
+    log.debug("\n\nWall write post request received from : "+p.fromEmail)
 
     //get public key of user p.fromEmail if exists
     if(!doesUserExist(p.fromEmail)) {
@@ -1404,11 +1413,11 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
       requestContext.complete("Already following the page.")
       killYourself
 
-    case FriendRequestSent(fromFriend,toFriend) =>
+    case FriendRequestSent(toFriendPublicKey) =>
      //requestContext.complete(StatusCodes.Accepted)
-      requestContext.complete("Friend request was successfully sent.")
-      requestContext.complete()
-      log.debug("Friend request was successfully sent.")
+   //   requestContext.complete("Friend request was successfully sent.")
+     requestContext.complete(toFriendPublicKey)
+      log.debug("Public key was successfully sent.")
      killYourself
 
     case PostSuccess =>
