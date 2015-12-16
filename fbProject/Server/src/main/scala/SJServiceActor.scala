@@ -178,76 +178,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
 
   val facebookStuff = {
-    /*pathPrefix("upload") {
-      pathEnd {
-        post {
-          log.debug("inhere")
-          entity(as[Photo]) { pic => requestContext =>
-            val responder = createResponder(requestContext)
-            log.debug (pic.Image)
-            responder ! UserCreated("abc")
-          }
-        }
-      }
-    } ~ */
-    /*pathPrefix("clearAllStats") {
-      get {
-        respondWithMediaType(`application/json`) {
-          complete {
-            clearAllStats()
-            "Stats cleared."
-          }
-        }
-      }
-    }~*/
-    //will return an encrypted map converted to arraybytes of friendName -> publicKey
-    //the entire thing is encrypted using public key of requesting person
-    /*pathPrefix("getFriendsPublicKey") {
-      get {
-        parameters('fromEmail.as[String]) {
-          fromEmail =>
-            respondWithMediaType(`application/json`) {
-              complete {
-                //find friends of user
-                //  val mapPublicKeysBytes = new ConcurrentHashMap[String,Array[Byte]]()
-                val friendList = friendLists.get(fromEmail)
-                val listPublicKeysBytes = new Array[userPublicKey](friendList.length)
-
-                for (i <- 0 until friendList.length) {
-                  //listPublicKeysBytes(i) = encryptRSA(userPublicKey.get(friendList(i)), )
-                  val temp = new userPublicKey(friendList(i),userPublicKey.get(friendList(i)))
-                  listPublicKeysBytes(i)= temp
-                }
-                //now calculate hash, digitally sign with server's private key so
-                //as to ensure no tampering is occuring
-
-                val md: MessageDigest = MessageDigest.getInstance("SHA-256")
-                md.update(serialize(listPublicKeysBytes))
-                val hash = md.digest()
-                val signedHash = encryptPrivateRSA(hash,serverPrivateKey.getEncoded)
-                val encryptedSignedHash = encryptRSA(signedHash,userPublicKey.get(fromEmail))
-
-                val returnData = new keyClass(listPublicKeysBytes,encryptedSignedHash)
-                //byteToString(serialize(keyClass))
-                keyClass
-              }
-            }
-        }
-      }
-    }~ */
-    /*pathPrefix("getArray") {
-      get {
-        val fruits = new Array[String](3)
-        fruits(0) = "Apple"
-        fruits(1) = "Banana"
-        fruits(2) = "Orange"
-        respondWithMediaType(`application/json`) {
-          complete {
-            fruits
-          }
-        }
-      }
-    }~*/
     pathPrefix("createSymmetricKey") {
       post {
         //respondWithMediaType(`application/json`) {
@@ -350,16 +280,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
     }~
-    /*pathPrefix("resetStats") {
-      get {
-        respondWithMediaType(`application/json`) {
-          complete {
-            count=0
-            "Count set to : "+count
-          }
-        }
-      }
-    }~*/
     pathPrefix("portStats") {
       get {
         parameters('port.as[Int]) {
@@ -375,16 +295,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
     pathPrefix("allStats") {
       pathEnd {
         get {
-          /*implicit val timeout : Timeout= Timeout(5 seconds)
-          var tmp ="default"
-          context.actorSelection("/user/IO-HTTP/listener-0") ? Http.GetStats onSuccess {
-            case x: Stats =>
-              log.debug("idhar aa gaya yaaay")
-              tmp = x.toString()
-            case _ =>
-              log.debug("future fail")
-              tmp = "future fail"
-          }*/
           respondWithMediaType(`application/json`) {
             complete {
               //"d"
