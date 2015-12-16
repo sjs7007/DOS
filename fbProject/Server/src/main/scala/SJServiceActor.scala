@@ -508,15 +508,22 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             val responder = createResponder(requestContext)
             //count=count+1
             sendFriendRequest(friendRequest) match {
-              case "alreadyFriends" => responder ! AlreadyFriends
+              case "alreadyFriends" => 
+               val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(publicKeybytes)
 
-              case "userNotPresent" => responder ! UserNotPresent
+              case "userNotPresent" => 
+              // val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                //responder ! FriendRequestSent(byteToString(serverPublicKey.getEncoded()))
+                responder ! FriendRequestSent("null")
 
               case "requestSent" =>
                 val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
                 responder ! FriendRequestSent(publicKeybytes)
 
-              case "cantAddSelf" => responder ! CantAddSelf
+              case "cantAddSelf" => 
+               val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(publicKeybytes)
             }
           }
         }
@@ -644,6 +651,78 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             }
           }
         } ~
+        path("ids") {
+          /*get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                userPosts.get(userEmail).keySet().toString()
+              }
+            }
+          }*/
+          get {
+            parameters('Email.as[String]) {
+              fromUser =>
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    //count=count+1
+                    log.debug("got request for getting list of post ids")
+                    if (areFriendsOrSame(fromUser, userEmail)) {
+                      log.debug("inside if")
+                      //userPosts.get(userEmail).keySet().toString()
+                      //fetch only those post ids which this user has access to
+
+                      //for username userEmail, get the list of postids first
+                      // String[] strings = map.keySet().toArray(new String[map.size()]);
+
+                      //var strings: Array[Nothing] = map.keySet.toArray(new Array[Nothing](map.size))
+
+                      val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
+                      log.debug((postIdsList==null).toString)
+                      log.debug("PostIdsList : "+postIdsList+" "+postIdsList.length)
+                      log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
+                      val postIdsReturn : ListBuffer[String] = new ListBuffer()
+
+                      //for each post id, get the encrypted post,get the list of people who have access to it
+                      //the list itself is encrypted using server's public key
+                      //decrypt it and then check if fromUser is there in the list or not
+                      //if present, add the post id to list of postids to be returned
+                      for(i<- 0 until postIdsList.length) {
+                        log.debug("just inside for loop")
+                        val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
+                        log.debug("for loop2")
+                        log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
+                        log.debug("for loop3")
+                        //now decrypt this using server's private key
+                        //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                        val tempPostKeyListBytes = tempEncryptedPostKeyList
+                        log.debug("for loop4")
+                        //now create a list from this bytes and return
+                        var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
+                       // try {
+                        tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                        println(tempPostKeyList.toString)
+                     // }
+                      /*catch {
+
+                        case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
+                      }*/
+                        log.debug("for loop5")
+                        if(tempPostKeyList.containsKey(fromUser)) {
+                          postIdsReturn += postIdsList(i)
+                        }
+                        log.debug("for loop6")
+                      }
+                      postIdsReturn.toString()
+                    }
+                    else {
+                      "Don't have rights to view post list."
+                    }
+                  }
+
+                }
+            }
+          }
+        }~
         pathPrefix("posts") {
           pathEnd {
             get {
@@ -662,57 +741,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     }
                   }
                 //}
-              }
-            }~
-          path("ids") {
-            /*get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  userPosts.get(userEmail).keySet().toString()
-                }
-              }
-            }*/
-            get {
-              parameters('Email.as[String]) {
-                fromUser =>
-                  respondWithMediaType(`application/json`) {
-                    complete {
-                      //count=count+1
-                      if (areFriendsOrSame(fromUser, userEmail)) {
-                        //userPosts.get(userEmail).keySet().toString()
-                        //fetch only those post ids which this user has access to
-
-                        //for username userEmail, get the list of postids first
-                       // String[] strings = map.keySet().toArray(new String[map.size()]);
-
-                        //var strings: Array[Nothing] = map.keySet.toArray(new Array[Nothing](map.size))
-
-                        val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
-                        val postIdsReturn : ListBuffer[String] = new ListBuffer()
-
-                        //for each post id, get the encrypted post,get the list of people who have access to it
-                        //the list itself is encrypted using server's public key
-                        //decrypt it and then check if fromUser is there in the list or not
-                        //if present, add the post id to list of postids to be returned
-                        for(i<- 0 until postIdsList.length) {
-                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
-                          //now decrypt this using server's private key
-                          val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
-                          //now create a list from this bytes and return
-                          val tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
-                          if(tempPostKeyList.containsKey(fromUser)) {
-                            postIdsReturn += postIdsList(i)
-                          }
-                        }
-                        postIdsReturn.toString()
-                        }
-                        else {
-                          "Don't have rights to view post list."
-                        }
-                      }
-
-                    }
-                  }
               }
             }
           } ~

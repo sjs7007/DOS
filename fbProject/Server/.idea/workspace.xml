@@ -2,9 +2,9 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="163" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="550" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="559" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="482" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1116" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1142" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -41,8 +41,8 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="11.607666">
-              <caret line="595" column="36" selection-start-line="595" selection-start-column="36" selection-end-line="595" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.470124">
+              <caret line="700" column="56" selection-start-line="700" selection-start-column="56" selection-end-line="700" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -435,7 +435,7 @@
     </recent_temporary>
   </component>
   <component name="SbtLocalSettings">
-    <option name="lastUpdateTimestamp" value="1450245654715" />
+    <option name="lastUpdateTimestamp" value="1450255246752" />
     <option name="availableProjects">
       <map>
         <entry>
@@ -507,9 +507,9 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32286024" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18959913" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18959913" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -951,8 +951,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="11.607666">
-          <caret line="595" column="36" selection-start-line="595" selection-start-column="36" selection-end-line="595" selection-end-column="36" />
+        <state vertical-scroll-proportion="0.470124">
+          <caret line="700" column="56" selection-start-line="700" selection-start-column="56" selection-end-line="700" selection-end-column="56" />
           <folding />
         </state>
       </provider>
