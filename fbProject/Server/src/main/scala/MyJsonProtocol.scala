@@ -2,13 +2,25 @@
  * Created by shinchan on 11/6/15.
  */
 
-import spray.http.HttpData.Bytes
 import spray.json._
 
 object MyJsonProtocol extends DefaultJsonProtocol {
-  implicit val personFormat = jsonFormat3(Person)
 
-  case class Person(name: String, fistName: String, age: Long)
+  case class userPublicKey(Email:String,PublicKey : Array[Byte])
+  object userPublicKey extends  DefaultJsonProtocol {
+    implicit  val format = jsonFormat2(userPublicKey.apply)
+  }
+
+
+  case class keyClass(publicKeyList : Array[userPublicKey],encryptedSignedHash : Array[Byte])
+  object keyClass extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(keyClass.apply)
+  }
+
+
+  case class InitDH(Email:String,KeyBytes:Array[Byte])
+  implicit val format = jsonFormat2(InitDH.apply)
+
   //createUser
   case class User(Email:String, Name: String,Birthday: String,CurrentCity : String,pubKey : Array[Byte]) {
     require(!Email.isEmpty, "Emails must not be empty.")
@@ -43,7 +55,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case class FriendRequest(fromEmail:String, toEmail:String)
   case object AlreadyFriends
   case object UserNotPresent
-  case object FriendRequestSent
+  case class FriendRequestSent(toFriendPublicKey: String)
   case object CantAddSelf
 
   //user idenitifier, add keys here later
@@ -53,7 +65,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
   
    //wallwrite
-  case class fbPost(fromEmail:String, toEmail:String, data:String,postType: String) //postType=selectedFriends/allFriends
+  case class fbPost(fromEmail:String, toEmail:String, data:String) //postType=selectedFriends/allFriends
   case object PostSuccess
   case object PostFail
 
@@ -63,7 +75,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat1(encryptedAddress.apply)
   }
 
-  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyList : Array[Byte])
+  case class EncryptedSecretKey (AESKeyBytes: Array[Byte], initializationVectorBytes: Array[Byte])
+  object EncryptedSecretKey extends DefaultJsonProtocol {
+    implicit val format = jsonFormat2(EncryptedSecretKey.apply)
+  }
+
+  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: EncryptedSecretKey, signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyMap : Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
     implicit val format = jsonFormat6(EncryptedPost.apply)
@@ -97,10 +114,12 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
 
   //comments
+  /*
   case class Comment(fromEmail:String, data: String)
   object Comment extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(Comment.apply)
   }
+  */
   //you need to wrap your format constructor with lazyFormat and supply an explicit type annotation:
   //implicit val fooFormat: JsonFormat[Foo] = lazyFormat(jsonFormat(Foo, "i", "foo"))
   //object Comment extends DefaultJsonProtocol {
