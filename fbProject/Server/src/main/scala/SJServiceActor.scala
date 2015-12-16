@@ -756,6 +756,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         entity(as[EncryptedPost]) { wallpost => requestContext =>
           val responder = createResponder(requestContext)
           //count=count+1
+          log.debug("\n\n\n\n\nWALL WRIIIIIIIIIIIITE")
           writePost(wallpost) match {
             case "posted" => responder ! PostSuccess
 
