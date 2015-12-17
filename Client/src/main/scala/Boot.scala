@@ -77,9 +77,9 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val format = jsonFormat2(userPublicKey.apply)
   }
 
-  case class Photo(Email:String, Caption: String, Image: Array[Byte])
+  case class Photo(Email:String, Caption: String, encryptedImage: Array[Byte],signedHash: Array[Byte])
   object Photo extends DefaultJsonProtocol {
-    implicit  val format = jsonFormat3(Photo.apply)
+    implicit  val format = jsonFormat4(Photo.apply)
   }
   
   /*
@@ -315,7 +315,7 @@ var serverPublicKey: PublicKey = null
     
     if (userNo == 0)
     email = "Bob"
-    else email = "Dick"
+    else email = "Tom"
     
       var userObj = User(email, name, bday, city, pubBytes)
       
@@ -493,7 +493,7 @@ var serverPublicKey: PublicKey = null
           var postIDs = new Array[String](10) 
           
           for {            
-           response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Dick/ids?Email=Dick"))).mapTo[HttpResponse]
+           response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Tom/ids?Email=Tom"))).mapTo[HttpResponse]
           }
           yield {
           
@@ -505,16 +505,13 @@ var serverPublicKey: PublicKey = null
           var postToView = postIDs(0)
           println ("Gonna look at "+postToView)
           for {
-            response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Dick/posts/" +postToView.toString +"?Email=Dick" ))).mapTo[HttpResponse]
+            response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Tom/posts/" +postToView.toString +"?Email=Tom" ))).mapTo[HttpResponse]
 
          }
           yield {
           postIDs = response.entity.asString.split(",")
-          println ("GOT DA POST!: "+ new String (BigInt(postIDs(0), 16).toByteArray   ))
+          println ("Got the post: "+ new String (BigInt(postIDs(0), 16).toByteArray))
           
-
-
-                              
           val encPostBytes = BigInt(postIDs(0), 16).toByteArray                                 
           
           val initVectorBytes = BigInt(postIDs(1), 16).toByteArray   
@@ -523,20 +520,12 @@ var serverPublicKey: PublicKey = null
           
           var stringOfKey = new String(encKeyBytes)
           
-          println ("THE HEX STRING OF RSA ENCRYPTED AES KEY IS:" + toHexString(encKeyBytes))          
-          
-          
           val ivKey = new IvParameterSpec(initVectorBytes)
          
           val postAESKey = decryptRSA(encKeyBytes, priBytes)
          println ("THE KEY IS: " + toHexString(postAESKey))
          
-         
-          
-          
           val decryptedPost = decryptAES(encPostBytes, postAESKey, ivKey)
-          
-          
           
           println ("DECRYPTED POST IS: " + new String (decryptedPost))
           
@@ -553,7 +542,7 @@ var serverPublicKey: PublicKey = null
           // Image
           
           
-          val bis = new BufferedInputStream(new FileInputStream(imageBase(r.nextInt(imageBase.length))))
+          val bis = new BufferedInputStream(new FileInputStream("Dog.jpeg"))
 
           val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
 
@@ -573,7 +562,7 @@ var serverPublicKey: PublicKey = null
             
               try {
 
-                  albumEncryptedAESKeys.put("Bob", encryptRSA(albumAESbytes, friendKeys.get("Bob")))
+                  //albumEncryptedAESKeys.put("Bob", encryptRSA(albumAESbytes, friendKeys.get("Bob")))
                   
                   if (!albumEncryptedAESKeys.containsKey(email)) {
                   albumEncryptedAESKeys.put(email, encryptRSA(albumAESbytes, pubBytes))
@@ -597,19 +586,53 @@ var serverPublicKey: PublicKey = null
             }
               yield {
               println (response.entity.asString)
+              
+              val myPhoto = Photo (email, "Serveriyanan", encryptAES(bArray, albumAESbytes, albumIV), encryptPrivateRSA(sha256(encryptAES(bArray, albumAESbytes, albumIV)), priBytes))
+              
+            for {            
+            
+              response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/users/Tom/albums/1/upload"),entity= HttpEntity(`application/json`, myPhoto.toJson.toString))).mapTo[HttpResponse]
+            }
+              yield {
+              
+              
+              
+              
               }
-
-
-            var picsToUpload = 1 + r.nextInt(4)
-            var albumNumber = (r.nextInt(albumsCreated)+1).toString
-            for (i <- 1 to picsToUpload) {
+              
               for {
-                response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
+                         response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Tom/albums/1/1?Email=Tom"))).mapTo[HttpResponse]
+                   }
+              yield {
+                       var photoIDs = response.entity.asString.split(",")
+                    println ("Got the photo: "+ new String (BigInt(photoIDs(0), 16).toByteArray))
+                    
+                    val encPostBytes = BigInt(photoIDs(0), 16).toByteArray                                 
+                    
+                    val initVectorBytes = BigInt(photoIDs(1), 16).toByteArray   
+                    var encKeyBytes = BigInt(photoIDs(2), 16).toByteArray   
+                    
+                    
+                    var stringOfKey = new String(encKeyBytes)
+                    
+                    val ivKey = new IvParameterSpec(initVectorBytes)
+                   
+                    val postAESKey = decryptRSA(encKeyBytes, priBytes)
+                   println ("THE KEY IS: " + toHexString(postAESKey))
+                   
+                    val decryptedPost = decryptAES(encPostBytes, postAESKey, ivKey)
+                    
+                    println ("DECRYPTED POST IS: " + new String (decryptedPost))
+                    
+              
+              
+              
               }
-                yield {
-                }
+              
+              
+              }
 
-            }     
+  
         } 
         }
         
