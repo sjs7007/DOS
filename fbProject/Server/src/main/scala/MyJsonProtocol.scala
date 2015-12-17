@@ -95,9 +95,9 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   case object AlreadyFollowingPage
 
   //upload
-  case class Photo(Email:String, Caption: String, Image: Array[Byte])
+  case class Photo(Email:String, Caption: String, encryptedImage: Array[Byte],signedHash: Array[Byte])
   object Photo extends DefaultJsonProtocol {
-    implicit  val format = jsonFormat3(Photo.apply)
+    implicit  val format = jsonFormat4(Photo.apply)
   }
 
   //image upload

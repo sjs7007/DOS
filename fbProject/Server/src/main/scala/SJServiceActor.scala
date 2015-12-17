@@ -603,19 +603,24 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     get {
                       parameters('Email.as[String]) {
                         fromUser =>
+                        log.debug("\n \n -> received request for fetching image ")
                         val tempImageKeyListBytes = albumDirectory.get(userEmail).get(albumID).encryptedKeysMap
                         var tempImageKeyList = new ConcurrentHashMap[String,Array[Byte]]()
                         tempImageKeyList = deserialize(tempImageKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
                         respondWithMediaType(`application/json`) {
                           complete {
+                            var ret = "null"
                             if(tempImageKeyList.containsKey(fromUser))
                               {
-                                val encryptedImgBytes = Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID))
-                                val initVector = albumDirectory.get(userEmail).get(albumID).initVector
-                                val key = tempImageKeyList.get(fromUser)
+                                val encryptedImgBytes = byteToString(Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID)))
+                                val initVector = byteToString(albumDirectory.get(userEmail).get(albumID).initVector)
+                                val key = byteToString(tempImageKeyList.get(fromUser))
+                                log.debug("image sent successfully")
+                                ret = encryptedImgBytes+","+initVector+","+key
                               }
                             //val encryptedImgString = byteToString(encryptedImgBytes)
-                            "null"
+                            //"null"
+                            ret
                           }
                         }
                       }
@@ -631,17 +636,44 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         val output = new FileOutputStream(ftmp)
                         output.write(thisPhoto.Image)
                         output.close()*/
-                        var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
-                        albumContent.get(userEmail+albumID).put(imageID,thisPhoto.Caption)
-                        var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
-                        val output = new FileOutputStream(ftmp)
-                        //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
-                        output.write(thisPhoto.Image)
-                        output.close()
-                        //count=count+1
-                        nImageUploads = nImageUploads+1
-                        complete("done, file in: " + ftmp.getName())
+                        //check digital signature 
+                        log.debug("\n----> Request received for uploading image.\n")
+                        //val rawData = thisPhoto.Email+thisPhoto.Caption+new String(thisPhoto.encryptedImage)
+                        val rawDataBytes = thisPhoto.encryptedImage
+                       // val rawDataBytes = rawData.getBytes()
 
+                        log.debug("here-1")
+                        val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+                         //val text: String = "This is some text"
+                        md.update(rawDataBytes)
+                        val compareTo : Array[Byte] = md.digest
+
+                        val signedHash = decryptPublicRSA(thisPhoto.signedHash,userPublicKey.get(thisPhoto.Email))
+
+                        log.debug("here-2")
+                        var ret = "image upload failed"
+                        if(java.util.Arrays.equals(signedHash,compareTo))
+                        {
+                          log.debug("HASHES MATCHED FOr image upload")
+                          var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
+                          albumContent.get(userEmail+albumID).put(imageID,thisPhoto.Caption)
+                          var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
+                          val output = new FileOutputStream(ftmp)
+                          //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+                          output.write(thisPhoto.encryptedImage)
+                          output.close()
+                          //count=count+1
+                          nImageUploads = nImageUploads+1
+                          log.debug("image upload successfully")
+                          ret = "done, file in: " + ftmp.getName()
+                          complete("done, file in: " + ftmp.getName())
+                        }
+                        else {
+                          log.debug("image upload failed")
+                          complete("image upload failed.")
+                        }
+                        log.debug("here-3")
+                        complete(ret)
                     }
                   }
                 }~
@@ -734,7 +766,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                           val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
                           log.debug((postIdsList==null).toString)
                           log.debug("PostIdsList : "+postIdsList+" "+postIdsList.length)
-                          log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
+                        //  log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
                           val postIdsReturn : ListBuffer[String] = new ListBuffer()
 
                           //for each post id, get the encrypted post,get the list of people who have access to it
