@@ -546,38 +546,42 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         //returns list of albums to which user has access to
         pathPrefix("albums") {
           pathEnd {
-            parameters('Email.as[String]) {
-              fromUser =>
+            //parameters('Email.as[String]) {
+            //  fromUser =>
               get {
-                respondWithMediaType(`application/json`) {
-                  complete {
-                    val albumIdsReturn : ListBuffer[String] = new ListBuffer()
-                    //count=count+1
-                    //albumDirectory.get(userEmail).toString()
-                    //albumDirectory.get(userEmail).
-                    val albumIdsList= albumDirectory.get(userEmail).keySet().toArray(new Array[String](albumDirectory.get(userEmail).size()))
-                    for(i<-0 until albumIdsList.length) {
-                      log.debug("inside for loop for albums")
-                      if(albumIdsList(i)!=null) {
-                        val tempEncryptedImagesKeyListBytes = albumDirectory.get(userEmail).get(albumIdsList(i)).encryptedKeysMap
-                        var tempImagesKeyList = new ConcurrentHashMap[String,Array[Byte]]
-                        tempImagesKeyList = deserialize(tempEncryptedImagesKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
-                        println(tempImagesKeyList.toString)
-                        if(tempImagesKeyList.containsKey(fromUser)) {
-                          albumIdsReturn += albumIdsList(i)
-                        }
-                      }
-                      else {
-                        log.debug("Null found in albumIdsList("+i+").")
-                      }
+                parameters('Email.as[String]) {
+                  fromUser =>
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        val albumIdsReturn : ListBuffer[String] = new ListBuffer()
+                        //count=count+1
+                        //albumDirectory.get(userEmail).toString()
+                        //albumDirectory.get(userEmail).
+                        val albumIdsList= albumDirectory.get(userEmail).keySet().toArray(new Array[String](albumDirectory.get(userEmail).size()))
+                        for(i<-0 until albumIdsList.length) {
+                          log.debug("inside for loop for albums")
+                          if(albumIdsList(i)!=null) {
+                            val tempEncryptedImagesKeyListBytes = albumDirectory.get(userEmail).get(albumIdsList(i)).encryptedKeysMap
+                            var tempImagesKeyList = new ConcurrentHashMap[String,Array[Byte]]
+                            tempImagesKeyList = deserialize(tempEncryptedImagesKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                            println(tempImagesKeyList.toString)
+                            if(tempImagesKeyList.containsKey(fromUser)) {
+                              albumIdsReturn += albumIdsList(i)
+                            }
+                          }
+                          else {
+                            log.debug("Null found in albumIdsList("+i+").")
+                          }
 
+                        }
+                        //"pappu"
+                        albumIdsReturn.toString()
+                      }
                     }
-                    //"pappu"
-                    albumIdsReturn.toString()
-                  }
                 }
+
               }
-            }
+            //}
           } ~
           pathPrefix(Segment) { //returns a list of ids of the images
             albumID =>
@@ -845,10 +849,14 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
 
                             if(tempPostKeyList.containsKey(fromUser)) {
                               val postContentReturn : ListBuffer[String] = new ListBuffer()
-                              postContentReturn += byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
+                              /*postContentReturn += byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
                               postContentReturn += byteToString(userPosts.get(userEmail).get(postID).initVector)
                               postContentReturn += byteToString(tempPostKeyList.get(fromUser))
-                              postContentReturn.toString()
+                              postContentReturn.toString()*/
+                              val x = byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
+                              val y= byteToString(userPosts.get(userEmail).get(postID).initVector)
+                              val z= byteToString(tempPostKeyList.get(fromUser))
+                              x+","+y+","+z
                             }
                             else {
                               log.debug("Don't have right to view post with ID : " + postID)
