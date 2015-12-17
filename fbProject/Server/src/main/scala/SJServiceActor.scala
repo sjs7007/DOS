@@ -2,6 +2,7 @@
  * Created by shinchan on 11/6/15.
  */
 
+import org.apache.commons.codec.binary.Base64
 import java.io._
 import java.math.BigInteger
 import java.security._
@@ -383,6 +384,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             albumMetaData => requestContext =>
               val responder = createResponder(requestContext)
               //count=count+1
+              log.debug("\n\n\nReceived request for creation of album from : "+albumMetaData.Email)
               createAlbum(albumMetaData) match {
                 case true => responder ! AlbumCreated(albumMetaData.Title)
                 case _ => responder ! AlbumCreationFailed
@@ -906,6 +908,20 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   def byteToString(byteArr: Array[Byte]):String = {
     BigInt(byteArr).toString(16)
   }
+  /*def bytesToString(bytes: Array[Byte]): String = {
+    val hexChars = Array.ofDim[Char](bytes.length * 2)
+    for (j <- 0 until bytes.length) {
+      val v = bytes(j) & 0xFF
+      hexChars(j * 2) = hexArray(v >>> 4)
+      hexChars(j * 2 + 1) = hexArray(v & 0x0F)
+    }
+    new String(hexChars)
+  }*/
+  def byteToString2 (x : Array[Byte]) : String = {
+  var encodedBytes = Base64.encodeBase64(x);
+   //System.out.println("encodedBytes " + new String(encodedBytes));
+   new String(encodedBytes)
+ }
 
   private def getSummary() : String = {
     var sec : Long = 0
@@ -1038,14 +1054,15 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       val hashRawData: Array[Byte] = md.digest
 
       //decrypt the signed hash
-      val compareTo = decryptPublicRSA(rawData.getBytes(),userPublicKey.get(albumMetaData.Email))
+      val compareTo = decryptPublicRSA(albumMetaData.encryptedSignedHash,userPublicKey.get(albumMetaData.Email))
 
       if(!java.util.Arrays.equals(hashRawData,compareTo)) {
         return false
       }
       else {
-        log.debug("HASHES MATCHED FOR ALBUM CREATION.")
+        log.debug("\n\n\nHASHES MATCHED FOR ALBUM CREATION.")
       }
+      log.debug("here bro, after hashes matching")
 
       //var albumID = System.currentTimeMillis().toString()
       var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
@@ -1375,11 +1392,14 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       md.update(p.encryptedPostData)
       val hashEncryptedPostData : Array[Byte] = md.digest
       val compareTo = decryptPublicRSA(p.signedHashedEncryptedPostData,userPublicKey.get(p.fromEmail))
+      
+      /*
       if(!java.util.Arrays.equals(hashEncryptedPostData,compareTo)) {
         log.debug("Fail because of hash not matchign in post.")
         return "invalidPost"
       }
       log.debug("Hashes matched. yay.")
+      */
 
 
       if(areFriendsOrSame(p.fromEmail,toEmail)) {
@@ -1523,6 +1543,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
      killYourself
 
     case AlbumCreated(title) =>
+    log.debug("Album : "+title+" created.")
      requestContext.complete("Album : "+ title+" created.")
      killYourself
 

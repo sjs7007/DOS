@@ -20,9 +20,8 @@ libraryDependencies ++= {
     "org.scalaz"          %%  "scalaz-core"   % "7.1.0",
     "org.json4s"          %%  "json4s-native" % "3.3.0",
     "net.sf.opencsv" % "opencsv" % "2.1",
-    "com.sun.xml.security" % "xml-security-impl" % "1.0"
-
-
+    "com.sun.xml.security" % "xml-security-impl" % "1.0",
+    "commons-codec" % "commons-codec" % "1.9"
   )
 }
 
