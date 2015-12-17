@@ -18,7 +18,7 @@ import akka.util.Timeout
 import spray.can.Http
 import spray.can.server.Stats
 import spray.http.MediaTypes._
-import spray.http.{HttpData, MultipartFormData}
+import spray.http.MultipartFormData
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -26,7 +26,9 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
 //import java.util
 
-import au.com.bytecode.opencsv.CSVWriter
+import java.nio.file.{Files, Paths}
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 object commonVars {
   //list of all users : make it more efficient
@@ -508,15 +510,22 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             val responder = createResponder(requestContext)
             //count=count+1
             sendFriendRequest(friendRequest) match {
-              case "alreadyFriends" => responder ! AlreadyFriends
+              case "alreadyFriends" => 
+               val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(publicKeybytes)
 
-              case "userNotPresent" => responder ! UserNotPresent
+              case "userNotPresent" => 
+              // val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(byteToString(serverPublicKey.getEncoded()))
+               // responder ! FriendRequestSent("null")
 
               case "requestSent" =>
                 val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
                 responder ! FriendRequestSent(publicKeybytes)
 
-              case "cantAddSelf" => responder ! CantAddSelf
+              case "cantAddSelf" => 
+               val publicKeybytes = byteToString(userPublicKey.get((friendRequest.toEmail)))
+                responder ! FriendRequestSent(publicKeybytes)
             }
           }
         }
@@ -534,16 +543,45 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
       else {
+        //returns list of albums to which user has access to
         pathPrefix("albums") {
           pathEnd {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  //count=count+1
-                  albumDirectory.get(userEmail).toString()
+            //parameters('Email.as[String]) {
+            //  fromUser =>
+              get {
+                parameters('Email.as[String]) {
+                  fromUser =>
+                    respondWithMediaType(`application/json`) {
+                      complete {
+                        val albumIdsReturn : ListBuffer[String] = new ListBuffer()
+                        //count=count+1
+                        //albumDirectory.get(userEmail).toString()
+                        //albumDirectory.get(userEmail).
+                        val albumIdsList= albumDirectory.get(userEmail).keySet().toArray(new Array[String](albumDirectory.get(userEmail).size()))
+                        for(i<-0 until albumIdsList.length) {
+                          log.debug("inside for loop for albums")
+                          if(albumIdsList(i)!=null) {
+                            val tempEncryptedImagesKeyListBytes = albumDirectory.get(userEmail).get(albumIdsList(i)).encryptedKeysMap
+                            var tempImagesKeyList = new ConcurrentHashMap[String,Array[Byte]]
+                            tempImagesKeyList = deserialize(tempEncryptedImagesKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                            println(tempImagesKeyList.toString)
+                            if(tempImagesKeyList.containsKey(fromUser)) {
+                              albumIdsReturn += albumIdsList(i)
+                            }
+                          }
+                          else {
+                            log.debug("Null found in albumIdsList("+i+").")
+                          }
+
+                        }
+                        //"pappu"
+                        albumIdsReturn.toString()
+                      }
+                    }
                 }
+
               }
-            }
+            //}
           } ~
           pathPrefix(Segment) { //returns a list of ids of the images
             albumID =>
@@ -560,13 +598,25 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 } ~
                 path(Segment) {
                   imageID =>
-                  get {
-                    respondWithMediaType(`image/jpeg`) {
-                      complete {
-                        //count=count+1
-                        HttpData(new File("users/"+userEmail+"/"+albumID+"/"+imageID))
+                    get {
+                      parameters('Email.as[String]) {
+                        fromUser =>
+                        val tempImageKeyListBytes = albumDirectory.get(userEmail).get(albumID).encryptedKeysMap
+                        var tempImageKeyList = new ConcurrentHashMap[String,Array[Byte]]()
+                        tempImageKeyList = deserialize(tempImageKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                        respondWithMediaType(`application/json`) {
+                          complete {
+                            if(tempImageKeyList.containsKey(fromUser))
+                              {
+                                val encryptedImgBytes = Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID))
+                                val initVector = albumDirectory.get(userEmail).get(albumID).initVector
+                                val key = tempImageKeyList.get(fromUser)
+                              }
+                            //val encryptedImgString = byteToString(encryptedImgBytes)
+                            "null"
+                          }
+                        }
                       }
-                    }
                   }
                 }~
                 path("upload") {
@@ -644,6 +694,100 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             }
           }
         } ~
+        path("ids") {
+          /*get {
+            respondWithMediaType(`application/json`) {
+              complete {
+                userPosts.get(userEmail).keySet().toString()
+              }
+            }
+          }*/
+          get {
+            parameters('Email.as[String]) {
+              fromUser =>
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    //count=count+1
+                    log.debug("\n\n\n\n\n\n\ngot request for getting list of post ids")
+                    log.debug("new1")
+                    log.debug("\n\nfromUser : "+fromUser+"\n To User : "+userEmail+"\n\n")
+                    if(!doesUserExist(fromUser)) {
+                      fromUser+" does not exist."
+                    }
+                    else {
+                      if(!doesUserExist(userEmail)) {
+                        userEmail+" does not exist."
+                      }
+                      else {
+                          if (areFriendsOrSame(fromUser, userEmail)) {
+                          log.debug("inside if")
+                          //userPosts.get(userEmail).keySet().toString()
+                          //fetch only those post ids which this user has access to
+
+                          //for username userEmail, get the list of postids first
+                          // String[] strings = map.keySet().toArray(new String[map.size()]);
+
+                          //var strings: Array[Nothing] = map.keySet.toArray(new Array[Nothing](map.size))
+
+                          val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
+                          log.debug((postIdsList==null).toString)
+                          log.debug("PostIdsList : "+postIdsList+" "+postIdsList.length)
+                          log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
+                          val postIdsReturn : ListBuffer[String] = new ListBuffer()
+
+                          //for each post id, get the encrypted post,get the list of people who have access to it
+                          //the list itself is encrypted using server's public key
+                          //decrypt it and then check if fromUser is there in the list or not
+                          //if present, add the post id to list of postids to be returned
+                          for(i<- 0 until postIdsList.length) {
+                            log.debug("just inside for loop")
+                            if(postIdsList(i)!=null) 
+                            {
+                              val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
+                              log.debug("for loop2")
+                              log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
+                              log.debug("for loop3")
+                              //now decrypt this using server's private key
+                              //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                              val tempPostKeyListBytes = tempEncryptedPostKeyList
+                              log.debug("for loop4")
+                              //now create a list from this bytes and return
+                              var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
+                             // try {
+                              tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                              println(tempPostKeyList.toString)
+                           // }
+                            /*catch {
+
+                              case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
+                            }*/
+                              log.debug("for loop5")
+                              if(tempPostKeyList.containsKey(fromUser)) {
+                                postIdsReturn += postIdsList(i)
+                              }
+                              log.debug("for loop6")
+                            }
+                            else
+                            {
+                              log.debug("Null found in postIdsList("+i+").")
+                            }
+                          }
+                          log.debug("returning post ids")
+                          postIdsReturn.toString()
+                        }
+                        else {
+                           log.debug(" don't have rights to view post list.")
+                          "Don't have rights to view post list."
+                        }
+                      }
+                    }
+                  
+                  }
+
+                }
+            }
+          }
+        }~
         pathPrefix("posts") {
           pathEnd {
             get {
@@ -662,57 +806,6 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     }
                   }
                 //}
-              }
-            }~
-          path("ids") {
-            /*get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  userPosts.get(userEmail).keySet().toString()
-                }
-              }
-            }*/
-            get {
-              parameters('Email.as[String]) {
-                fromUser =>
-                  respondWithMediaType(`application/json`) {
-                    complete {
-                      //count=count+1
-                      if (areFriendsOrSame(fromUser, userEmail)) {
-                        //userPosts.get(userEmail).keySet().toString()
-                        //fetch only those post ids which this user has access to
-
-                        //for username userEmail, get the list of postids first
-                       // String[] strings = map.keySet().toArray(new String[map.size()]);
-
-                        //var strings: Array[Nothing] = map.keySet.toArray(new Array[Nothing](map.size))
-
-                        val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
-                        val postIdsReturn : ListBuffer[String] = new ListBuffer()
-
-                        //for each post id, get the encrypted post,get the list of people who have access to it
-                        //the list itself is encrypted using server's public key
-                        //decrypt it and then check if fromUser is there in the list or not
-                        //if present, add the post id to list of postids to be returned
-                        for(i<- 0 until postIdsList.length) {
-                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
-                          //now decrypt this using server's private key
-                          val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
-                          //now create a list from this bytes and return
-                          val tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
-                          if(tempPostKeyList.containsKey(fromUser)) {
-                            postIdsReturn += postIdsList(i)
-                          }
-                        }
-                        postIdsReturn.toString()
-                        }
-                        else {
-                          "Don't have rights to view post list."
-                        }
-                      }
-
-                    }
-                  }
               }
             }
           } ~
@@ -734,11 +827,50 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                           complete {
                             //count=count+1
                             if (areFriendsOrSame(fromUser, userEmail)) {
-                              userPosts.get(userEmail).toString()
+                              //userPosts.get(userEmail).get(postID).toString()
+                              //Post,initVector,encryptedKey
+
+
+                              val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postID).encryptedKeyMap
+                              /*log.debug("for loop2")
+                              log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
+                              log.debug("for loop3")
+                              //now decrypt this using server's private key*/
+                              //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                              val tempPostKeyListBytes = tempEncryptedPostKeyList
+                              //log.debug("for loop4")
+                              //now create a list from this bytes and return
+                              var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
+                              // try {
+                              tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                              //println(tempPostKeyList.toString)
+                              // }
+                              /*catch {
+
+                                case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
+                              }*/
+                             // log.debug("for loop5")
+
+                            if(tempPostKeyList.containsKey(fromUser)) {
+                              val postContentReturn : ListBuffer[String] = new ListBuffer()
+                              /*postContentReturn += byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
+                              postContentReturn += byteToString(userPosts.get(userEmail).get(postID).initVector)
+                              postContentReturn += byteToString(tempPostKeyList.get(fromUser))
+                              postContentReturn.toString()*/
+                              val x = byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
+                              val y= byteToString(userPosts.get(userEmail).get(postID).initVector)
+                              val z= byteToString(tempPostKeyList.get(fromUser))
+                              x+","+y+","+z
                             }
                             else {
+                              log.debug("Don't have right to view post with ID : " + postID)
                               "Don't have right to view post with ID : " + postID
                             }
+                          }
+                          else {
+                              log.debug("Not friends with user so can't view.")
+                              "Not friends with user so can't view."
+                          }
                           }
                         }
                     }
@@ -899,6 +1031,21 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create album
   private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
     if(doesUserExist(albumMetaData.Email)) {
+      //check if the digital signature is matching before creating album
+      val rawData = albumMetaData.Email+albumMetaData.Title
+      val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+      md.update(rawData.getBytes("UTF-8"))
+      val hashRawData: Array[Byte] = md.digest
+
+      //decrypt the signed hash
+      val compareTo = decryptPublicRSA(rawData.getBytes(),userPublicKey.get(albumMetaData.Email))
+
+      if(!java.util.Arrays.equals(hashRawData,compareTo)) {
+        return false
+      }
+      else {
+        log.debug("HASHES MATCHED FOR ALBUM CREATION.")
+      }
 
       //var albumID = System.currentTimeMillis().toString()
       var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
@@ -1222,6 +1369,19 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         log.debug("To email doesn't exist. Can't post")
         return "invalidPost"
       }
+      //if()
+      //check for hash match, if not return invalid post
+      val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+      md.update(p.encryptedPostData)
+      val hashEncryptedPostData : Array[Byte] = md.digest
+      val compareTo = decryptPublicRSA(p.signedHashedEncryptedPostData,userPublicKey.get(p.fromEmail))
+      if(!java.util.Arrays.equals(hashEncryptedPostData,compareTo)) {
+        log.debug("Fail because of hash not matchign in post.")
+        return "invalidPost"
+      }
+      log.debug("Hashes matched. yay.")
+
+
       if(areFriendsOrSame(p.fromEmail,toEmail)) {
         userPosts.get(toEmail).put(System.currentTimeMillis().toString(),p)
         nUserPosts = nUserPosts+1
