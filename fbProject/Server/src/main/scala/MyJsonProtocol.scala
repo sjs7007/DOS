@@ -101,9 +101,9 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
 
   //image upload
-  case class AlbumMetaData(Email:String,Title: String)
+  case class AlbumMetaData(Email:String,Title: String,encryptedKeysMap: Array[Byte],initVector : Array[Byte],encryptedSignedHash : Array[Byte])
   object AlbumMetaData extends  DefaultJsonProtocol {
-    implicit val format = jsonFormat2(AlbumMetaData.apply)
+    implicit val format = jsonFormat5(AlbumMetaData.apply)
   }
   case class AlbumCreated(Title: String)
   case object AlbumCreationFailed
