@@ -609,13 +609,16 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         tempImageKeyList = deserialize(tempImageKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
                         respondWithMediaType(`application/json`) {
                           complete {
+                            log.debug("INSIDE COMPLETE")
+                            log.debug("Key List : "+tempImageKeyList)
                             var ret = "null"
                             if(tempImageKeyList.containsKey(fromUser))
                               {
+                                log.debug("INSIDE IF")
                                 val encryptedImgBytes = byteToString(Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID)))
                                 val initVector = byteToString(albumDirectory.get(userEmail).get(albumID).initVector)
                                 val key = byteToString(tempImageKeyList.get(fromUser))
-                                log.debug("image sent successfully")
+                                log.debug("image sent successfully : "+encryptedImgBytes)
                                 ret = encryptedImgBytes+","+initVector+","+key
                               }
                             //val encryptedImgString = byteToString(encryptedImgBytes)
@@ -666,11 +669,11 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                           nImageUploads = nImageUploads+1
                           log.debug("image upload successfully")
                           ret = "done, file in: " + ftmp.getName()
-                          complete("done, file in: " + ftmp.getName())
+                          //complete("done, file in: " + ftmp.getName())
                         }
                         else {
                           log.debug("image upload failed")
-                          complete("image upload failed.")
+                          //complete("image upload failed.")
                         }
                         log.debug("here-3")
                         complete(ret)
