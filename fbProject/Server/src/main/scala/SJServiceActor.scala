@@ -688,29 +688,36 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                       //if present, add the post id to list of postids to be returned
                       for(i<- 0 until postIdsList.length) {
                         log.debug("just inside for loop")
-                        val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
-                        log.debug("for loop2")
-                        log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
-                        log.debug("for loop3")
-                        //now decrypt this using server's private key
-                        //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
-                        val tempPostKeyListBytes = tempEncryptedPostKeyList
-                        log.debug("for loop4")
-                        //now create a list from this bytes and return
-                        var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
-                       // try {
-                        tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
-                        println(tempPostKeyList.toString)
-                     // }
-                      /*catch {
+                        if(postIdsList(i)!=null) 
+                        {
+                          val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postIdsList(i)).encryptedKeyMap
+                          log.debug("for loop2")
+                          log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
+                          log.debug("for loop3")
+                          //now decrypt this using server's private key
+                          //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                          val tempPostKeyListBytes = tempEncryptedPostKeyList
+                          log.debug("for loop4")
+                          //now create a list from this bytes and return
+                          var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
+                         // try {
+                          tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                          println(tempPostKeyList.toString)
+                       // }
+                        /*catch {
 
-                        case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
-                      }*/
-                        log.debug("for loop5")
-                        if(tempPostKeyList.containsKey(fromUser)) {
-                          postIdsReturn += postIdsList(i)
+                          case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
+                        }*/
+                          log.debug("for loop5")
+                          if(tempPostKeyList.containsKey(fromUser)) {
+                            postIdsReturn += postIdsList(i)
+                          }
+                          log.debug("for loop6")
                         }
-                        log.debug("for loop6")
+                        else
+                        {
+                          log.debug("Null found in postIdsList("+i+").")
+                        }
                       }
                       postIdsReturn.toString()
                     }
@@ -762,11 +769,46 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                           complete {
                             //count=count+1
                             if (areFriendsOrSame(fromUser, userEmail)) {
-                              userPosts.get(userEmail).toString()
+                              //userPosts.get(userEmail).get(postID).toString()
+                              //Post,initVector,encryptedKey
+
+
+                              val tempEncryptedPostKeyList = userPosts.get(userEmail).get(postID).encryptedKeyMap
+                              /*log.debug("for loop2")
+                              log.debug("tempEncryptedPostKeyList : "+(tempEncryptedPostKeyList==null).toString)
+                              log.debug("for loop3")
+                              //now decrypt this using server's private key*/
+                              //val tempPostKeyListBytes = decryptRSA(tempEncryptedPostKeyList,serverPrivateKey.getEncoded())
+                              val tempPostKeyListBytes = tempEncryptedPostKeyList
+                              //log.debug("for loop4")
+                              //now create a list from this bytes and return
+                              var tempPostKeyList = new ConcurrentHashMap[String, Array[Byte]]
+                              // try {
+                              tempPostKeyList = deserialize(tempPostKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                              //println(tempPostKeyList.toString)
+                              // }
+                              /*catch {
+
+                                case e: Exception => print ("YOOOOOOOOOOOOOOOOOOO" + e.toString)
+                              }*/
+                             // log.debug("for loop5")
+
+                            if(tempPostKeyList.containsKey(fromUser)) {
+                              val postContentReturn : ListBuffer[String] = new ListBuffer()
+                              postContentReturn += byteToString(userPosts.get(userEmail).get(postID).encryptedPostData)
+                              postContentReturn += byteToString(userPosts.get(userEmail).get(postID).initVector)
+                              postContentReturn += byteToString(tempPostKeyList.get(fromUser))
+                              postContentReturn.toString()
                             }
                             else {
+                              log.debug("Don't have right to view post with ID : " + postID)
                               "Don't have right to view post with ID : " + postID
                             }
+                          }
+                          else {
+                              log.debug("Not friends with user so can't view.")
+                              "Not friends with user so can't view."
+                          }
                           }
                         }
                     }

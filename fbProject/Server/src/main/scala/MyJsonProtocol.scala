@@ -80,7 +80,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val format = jsonFormat2(EncryptedSecretKey.apply)
   }
 
-  case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: EncryptedSecretKey, signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyMap : Array[Byte])
+  case class EncryptedPost(encryptedPostData: Array[Byte], initVector : Array[Byte], signedHashedEncryptedPostData: Array[Byte],fromEmail : String, encryptedToEmail: Array[Byte],encryptedKeyMap : Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
     implicit val format = jsonFormat6(EncryptedPost.apply)

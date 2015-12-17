@@ -4,7 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="163" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="559" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="482" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1142" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1206" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -41,9 +41,16 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.470124">
-              <caret line="700" column="56" selection-start-line="700" selection-start-column="56" selection-end-line="700" selection-end-column="56" />
-              <folding />
+            <state vertical-scroll-proportion="0.33294117">
+              <caret line="260" column="66" selection-start-line="260" selection-start-column="60" selection-end-line="260" selection-end-column="66" />
+              <folding>
+                <element signature="e#44#60#0" expanded="true" />
+                <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+                <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+                <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+                <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+                <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -92,7 +99,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
+              <caret line="71" column="47" selection-start-line="71" selection-start-column="47" selection-end-line="71" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -435,7 +442,7 @@
     </recent_temporary>
   </component>
   <component name="SbtLocalSettings">
-    <option name="lastUpdateTimestamp" value="1450255246752" />
+    <option name="lastUpdateTimestamp" value="1450313013294" />
     <option name="availableProjects">
       <map>
         <entry>
@@ -564,7 +571,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="91" column="7" selection-start-line="91" selection-start-column="7" selection-end-line="91" selection-end-column="7" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -634,7 +648,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -681,7 +702,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -728,7 +756,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -782,7 +817,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -836,7 +878,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -875,7 +924,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -944,16 +1000,23 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
+          <caret line="71" column="47" selection-start-line="71" selection-start-column="47" selection-end-line="71" selection-end-column="47" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.470124">
-          <caret line="700" column="56" selection-start-line="700" selection-start-column="56" selection-end-line="700" selection-end-column="56" />
-          <folding />
+        <state vertical-scroll-proportion="0.33294117">
+          <caret line="260" column="66" selection-start-line="260" selection-start-column="60" selection-end-line="260" selection-end-column="66" />
+          <folding>
+            <element signature="e#44#60#0" expanded="true" />
+            <marker date="1450313138202" expanded="true" signature="4180:51499" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="5478:48535" placeholder="{...}" />
+            <marker date="1450313138202" expanded="true" signature="19612:32651" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="27951:32031" placeholder="(...)" />
+            <marker date="1450313138202" expanded="true" signature="29002:31994" placeholder="(...)" />
+          </folding>
         </state>
       </provider>
     </entry>
