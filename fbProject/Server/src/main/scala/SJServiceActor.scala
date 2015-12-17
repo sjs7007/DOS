@@ -598,21 +598,24 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                 } ~
                 path(Segment) {
                   imageID =>
-                  get {
-                    /*respondWithMediaType(`image/jpeg`) {
+                    get {
+                      parameters('Email.as[String]) {
+                        fromUser =>
+                          /*respondWithMediaType(`image/jpeg`) {
                       complete {
                         //count=count+1
                         HttpData(new File("users/"+userEmail+"/"+albumID+"/"+imageID))
                       }
                     }*/
-                    respondWithMediaType(`application/json`) {
-                      complete {
-                        val encryptedImgBytes = Files.readAllBytes(Paths.get("users/"+userEmail+"/"+albumID+"/"+imageID))
-                        //val encryptedImgString = byteToString(encryptedImgBytes)
+                        respondWithMediaType(`application/json`) {
+                          complete {
+                            val encryptedImgBytes = Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID))
+                            //val encryptedImgString = byteToString(encryptedImgBytes)
 
-                        "dss"
+                            "dss"
+                          }
+                        }
                       }
-                    }
                   }
                 }~
                 path("upload") {
