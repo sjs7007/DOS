@@ -418,7 +418,7 @@ var serverPublicKey: PublicKey = null
 
               var target = email
               
-            var post = "abc" //Wallpost(email, target, textPost)
+            var post = "mera naam chin chin choo"
             
             // Create AES Key
             
