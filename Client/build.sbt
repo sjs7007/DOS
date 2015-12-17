@@ -19,7 +19,8 @@ libraryDependencies ++= {
     "org.specs2"          %%  "specs2-core"   % "2.3.11" % "test",
     "org.scalaz"          %%  "scalaz-core"   % "7.1.0",
     "com.sun.xml.security" % "xml-security-impl" % "1.0",
-    "org.json4s" %% "json4s-jackson" % "3.2.11"
+    "commons-codec" % "commons-codec" % "1.9"
+    
 
   )
 }

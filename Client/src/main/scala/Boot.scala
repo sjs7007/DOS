@@ -1,10 +1,9 @@
 import java.security.{SecureRandom, MessageDigest, KeyPairGenerator, KeyFactory, PublicKey, PrivateKey, NoSuchAlgorithmException, InvalidKeyException}
-import com.sun.org.apache.xml.internal.security.utils.Base64
 
 import javax.crypto._
 import javax.crypto.{IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException}
 import javax.crypto.spec.SecretKeySpec
-
+import java.nio.ByteBuffer
 import java.security.spec.{X509EncodedKeySpec, PKCS8EncodedKeySpec}
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.binary.Base64;
 
 import java.math.BigInteger
 import javax.crypto.spec.DHParameterSpec
@@ -90,7 +91,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   */
   
 
-  case class CreateAlbum (Email:String, EncryptedTitle:Array[Byte], signedHashedEncryptedTitle: Array[Byte])
+  case class CreateAlbum (Email:String, Title:Array[Byte], encryptedKeysMap: Array[Byte])
   object CreateAlbum extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(CreateAlbum.apply)
   }
@@ -125,7 +126,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   }
 
   
-    case class EncryptedPost(encryptedPostData: Array[Byte], encryptedAESKey: EncryptedSecretKey, signedHashedEncryptedPostData: Array[Byte], fromEmail: String, encryptedToEmail: Array[Byte], encryptedKeyMap: Array[Byte])
+    case class EncryptedPost(encryptedPostData: Array[Byte], initVector: Array[Byte], signedHashedEncryptedPostData: Array[Byte], fromEmail: String, encryptedToEmail: Array[Byte], encryptedKeyMap: Array[Byte])
 
   object EncryptedPost extends DefaultJsonProtocol {
     implicit val format = jsonFormat6(EncryptedPost.apply)
@@ -303,7 +304,7 @@ var serverPublicKey: PublicKey = null
     
       var friendKeys = new ConcurrentHashMap[String,Array[Byte]]()
 
-    
+    Thread.sleep (2000)
     
     if (userNo == 0)
     email = "Bob"
@@ -334,9 +335,6 @@ var serverPublicKey: PublicKey = null
     aliceKeyAgree.init(aliceKeyPair.getPrivate)
     val alicePublicKeyBytes = aliceKeyPair.getPublic.getEncoded()
     
-
-     
-     
     var idh : InitDH = InitDH (email, alicePublicKeyBytes)
         
       for {
@@ -376,38 +374,13 @@ var serverPublicKey: PublicKey = null
                             //println ("\n\n" + toHexString(serverPublicKey.getEncoded()))
 
         } else println ("NULL")
-      }
-                  
-      }
-
-   
-
-  def toHexString(block: Array[Byte]): String = {
-    val buf = new StringBuffer()
-    val len = block.length
-    for (i <- 0 until len) {
-      byte2hex(block(i), buf)
-      if (i < len - 1) {
-        buf.append(":")
-      }
-    }
-    buf.toString
-  }
-
-  def byte2hex(b: Byte, buf: StringBuffer) {
-    val hexChars = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
-    val high = ((b & 0xf0) >> 4)
-    val low = (b & 0x0f)
-    buf.append(hexChars(high))
-    buf.append(hexChars(low))
-  }
-
       
+                  
+      
+
       
       // END OF KEY EXCHANGE
       
-      
-
       for {
         response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createUser"),entity= HttpEntity(`application/json`, encUser.toJson.toString))).mapTo[HttpResponse]
       }
@@ -424,23 +397,20 @@ var serverPublicKey: PublicKey = null
           }
         yield {
         
-        
           if (!response.entity.asString.equals("null")) {
           
           try {
           friendKeys.put("Bob",KeyFactory.getInstance("RSA").generatePublic(new  X509EncodedKeySpec(BigInt(response.entity.asString, 16).toByteArray)).getEncoded())
            }
               catch {
-              case x : Exception => println ("WTF IS GOING ON " + x.toString)
+              case x : Exception => println ("ERROR WHEN FRIEND REQUEST " + x.toString)
               }
               
-              
-             println (toHexString(friendKeys.get ("Bob")))
+                       
           
-          
-          println ("GOT BOB KEY: " + toHexString(friendKeys.get("Bob")))
+          //println ("GOT BOB KEY: " + toHexString(friendKeys.get("Bob")))
           } else println ("NO SUCH USER MATE!")
-          }
+          
           
           // POST TO SELF
           
@@ -448,7 +418,7 @@ var serverPublicKey: PublicKey = null
 
               var target = email
               
-            var post = Wallpost(email, target, textPost)
+            var post = "abc" //Wallpost(email, target, textPost)
             
             // Create AES Key
             
@@ -461,6 +431,8 @@ var serverPublicKey: PublicKey = null
               // get bytes with initializationVector.getIV()
             val AESbytes = AESKey.getEncoded()
             
+            println ("INITIALIZATION VECTOR TO HEX STRING: " + toHexString(initializationVector.getIV()))
+            
             println ("ABOUT TO START POST!")
               
             // Get public keys of people I want to share it with
@@ -470,7 +442,8 @@ var serverPublicKey: PublicKey = null
               
               var esk : EncryptedSecretKey =  EncryptedSecretKey(encryptRSA(AESbytes, pubBytes), encryptRSA(initializationVector.getIV(), pubBytes))
             
-            val aesEncryptedWallpost = encryptAES(serialize(post), AESbytes, initializationVector)
+            
+            val aesEncryptedWallpost = encryptAES(post.getBytes, AESbytes, initializationVector)
 
             val hashedSignedEncryptedPost = encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector)), priBytes)
 
@@ -487,16 +460,34 @@ var serverPublicKey: PublicKey = null
             
             
             println ("AES....")
-            
-                        encryptedAESKeys.put("Bob", "tatti".getBytes)
-                        
-                        println ("AES2....")
+                                    
+                        println ("RSA....")
               try {
 
-                  encryptedAESKeys.put("Bob", friendKeys.get("Bob"))
+                  encryptedAESKeys.put("Bob", encryptRSA(AESbytes, friendKeys.get("Bob")))
+                  
+                  if (!encryptedAESKeys.containsKey(email)) {
+                  encryptedAESKeys.put(email, encryptRSA(AESbytes, pubBytes))
+                              var theString = toHexString (encryptedAESKeys.get(email))
+
+                              println ("RSA HEXSTRING OF ENCRYPTED KEY OF " + email + "IS: " + theString)
+                              println ("RSA UTF-8 STRING OF ENCRYPTED KEY OF " + email + "IS: " + new String(encryptedAESKeys.get(email), "UTF-8"))
+            
+                     try {
+                      val postAESKey = decryptRSA(encryptedAESKeys.get(email), priBytes)
+                      println ("DECRYPTED AES KEY IS! - " + new String (postAESKey))
+                      println ("ORIGINAL AES KEY IS! - " + new String(AESbytes))
+                      println ("HEX VERSION OF RSA ENCRYPTED AES KEY IS " + toHexString(encryptedAESKeys.get(email)))
+                      }
+                      catch {
+                      case e: Exception => println ("DECRYPTION OF ENCRYPTED AESKEY ERROR: " + e.toString)
+                      
+                      }
+           
+                  }
               }
               catch {
-              case x : Exception => println ("WTF IS GOING ON " + x.toString)
+              case x : Exception => println ("ERROR WHEN ENCRYPTING TO RSA! " + x.toString)
               }
             
             
@@ -504,24 +495,16 @@ var serverPublicKey: PublicKey = null
             
             
             
-            
-                        println ("after AES")
-            
-            
-            //var encPost = EncryptedPost("abc".getBytes, esk, "abc".getBytes, "hagga", "abc".getBytes, "abc".getBytes)
-            
-            
-            var encPost = EncryptedPost(aesEncryptedWallpost, esk, hashedSignedEncryptedPost, email, rsaEncryptedTo, serialize(encryptedAESKeys))
-            
+            var encPost = EncryptedPost(aesEncryptedWallpost, initializationVector.getIV(), hashedSignedEncryptedPost, email, rsaEncryptedTo, serialize(encryptedAESKeys))
+           
             for {
-              // response <-   IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/wallWrite"),entity= HttpEntity(`application/json`, Wallpost("Bob", "Bob", "madarbhenchod").toJson.toString)))
 
               response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/wallWrite"),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
             }
               yield {
+              
+             
 
-
-             }
              
              println ("WALL WRITING DONE BRO")
           
@@ -529,17 +512,74 @@ var serverPublicKey: PublicKey = null
           
           // Fetch posts
           
+          var postIDs = new Array[String](10) 
+          
           for {            
-           response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/" + email + "/ids?Email="+email))).mapTo[HttpResponse]
+           response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Dick/ids?Email=Dick"))).mapTo[HttpResponse]
           }
           yield {
           
              println ("FETCHING DONE BRO")
           println ("PAKAWANAN FINAL STRING: " + response.entity.asString)
+          postIDs = response.entity.asString.substring(11,response.entity.asString.length-1).split(",").map(_.trim)
+          println ("postIDs 0 is " + postIDs(0))
+
+
+ println ("????????")
+
+          var postToView = postIDs(0)
+          println ("Gonna look at "+postToView)
+          println ("????????")
+          for {
+            response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Dick/posts/" +postToView.toString +"?Email=Dick" ))).mapTo[HttpResponse]
+
+         }
+          yield {
+          postIDs = response.entity.asString.split(",")
+          println ("GOT DA POST!: "+ new String (BigInt(postIDs(0), 16).toByteArray   ))
+          
+
+
+                              
+          val encPostBytes = BigInt(postIDs(0), 16).toByteArray                                  //Base64.decodeBase64(postIDs(0).getBytes)//hexStringToByteArray(postIDs(0))
+          
+          val initVectorBytes = BigInt(postIDs(1), 16).toByteArray   
+          var encKeyBytes = BigInt(postIDs(2), 16).toByteArray   
+          //encKeyBytes = (new String (encKeyBytes, "UTF-8")).getBytes
+          
+          var stringOfKey = new String(encKeyBytes)
+          
+          println ("THE HEX STRING OF RSA ENCRYPTED AES KEY IS:" + toHexString(encKeyBytes))          
+          
+          
+          val ivKey = new IvParameterSpec(initVectorBytes)
+         
+          val postAESKey = decryptRSA(encKeyBytes, priBytes)
+         println ("THE KEY IS: " + toHexString(postAESKey))
+         
+         
+          
+          
+          val decryptedPost = decryptAES(encPostBytes, postAESKey, ivKey)
+          
+          
+          
+          println ("DECRYPTED POST IS: " + new String (decryptedPost))
+          
+          /*
+          }
+           catch {
+              case x : Exception => println ("ERROR WHEN KEY DECRYPTION " + x.toString)
+              }
+          */
           
           }
-          
-          
+
+             }
+
+          }
+                   
+           }         
           // End Post fetching
           
           // Image
@@ -575,8 +615,78 @@ var serverPublicKey: PublicKey = null
 
             } */     
         } 
-        userNo = userNo + 1
         }
+        
+        
+        }
+                userNo = userNo + 1
+
+        }
+        
+        
+        
+        
+   /*    
+  def toHexString(block: Array[Byte]): String = {
+    val buf = new StringBuffer()
+    val len = block.length
+    for (i <- 0 until len) {
+      byte2hex(block(i), buf)
+      if (i < len - 1) {
+        buf.append(":")
+      }
+    }
+    buf.toString
+  }
+  */
+  
+  
+  /*
+  def hexStringToByteArray(s: String): Array[Byte] = {
+  
+  try {
+    val len = s.length
+    val data = Array.ofDim[Byte](len / 2)
+    var i = 0
+    while (i < len) {
+      data(i / 2) = ((java.lang.Character.digit(s.charAt(i), 16) << 4) + java.lang.Character.digit(s.charAt(i + 1), 
+        16)).toByte
+      i += 2
+    }
+    data
+    
+          }
+           catch {
+              case x : Exception => println ("ERROR IN HEX TO BYTE " + x.toString)
+              } 
+              
+    return (null)
+  }*/
+  
+  def hexStringToByteArray(s: String): Array[Byte] = {
+    val len = s.length
+    val data = Array.ofDim[Byte](len / 2)
+    var i = 0
+    while (i < len) {
+      data(i / 2) = ((java.lang.Character.digit(s.charAt(i), 16) << 4) + java.lang.Character.digit(s.charAt(i + 1), 16)).toByte
+      i += 2
+    }
+    data
+  }
+  
+  
+ def toHexString(byteArr: Array[Byte]):String = {
+   BigInt(byteArr).toString(16)
+ }
+
+  def byte2hex(b: Byte, buf: StringBuffer) {
+    val hexChars = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+    val high = ((b & 0xf0) >> 4)
+    val low = (b & 0x0f)
+    buf.append(hexChars(high))
+    buf.append(hexChars(low))
+  }
+      
 
     case "Continue" =>
 
@@ -808,7 +918,7 @@ var serverPublicKey: PublicKey = null
                             var esk : EncryptedSecretKey =  EncryptedSecretKey(encryptRSA(AESbytes, pubBytes), encryptRSA(initializationVector.getIV(), pubBytes))
 
             
-            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes, initializationVector), esk, encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector)), priBytes), email, encryptPrivateRSA(serialize(encTo), priBytes), encryptPrivateRSA(serialize(encTo), priBytes))
+            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes, initializationVector), "abc".getBytes, encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector)), priBytes), email, encryptPrivateRSA(serialize(encTo), priBytes), encryptPrivateRSA(serialize(encTo), priBytes))
 
             for {
               response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
@@ -842,15 +952,15 @@ var serverPublicKey: PublicKey = null
 
   def encryptRSA(a: Array[Byte], pubKey: Array[Byte]) : Array[Byte] = {
 
- // try {
+  try {
     var pKey: PublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pubKey));
 
     val cipher: Cipher = Cipher.getInstance("RSA")
     cipher.init(Cipher.ENCRYPT_MODE, pKey)
     val cipherData: Array[Byte] = cipher.doFinal(a)
     return (cipherData)
-  //  }
-    /*
+    }
+    
     catch {
       case x: UnsupportedEncodingException => {
         System.out.println(x.toString)
@@ -873,7 +983,7 @@ var serverPublicKey: PublicKey = null
     }
     
     return null
-    */
+    
   }
   
     def encryptPrivateRSA(a: Array[Byte], priKey: Array[Byte]) : Array[Byte] = {
@@ -1065,35 +1175,8 @@ var serverPublicKey: PublicKey = null
     val a = MessageDigest.getInstance("SHA-256")
     a.update(s)
     return (a.digest)
-}
 
 }
 
-
-/*
-  
-  
-import javax.crypto.Cipher
-import javax.crypto.KeyAgreement
-import javax.crypto.SecretKey
-import javax.crypto.interfaces.DHPublicKey
-import java.math.BigInteger
-import javax.crypto.spec.DHParameterSpec
-import javax.crypto.spec.IvParameterSpec
-import java.lang.Exception
-import java.lang.String
-import java.lang.System
-import java.security._
-import java.security.KeyFactory
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.PublicKey
-import java.security.SecureRandom
-import java.security.spec.X509EncodedKeySpec
-//remove if not needed
-import scala.collection.JavaConversions._
-
-object DH {
 }
 
-*/
