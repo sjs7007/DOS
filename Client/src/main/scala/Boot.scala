@@ -95,6 +95,13 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   object CreateAlbum extends DefaultJsonProtocol {
     implicit  val format = jsonFormat3(CreateAlbum.apply)
   }
+  
+  
+   case class AlbumMetaData(Email:String,Title: String,encryptedKeysMap: Array[Byte],initVector : Array[Byte],encryptedSignedHash : Array[Byte])
+ object AlbumMetaData extends  DefaultJsonProtocol {
+   implicit val format = jsonFormat5(AlbumMetaData.apply)
+ }
+
 
   //sendFriendRequest
   case class FriendRequest(fromEmail:String, toEmail:String)
@@ -312,11 +319,8 @@ var serverPublicKey: PublicKey = null
     
       var userObj = User(email, name, bday, city, pubBytes)
       
-      
   var encUser = EncryptedUser(userObj, encryptPrivateRSA(sha256(serialize(userObj)), priBytes), pubBytes)
   
-
-      
     val skip1024ModulusBytes = Array(0xF4.toByte, 0x88.toByte, 0xFD.toByte, 0x58.toByte, 0x4E.toByte, 0x49.toByte, 0xDB.toByte, 0xCD.toByte, 0x20.toByte, 0xB4.toByte, 0x9D.toByte, 0xE4.toByte, 0x91.toByte, 0x07.toByte, 0x36.toByte, 0x6B.toByte, 0x33.toByte, 0x6C.toByte, 0x38.toByte, 0x0D.toByte, 0x45.toByte, 0x1D.toByte, 0x0F.toByte, 0x7C.toByte, 0x88.toByte, 0xB3.toByte, 0x1C.toByte, 0x7C.toByte, 0x5B.toByte, 0x2D.toByte, 0x8E.toByte, 0xF6.toByte, 0xF3.toByte, 0xC9.toByte, 0x23.toByte, 0xC0.toByte, 0x43.toByte, 0xF0.toByte, 0xA5.toByte, 0x5B.toByte, 0x18.toByte, 0x8D.toByte, 0x8E.toByte, 0xBB.toByte, 0x55.toByte, 0x8C.toByte, 0xB8.toByte, 0x5D.toByte, 0x38.toByte, 0xD3.toByte, 0x34.toByte, 0xFD.toByte, 0x7C.toByte, 0x17.toByte, 0x57.toByte, 0x43.toByte, 0xA3.toByte, 0x1D.toByte, 0x18.toByte, 0x6C.toByte, 0xDE.toByte, 0x33.toByte, 0x21.toByte, 0x2C.toByte, 0xB5.toByte, 0x2A.toByte, 0xFF.toByte, 0x3C.toByte, 0xE1.toByte, 0xB1.toByte, 0x29.toByte, 0x40.toByte, 0x18.toByte, 0x11.toByte, 0x8D.toByte, 0x7C.toByte, 0x84.toByte, 0xA7.toByte, 0x0A.toByte, 0x72.toByte, 0xD6.toByte, 0x86.toByte, 0xC4.toByte, 0x03.toByte, 0x19.toByte, 0xC8.toByte, 0x07.toByte, 0x29.toByte, 0x7A.toByte, 0xCA.toByte, 0x95.toByte, 0x0C.toByte, 0xD9.toByte, 0x96.toByte, 0x9F.toByte, 0xAB.toByte, 0xD0.toByte, 0x0A.toByte, 0x50.toByte, 0x9B.toByte, 0x02.toByte, 0x46.toByte, 0xD3.toByte, 0x08.toByte, 0x3D.toByte, 0x66.toByte, 0xA4.toByte, 0x5D.toByte, 0x41.toByte, 0x9F.toByte, 0x9C.toByte, 0x7C.toByte, 0xBD.toByte, 0x89.toByte, 0x4B.toByte, 0x22.toByte, 0x19.toByte, 0x26.toByte, 0xBA.toByte, 0xAB.toByte, 0xA2.toByte, 0x5E.toByte, 0xC3.toByte, 0x55.toByte, 0xE9.toByte, 0x2F.toByte, 0x78.toByte, 0xC7.toByte)
     val skip1024Modulus = new BigInteger(1, skip1024ModulusBytes)
     val skip1024Base = BigInteger.valueOf(2)
@@ -406,10 +410,7 @@ var serverPublicKey: PublicKey = null
               case x : Exception => println ("ERROR WHEN FRIEND REQUEST " + x.toString)
               }
               
-                       
-          
-          //println ("GOT BOB KEY: " + toHexString(friendKeys.get("Bob")))
-          } else println ("NO SUCH USER MATE!")
+        } else println ("NO SUCH USER MATE!")
           
           
           // POST TO SELF
@@ -436,8 +437,7 @@ var serverPublicKey: PublicKey = null
             println ("ABOUT TO START POST!")
               
             // Get public keys of people I want to share it with
-            
-                           
+                                       
               var encTo :  encryptedAddress = encryptedAddress (target)
               
               var esk : EncryptedSecretKey =  EncryptedSecretKey(encryptRSA(AESbytes, pubBytes), encryptRSA(initializationVector.getIV(), pubBytes))
@@ -450,18 +450,8 @@ var serverPublicKey: PublicKey = null
             val rsaEncryptedTo = encryptRSA(serialize(encTo), serverPublicKey.getEncoded())
             
             
-            println ("before AES")
-            
             var encryptedAESKeys = new ConcurrentHashMap [String, Array[Byte]] ()
             
-            //var bytesOfKey = friendKeys.get("Bob").getEncoded()
-            
-            //println ("\nENCRYPTED: " + toHexString(encryptRSA(AESbytes, bytesOfKey)))
-            
-            
-            println ("AES....")
-                                    
-                        println ("RSA....")
               try {
 
                   encryptedAESKeys.put("Bob", encryptRSA(AESbytes, friendKeys.get("Bob")))
@@ -471,19 +461,7 @@ var serverPublicKey: PublicKey = null
                               var theString = toHexString (encryptedAESKeys.get(email))
 
                               println ("RSA HEXSTRING OF ENCRYPTED KEY OF " + email + "IS: " + theString)
-                              println ("RSA UTF-8 STRING OF ENCRYPTED KEY OF " + email + "IS: " + new String(encryptedAESKeys.get(email), "UTF-8"))
             
-                     try {
-                      val postAESKey = decryptRSA(encryptedAESKeys.get(email), priBytes)
-                      println ("DECRYPTED AES KEY IS! - " + new String (postAESKey))
-                      println ("ORIGINAL AES KEY IS! - " + new String(AESbytes))
-                      println ("HEX VERSION OF RSA ENCRYPTED AES KEY IS " + toHexString(encryptedAESKeys.get(email)))
-                      }
-                      catch {
-                      case e: Exception => println ("DECRYPTION OF ENCRYPTED AESKEY ERROR: " + e.toString)
-                      
-                      }
-           
                   }
               }
               catch {
@@ -524,12 +502,8 @@ var serverPublicKey: PublicKey = null
           postIDs = response.entity.asString.substring(11,response.entity.asString.length-1).split(",").map(_.trim)
           println ("postIDs 0 is " + postIDs(0))
 
-
- println ("????????")
-
           var postToView = postIDs(0)
           println ("Gonna look at "+postToView)
-          println ("????????")
           for {
             response <- IO(Http).ask(HttpRequest(GET, Uri(baseIP + port + "/users/Dick/posts/" +postToView.toString +"?Email=Dick" ))).mapTo[HttpResponse]
 
@@ -541,11 +515,11 @@ var serverPublicKey: PublicKey = null
 
 
                               
-          val encPostBytes = BigInt(postIDs(0), 16).toByteArray                                  //Base64.decodeBase64(postIDs(0).getBytes)//hexStringToByteArray(postIDs(0))
+          val encPostBytes = BigInt(postIDs(0), 16).toByteArray                                 
           
           val initVectorBytes = BigInt(postIDs(1), 16).toByteArray   
           var encKeyBytes = BigInt(postIDs(2), 16).toByteArray   
-          //encKeyBytes = (new String (encKeyBytes, "UTF-8")).getBytes
+          
           
           var stringOfKey = new String(encKeyBytes)
           
@@ -566,12 +540,6 @@ var serverPublicKey: PublicKey = null
           
           println ("DECRYPTED POST IS: " + new String (decryptedPost))
           
-          /*
-          }
-           catch {
-              case x : Exception => println ("ERROR WHEN KEY DECRYPTION " + x.toString)
-              }
-          */
           
           }
 
@@ -583,7 +551,7 @@ var serverPublicKey: PublicKey = null
           // End Post fetching
           
           // Image
-          /*
+          
           
           val bis = new BufferedInputStream(new FileInputStream(imageBase(r.nextInt(imageBase.length))))
 
@@ -591,16 +559,44 @@ var serverPublicKey: PublicKey = null
 
           bis.close();
           
-          val aTitle = albumTitles(r.nextInt(albumTitles.length))
           
-            val album = CreateAlbum (email, encryptRSA(aTitle.getBytes, serverPublicKey.getEncoded()), encryptPrivateRSA(sha256(encryptAES(serialize(aTitle), AESbytes, initializationVector)), priBytes))
+           val albumAESKey = KeyGen.generateKey
+              val albumRNG: SecureRandom = new SecureRandom
+              val albytes: Array[Byte] = new Array[Byte](16)
+              albumRNG.nextBytes(bytes)    
+              val albumIV: IvParameterSpec = new IvParameterSpec(albytes)
+              // get bytes with initializationVector.getIV()
+            val albumAESbytes = albumAESKey.getEncoded()
+            
+            
+             var albumEncryptedAESKeys = new ConcurrentHashMap [String, Array[Byte]] ()
+            
+              try {
+
+                  albumEncryptedAESKeys.put("Bob", encryptRSA(albumAESbytes, friendKeys.get("Bob")))
+                  
+                  if (!albumEncryptedAESKeys.containsKey(email)) {
+                  albumEncryptedAESKeys.put(email, encryptRSA(albumAESbytes, pubBytes))
+            
+                  }
+              }
+              catch {
+              case x : Exception => println ("ERROR WHEN ENCRYPTING TO RSA! " + x.toString)
+              }
+            
+            
+            
+            
+          
+            val album = AlbumMetaData (email, "Al-Akir the Windlord", serialize(albumEncryptedAESKeys), albumIV.getIV(), encryptPrivateRSA(sha256(email+"Al-Akir the Windlord"), priBytes))
 
 
 
             for {
-              response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, album.toJson.toString))).mapTo[HttpResponse]
+              response <- IO(Http).ask(HttpRequest(POST, Uri(baseIP + port + "/createAlbum"),entity= HttpEntity(`application/json`, album.toJson.toString))).mapTo[HttpResponse]
             }
               yield {
+              println (response.entity.asString)
               }
 
 
@@ -613,7 +609,7 @@ var serverPublicKey: PublicKey = null
                 yield {
                 }
 
-            } */     
+            }     
         } 
         }
         
@@ -625,43 +621,9 @@ var serverPublicKey: PublicKey = null
         
         
         
-        
-   /*    
-  def toHexString(block: Array[Byte]): String = {
-    val buf = new StringBuffer()
-    val len = block.length
-    for (i <- 0 until len) {
-      byte2hex(block(i), buf)
-      if (i < len - 1) {
-        buf.append(":")
-      }
-    }
-    buf.toString
-  }
-  */
+
   
-  
-  /*
-  def hexStringToByteArray(s: String): Array[Byte] = {
-  
-  try {
-    val len = s.length
-    val data = Array.ofDim[Byte](len / 2)
-    var i = 0
-    while (i < len) {
-      data(i / 2) = ((java.lang.Character.digit(s.charAt(i), 16) << 4) + java.lang.Character.digit(s.charAt(i + 1), 
-        16)).toByte
-      i += 2
-    }
-    data
-    
-          }
-           catch {
-              case x : Exception => println ("ERROR IN HEX TO BYTE " + x.toString)
-              } 
-              
-    return (null)
-  }*/
+ 
   
   def hexStringToByteArray(s: String): Array[Byte] = {
     val len = s.length
@@ -688,265 +650,6 @@ var serverPublicKey: PublicKey = null
   }
       
 
-    case "Continue" =>
-
-      port = "8087"//(5000 + r.nextInt(50)).toString
-      serverIP = baseIP + port + "/"
-
-      requestType match {
-
-        case "doNothing" =>
-
-
-          socialFactor += 5*fluxRate
-          loudFactor += 5*fluxRate
-          lurkFactor += 3*fluxRate
-
-        case "getFriendList" =>
-
-          // Update my friend list and add a random friend if I have none
-
-          for {
-            response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]
-          }
-            yield {
-              var myFriends = response.entity.asString
-              listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
-
-              var randEmail = allEmails(r.nextInt(allEmails.length))
-
-              if (listOfFriends.length < 2 && randEmail != email && !(listOfFriends contains randEmail)) {
-                for {
-                  response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email, randEmail).toJson.toString)))
-                }
-                  yield {}
-              }
-            }
-
-          lurkFactor -= fluxRate*fluxRate
-
-        case "addNewFriend" =>
-
-          // I want to add a random friend of friend
-
-          val selectedFriend = listOfFriends(r.nextInt(listOfFriends.length))
-
-          if (selectedFriend != null && selectedFriend.length() > 2 && listOfFriends.length < friendCap) {
-            for {
-              response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, (FriendRequest(email, selectedFriend).toJson.toString)))).mapTo[HttpResponse]
-            }
-              yield {
-                var theirFriends = response.entity.asString
-                var listOfTheirFriends = theirFriends.substring(11,theirFriends.length-1).split(",").map(_.trim)
-
-                if (listOfTheirFriends.length > 1) {
-                  var friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
-
-                  while (listOfTheirFriends.length > 1 && friendToAdd == email)
-                    friendToAdd = listOfTheirFriends(r.nextInt(listOfTheirFriends.length))
-
-                  if (friendToAdd != email && !(listOfFriends contains friendToAdd)) {
-                    for {
-                      response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "sendFriendRequest"),entity= HttpEntity(`application/json`, FriendRequest(email,friendToAdd).toJson.toString))).mapTo[HttpResponse]
-                    }
-                      yield {
-                        for {
-                          response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + email + "/friends"))).mapTo[HttpResponse]
-                        }
-                          yield {
-                            var myFriends = response.entity.asString
-                            listOfFriends = myFriends.substring(11,myFriends.length-1).split(",").map(_.trim)
-                          }
-
-                      }
-                  }
-
-                }
-              }
-          }
-
-          if (r.nextInt(100) > 50) {
-
-            for {
-              response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "pages/random"))).mapTo[HttpResponse]
-            }
-              yield {
-                var thisPage = response.entity.asString
-                if (thisPage != "noPagesExist" && !(listOfPages contains thisPage)) {
-
-                  for {
-                    response2 <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + thisPage + "/follow"),entity= HttpEntity(`application/json`, FollowPage(email).toJson.toString))).mapTo[HttpResponse]
-                  }
-                    yield {
-
-                    }
-                  listOfPages += thisPage
-                }
-              }
-          }
-
-          socialFactor -= fluxRate
-
-        case "upload" =>
-
-          val bis = new BufferedInputStream(new FileInputStream(imageBase(r.nextInt(imageBase.length))))
-
-          val bArray = Stream.continually(bis.read).takeWhile(-1 !=).map(_.toByte).toArray
-
-          bis.close();
-
-          if (albumsCreated == 0 || (r.nextInt(100) == loudFactor)) {
-
-          /*
-            for {
-              response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createAlbum"),entity= HttpEntity(`application/json`, CreateAlbum(email, albumTitles(r.nextInt(albumTitles.length))).toJson.toString))).mapTo[HttpResponse]
-            }
-              yield {
-              }
-*/
-            albumsCreated = albumsCreated + 1
-          }
-
-
-          if (albumsCreated > 0) {
-            var picsToUpload = 1 + r.nextInt(4)
-            var albumNumber = (r.nextInt(albumsCreated)+1).toString
-            for (i <- 1 to picsToUpload) {
-              for {
-                response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "users/" +email+"/albums/"+albumNumber+"/upload"),entity= HttpEntity(`application/json`, Photo(email, "1", bArray).toJson.toString)))
-              }
-                yield {
-                }
-
-            }
-          }
-
-
-        case "lurk" =>
-
-          var viewPageOf = ""
-
-          if (listOfFriends.length < 2 || r.nextInt(100) < 50)
-            viewPageOf = email
-          else viewPageOf = listOfFriends(r.nextInt(listOfFriends.length))
-
-          for {
-            response <- IO(Http).ask(HttpRequest(GET, Uri(serverIP + "users/" + viewPageOf + "/posts?Email="+email))).mapTo[HttpResponse]
-          }
-            yield {}
-
-          lurkFactor -= fluxRate*fluxRate
-
-
-        case "wallWrite" =>
-
-          // Special case: Write on a page, create a page if it hasn't been created
-
-          if (r.nextInt(100) > 95) {
-
-            if (listOfPages.length < 3) {
-              val pageTitle = pagePrefix(r.nextInt(pagePrefix.length)) + " " + pageSuffix(r.nextInt(pageSuffix.length))
-              val pageID = r.nextInt (10000).toString + r.nextInt (10000).toString
-
-              for {
-                response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "createPage"),entity= HttpEntity(`application/json`, CreatePage(email, pageTitle, pageID).toJson.toString)))
-              }
-                yield {
-                }
-
-              listOfPages += pageID
-
-            }
-            if (listOfPages.length > 0) {
-              val pageToWriteOn = listOfPages(r.nextInt(listOfPages.length))
-              val myPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
-
-
-              for {
-                response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + "pages/" + pageToWriteOn + "/createPost"),entity= HttpEntity(`application/json`, PagePost(email, myPost).toJson.toString)))
-              }
-                yield {
-                }
-            }
-
-          }
-
-          else {
-
-            // Write on some walls
-
-            var writeOnOwnWall = false
-
-            if (socialFactor < loudFactor)
-            {
-              if (r.nextInt(100) < loudFactor || listOfFriends.length < 2)
-                writeOnOwnWall = true
-            }
-            else if (r.nextInt(100) < socialFactor  || listOfFriends.length < 2)
-              writeOnOwnWall = true
-
-            var target = ""
-
-            if (!writeOnOwnWall)
-              target = listOfFriends(r.nextInt(listOfFriends.length))
-            else target = email
-
-            var textPost = ""
-
-            if (writeOnOwnWall)
-              textPost = selfPostFirst(r.nextInt(selfPostFirst.length)) + " " + selfPostSecond(r.nextInt(selfPostSecond.length)) + " " + selfPostThird(r.nextInt(selfPostThird.length))
-            else textPost = postPrefixArray(r.nextInt(postPrefixArray.length)) + " " + postBodyArray(r.nextInt(postBodyArray.length)) + " " + postSuffixArray(r.nextInt(postSuffixArray.length))
-
-            var post = Wallpost(email, target, textPost)
-            
-              
-                            val AESKey = KeyGen.generateKey
-              val AesCipher: Cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-              val randomNumberGenerator: SecureRandom = new SecureRandom
-              val bytes: Array[Byte] = new Array[Byte](16)
-              randomNumberGenerator.nextBytes(bytes)    
-              val initializationVector: IvParameterSpec = new IvParameterSpec(bytes)
-              // get bytes with initializationVector.getIV()
-              
-              
-              val AESbytes = AESKey.getEncoded()
-              
-              //var addresses : Addresses = Addresses (email, target)
-              
-              var encTo :  encryptedAddress = encryptedAddress (target)
-
-                            var esk : EncryptedSecretKey =  EncryptedSecretKey(encryptRSA(AESbytes, pubBytes), encryptRSA(initializationVector.getIV(), pubBytes))
-
-            
-            var encPost = EncryptedPost(encryptAES(serialize(post), AESbytes, initializationVector), "abc".getBytes, encryptPrivateRSA(sha256(encryptAES(serialize(post), AESbytes, initializationVector)), priBytes), email, encryptPrivateRSA(serialize(encTo), priBytes), encryptPrivateRSA(serialize(encTo), priBytes))
-
-            for {
-              response <- IO(Http).ask(HttpRequest(POST, Uri(serverIP + requestType),entity= HttpEntity(`application/json`, encPost.toJson.toString)))
-            }
-              yield {
-              }
-          }
-
-          loudFactor -= fluxRate*fluxRate
-
-      }
-
-
-      // Model next behaviour here
-
-
-      if (listOfFriends.length < 2)
-        requestType = "getFriendList"
-      else if (r.nextInt(100) < loudFactor) {
-        if (r.nextInt(100) > 15)
-          requestType = "wallWrite"
-        else requestType = "upload"
-      }
-      else if (r.nextInt(100) < socialFactor  && listOfFriends.length > 2)
-        requestType = "addNewFriend"
-      else if (r.nextInt(100) < lurkFactor)
-        requestType = "lurk"
-      else requestType = "doNothing"
 
   }
 
@@ -961,25 +664,10 @@ var serverPublicKey: PublicKey = null
     return (cipherData)
     }
     
-    catch {
-      case x: UnsupportedEncodingException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchAlgorithmException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: BadPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: InvalidKeyException => {
-        System.out.println(x.toString)
-      }
-      case x: IllegalBlockSizeException => {
-        System.out.println(x.toString)
-      }
+  catch {
+    case x: Exception => {
+      System.out.println(x)
+    }
     }
     
     return null
@@ -997,25 +685,10 @@ var serverPublicKey: PublicKey = null
 
     return (cipherData)
     }
-    catch {
-      case x: UnsupportedEncodingException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchAlgorithmException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: BadPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: InvalidKeyException => {
-        System.out.println(x.toString)
-      }
-      case x: IllegalBlockSizeException => {
-        System.out.println(x.toString)
-      }
+  catch {
+    case x: Exception => {
+      System.out.println(x)
+    }
     }
     return null
   }
@@ -1034,24 +707,9 @@ var serverPublicKey: PublicKey = null
     return (decryptedData)
   }
   catch {
-      case x: UnsupportedEncodingException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchAlgorithmException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: BadPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: InvalidKeyException => {
-        System.out.println(x.toString)
-      }
-      case x: IllegalBlockSizeException => {
-        System.out.println(x.toString)
-      }
+    case x: Exception => {
+      System.out.println(x)
+    }
     }
     return null
   }
@@ -1069,24 +727,9 @@ var serverPublicKey: PublicKey = null
     return (decryptedData)
   }
   catch {
-      case x: UnsupportedEncodingException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchAlgorithmException => {
-        System.out.println(x.toString)
-      }
-      case x: NoSuchPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: BadPaddingException => {
-        System.out.println(x.toString)
-      }
-      case x: InvalidKeyException => {
-        System.out.println(x.toString)
-      }
-      case x: IllegalBlockSizeException => {
-        System.out.println(x.toString)
-      }
+    case x: Exception => {
+      System.out.println(x)
+    }
     }
     return null
   }
@@ -1106,25 +749,8 @@ var serverPublicKey: PublicKey = null
     return (encryptedData)
     }
     
-    
-    
   catch {
-    case x: UnsupportedEncodingException => {
-      System.out.println(x)
-    }
-    case x: NoSuchAlgorithmException => {
-      System.out.println(x)
-    }
-    case x: NoSuchPaddingException => {
-      System.out.println(x)
-    }
-    case x: BadPaddingException => {
-      System.out.println(x)
-    }
-    case x: InvalidKeyException => {
-      System.out.println(x)
-    }
-    case x: IllegalBlockSizeException => {
+    case x: Exception => {
       System.out.println(x)
     }
     }
