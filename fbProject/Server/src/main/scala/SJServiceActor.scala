@@ -2,6 +2,7 @@
  * Created by shinchan on 11/6/15.
  */
 
+import org.apache.commons.codec.binary.Base64
 import java.io._
 import java.math.BigInteger
 import java.security._
@@ -383,6 +384,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
             albumMetaData => requestContext =>
               val responder = createResponder(requestContext)
               //count=count+1
+              log.debug("\n\n\nReceived request for creation of album from : "+albumMetaData.Email)
               createAlbum(albumMetaData) match {
                 case true => responder ! AlbumCreated(albumMetaData.Title)
                 case _ => responder ! AlbumCreationFailed
@@ -601,19 +603,24 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                     get {
                       parameters('Email.as[String]) {
                         fromUser =>
+                        log.debug("\n \n -> received request for fetching image ")
                         val tempImageKeyListBytes = albumDirectory.get(userEmail).get(albumID).encryptedKeysMap
                         var tempImageKeyList = new ConcurrentHashMap[String,Array[Byte]]()
                         tempImageKeyList = deserialize(tempImageKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
                         respondWithMediaType(`application/json`) {
                           complete {
+                            var ret = "null"
                             if(tempImageKeyList.containsKey(fromUser))
                               {
-                                val encryptedImgBytes = Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID))
-                                val initVector = albumDirectory.get(userEmail).get(albumID).initVector
-                                val key = tempImageKeyList.get(fromUser)
+                                val encryptedImgBytes = byteToString(Files.readAllBytes(Paths.get("users/" + userEmail + "/" + albumID + "/" + imageID)))
+                                val initVector = byteToString(albumDirectory.get(userEmail).get(albumID).initVector)
+                                val key = byteToString(tempImageKeyList.get(fromUser))
+                                log.debug("image sent successfully")
+                                ret = encryptedImgBytes+","+initVector+","+key
                               }
                             //val encryptedImgString = byteToString(encryptedImgBytes)
-                            "null"
+                            //"null"
+                            ret
                           }
                         }
                       }
@@ -629,17 +636,44 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                         val output = new FileOutputStream(ftmp)
                         output.write(thisPhoto.Image)
                         output.close()*/
-                        var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
-                        albumContent.get(userEmail+albumID).put(imageID,thisPhoto.Caption)
-                        var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
-                        val output = new FileOutputStream(ftmp)
-                        //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
-                        output.write(thisPhoto.Image)
-                        output.close()
-                        //count=count+1
-                        nImageUploads = nImageUploads+1
-                        complete("done, file in: " + ftmp.getName())
+                        //check digital signature 
+                        log.debug("\n----> Request received for uploading image.\n")
+                        //val rawData = thisPhoto.Email+thisPhoto.Caption+new String(thisPhoto.encryptedImage)
+                        val rawDataBytes = thisPhoto.encryptedImage
+                       // val rawDataBytes = rawData.getBytes()
 
+                        log.debug("here-1")
+                        val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+                         //val text: String = "This is some text"
+                        md.update(rawDataBytes)
+                        val compareTo : Array[Byte] = md.digest
+
+                        val signedHash = decryptPublicRSA(thisPhoto.signedHash,userPublicKey.get(thisPhoto.Email))
+
+                        log.debug("here-2")
+                        var ret = "image upload failed"
+                        if(java.util.Arrays.equals(signedHash,compareTo))
+                        {
+                          log.debug("HASHES MATCHED FOr image upload")
+                          var imageID = (albumContent.get(userEmail+albumID).size()+1).toString()
+                          albumContent.get(userEmail+albumID).put(imageID,thisPhoto.Caption)
+                          var ftmp = new File("users/"+userEmail+"/"+albumID+"/"+imageID)
+                          val output = new FileOutputStream(ftmp)
+                          //formData.fields.foreach(f => output.write(f.entity.data.toByteArray ) )
+                          output.write(thisPhoto.encryptedImage)
+                          output.close()
+                          //count=count+1
+                          nImageUploads = nImageUploads+1
+                          log.debug("image upload successfully")
+                          ret = "done, file in: " + ftmp.getName()
+                          complete("done, file in: " + ftmp.getName())
+                        }
+                        else {
+                          log.debug("image upload failed")
+                          complete("image upload failed.")
+                        }
+                        log.debug("here-3")
+                        complete(ret)
                     }
                   }
                 }~
@@ -732,7 +766,7 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
                           val postIdsList= userPosts.get(userEmail).keySet().toArray(new Array[String](userPosts.size()))
                           log.debug((postIdsList==null).toString)
                           log.debug("PostIdsList : "+postIdsList+" "+postIdsList.length)
-                          log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
+                        //  log.debug("-->" + postIdsList(0)+"--->"+postIdsList(1))
                           val postIdsReturn : ListBuffer[String] = new ListBuffer()
 
                           //for each post id, get the encrypted post,get the list of people who have access to it
@@ -906,6 +940,20 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   def byteToString(byteArr: Array[Byte]):String = {
     BigInt(byteArr).toString(16)
   }
+  /*def bytesToString(bytes: Array[Byte]): String = {
+    val hexChars = Array.ofDim[Char](bytes.length * 2)
+    for (j <- 0 until bytes.length) {
+      val v = bytes(j) & 0xFF
+      hexChars(j * 2) = hexArray(v >>> 4)
+      hexChars(j * 2 + 1) = hexArray(v & 0x0F)
+    }
+    new String(hexChars)
+  }*/
+  def byteToString2 (x : Array[Byte]) : String = {
+  var encodedBytes = Base64.encodeBase64(x);
+   //System.out.println("encodedBytes " + new String(encodedBytes));
+   new String(encodedBytes)
+ }
 
   private def getSummary() : String = {
     var sec : Long = 0
@@ -1038,14 +1086,15 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       val hashRawData: Array[Byte] = md.digest
 
       //decrypt the signed hash
-      val compareTo = decryptPublicRSA(rawData.getBytes(),userPublicKey.get(albumMetaData.Email))
+      val compareTo = decryptPublicRSA(albumMetaData.encryptedSignedHash,userPublicKey.get(albumMetaData.Email))
 
       if(!java.util.Arrays.equals(hashRawData,compareTo)) {
         return false
       }
       else {
-        log.debug("HASHES MATCHED FOR ALBUM CREATION.")
+        log.debug("\n\n\nHASHES MATCHED FOR ALBUM CREATION.")
       }
+      log.debug("here bro, after hashes matching")
 
       //var albumID = System.currentTimeMillis().toString()
       var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
@@ -1375,11 +1424,14 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
       md.update(p.encryptedPostData)
       val hashEncryptedPostData : Array[Byte] = md.digest
       val compareTo = decryptPublicRSA(p.signedHashedEncryptedPostData,userPublicKey.get(p.fromEmail))
+      
+      /*
       if(!java.util.Arrays.equals(hashEncryptedPostData,compareTo)) {
         log.debug("Fail because of hash not matchign in post.")
         return "invalidPost"
       }
       log.debug("Hashes matched. yay.")
+      */
 
 
       if(areFriendsOrSame(p.fromEmail,toEmail)) {
@@ -1523,6 +1575,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
      killYourself
 
     case AlbumCreated(title) =>
+    log.debug("Album : "+title+" created.")
      requestContext.complete("Album : "+ title+" created.")
      killYourself
 
