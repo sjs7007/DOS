@@ -2,9 +2,8 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="165" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="606" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="484" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1289" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1290" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" />
   </component>
   <component name="ChangeListManager">
@@ -42,8 +41,8 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6087937">
-              <caret line="606" column="34" selection-start-line="606" selection-start-column="34" selection-end-line="606" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.85327315">
+              <caret line="615" column="21" selection-start-line="615" selection-start-column="21" selection-end-line="615" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -142,10 +141,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
+    <option name="x" value="960" />
     <option name="y" value="38" />
-    <option name="width" value="1922" />
-    <option name="height" value="1043" />
+    <option name="width" value="960" />
+    <option name="height" value="1042" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -484,7 +483,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="38" width="1922" height="1043" extended-state="6" />
+    <frame x="960" y="38" width="960" height="1042" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -952,8 +951,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6087937">
-          <caret line="606" column="34" selection-start-line="606" selection-start-column="34" selection-end-line="606" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.85327315">
+          <caret line="615" column="21" selection-start-line="615" selection-start-column="21" selection-end-line="615" selection-end-column="21" />
           <folding />
         </state>
       </provider>
