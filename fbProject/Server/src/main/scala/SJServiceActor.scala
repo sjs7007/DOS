@@ -543,13 +543,38 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         }
       }
       else {
+        //returns list of albums to which user has access to
         pathPrefix("albums") {
           pathEnd {
-            get {
-              respondWithMediaType(`application/json`) {
-                complete {
-                  //count=count+1
-                  albumDirectory.get(userEmail).toString()
+            parameters('Email.as[String]) {
+              fromUser =>
+              get {
+                respondWithMediaType(`application/json`) {
+                  complete {
+                    val albumIdsReturn : ListBuffer[String] = new ListBuffer()
+                    //count=count+1
+                    //albumDirectory.get(userEmail).toString()
+                    //albumDirectory.get(userEmail).
+                    val albumIdsList= albumDirectory.get(userEmail).keySet().toArray(new Array[String](albumDirectory.get(userEmail).size()))
+                    for(i<-0 until albumIdsList.length) {
+                      log.debug("inside for loop for albums")
+                      if(albumIdsList(i)!=null) {
+                        val tempEncryptedImagesKeyListBytes = albumDirectory.get(userEmail).get(albumIdsList(i)).encryptedKeysMap
+                        var tempImagesKeyList = new ConcurrentHashMap[String,Array[Byte]]
+                        tempImagesKeyList = deserialize(tempEncryptedImagesKeyListBytes).asInstanceOf[ConcurrentHashMap[String,Array[Byte]]]
+                        println(tempImagesKeyList.toString)
+                        if(tempImagesKeyList.containsKey(fromUser)) {
+                          albumIdsReturn += albumIdsList(i)
+                        }
+                      }
+                      else {
+                        log.debug("Null found in albumIdsList("+i+").")
+                      }
+
+                    }
+                    //"pappu"
+                    albumIdsReturn.toString()
+                  }
                 }
               }
             }
@@ -994,6 +1019,21 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
   //create album
   private def createAlbum(albumMetaData : AlbumMetaData) : Boolean = {
     if(doesUserExist(albumMetaData.Email)) {
+      //check if the digital signature is matching before creating album
+      val rawData = albumMetaData.Email+albumMetaData.Title
+      val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+      md.update(rawData.getBytes("UTF-8"))
+      val hashRawData: Array[Byte] = md.digest
+
+      //decrypt the signed hash
+      val compareTo = decryptPublicRSA(rawData.getBytes(),userPublicKey.get(albumMetaData.Email))
+
+      if(!java.util.Arrays.equals(hashRawData,compareTo)) {
+        return false
+      }
+      else {
+        log.debug("HASHES MATCHED FOR ALBUM CREATION.")
+      }
 
       //var albumID = System.currentTimeMillis().toString()
       var albumID = (albumDirectory.get(albumMetaData.Email).size()+1).toString()
@@ -1317,6 +1357,19 @@ class SJServiceActor extends Actor with HttpService with ActorLogging {
         log.debug("To email doesn't exist. Can't post")
         return "invalidPost"
       }
+      //if()
+      //check for hash match, if not return invalid post
+      val md: MessageDigest = MessageDigest.getInstance("SHA-256")
+      md.update(p.encryptedPostData)
+      val hashEncryptedPostData : Array[Byte] = md.digest
+      val compareTo = decryptPublicRSA(p.signedHashedEncryptedPostData,userPublicKey.get(p.fromEmail))
+      if(!java.util.Arrays.equals(hashEncryptedPostData,compareTo)) {
+        log.debug("Fail because of hash not matchign in post.")
+        return "invalidPost"
+      }
+      log.debug("Hashes matched. yay.")
+
+
       if(areFriendsOrSame(p.fromEmail,toEmail)) {
         userPosts.get(toEmail).put(System.currentTimeMillis().toString(),p)
         nUserPosts = nUserPosts+1

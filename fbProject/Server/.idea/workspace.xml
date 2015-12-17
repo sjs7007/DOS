@@ -2,9 +2,10 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="165" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="576" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="600" />
     <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="484" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1238" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" line="1278" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4be045b6-6305-400d-a0f5-2f7fedca3560" name="Default" comment="" />
@@ -41,8 +42,8 @@
       <file leaf-file-name="SJServiceActor.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.4735062">
-              <caret line="822" column="64" selection-start-line="821" selection-start-column="54" selection-end-line="821" selection-end-column="64" />
+            <state vertical-scroll-proportion="0.8574794">
+              <caret line="575" column="44" selection-start-line="575" selection-start-column="44" selection-end-line="575" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -92,7 +93,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="105" column="37" selection-start-line="105" selection-start-column="37" selection-end-line="105" selection-end-column="37" />
+              <caret line="82" column="109" selection-start-line="82" selection-start-column="86" selection-end-line="82" selection-end-column="109" />
               <folding />
             </state>
           </provider>
@@ -141,10 +142,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
+    <option name="x" value="960" />
     <option name="y" value="38" />
-    <option name="width" value="1922" />
-    <option name="height" value="1043" />
+    <option name="width" value="960" />
+    <option name="height" value="1042" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -435,7 +436,7 @@
     </recent_temporary>
   </component>
   <component name="SbtLocalSettings">
-    <option name="lastUpdateTimestamp" value="1450319369159" />
+    <option name="lastUpdateTimestamp" value="1450323447529" />
     <option name="availableProjects">
       <map>
         <entry>
@@ -483,7 +484,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="38" width="1922" height="1043" extended-state="6" />
+    <frame x="960" y="38" width="960" height="1042" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -944,15 +945,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/MyJsonProtocol.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="105" column="37" selection-start-line="105" selection-start-column="37" selection-end-line="105" selection-end-column="37" />
+          <caret line="82" column="109" selection-start-line="82" selection-start-column="86" selection-end-line="82" selection-end-column="109" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/SJServiceActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.4735062">
-          <caret line="822" column="64" selection-start-line="821" selection-start-column="54" selection-end-line="821" selection-end-column="64" />
+        <state vertical-scroll-proportion="0.8574794">
+          <caret line="575" column="44" selection-start-line="575" selection-start-column="44" selection-end-line="575" selection-end-column="44" />
           <folding />
         </state>
       </provider>
